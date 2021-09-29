@@ -1,0 +1,136 @@
+{
+	"56": {
+		"title": "Binance SmartChain",
+		"icon": "bnb",
+		"rpc": "https://bsc-dataseed1.defibit.io",
+		"explorer": "https://bscscan.com",
+		"blocktime": 15,
+		
+		"masterChef": "",
+		"mulltiCall": "",
+
+		"tokens": {
+			"DM": {
+				"contract": "",
+				"symbol": "DM",
+				"decimals": 18,
+				"projectLink": ""
+			}, 
+			"BTC": {
+				"contract": "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c",
+				"symbol": "BTCB",
+				"decimals": 18,
+				"projectLink": "https://info.binance.com/en/currencies/bitcoin-bep2"
+			}, 
+			"ETH": {
+				"contract": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+				"symbol": "ETH",
+				"decimals": 18,
+				"projectLink": "https://ethereum.org"
+			}, 
+			"TRX": {
+				"contract": "0x85eac5ac2f758618dfa09bdbe0cf174e7d574d5b",
+				"symbol": "TRX",
+				"decimals": 18,
+				"projectLink": "http://www.tron.network/"
+			}, 
+			"XRP": {
+				"contract": "0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe",
+				"symbol": "XRP",
+				"decimals": 18,
+				"projectLink": "https://ripple.com/xrp/"
+			}, 
+			"DOT": {
+				"contract": "0x7083609fce4d1d8dc0c979aab8c869ea2c873402",
+				"symbol": "DOT",
+				"decimals": 18,
+				"projectLink": "https://polkadot.network"
+			}, 
+			"ADA": {
+				"contract": "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47",
+				"symbol": "ADA",
+				"decimals": 18,
+				"projectLink": "https://cardano.org"
+			}, 
+			"HT": {
+				"contract": "",
+				"symbol": "HT",
+				"decimals": 18,
+				"projectLink": ""
+			}, 
+			"FIL": {
+				"contract": "0x0d8ce2a99bb6e3b7db580ed848240e4a0f9ae153",
+				"symbol": "FIL",
+				"decimals": 18,
+				"projectLink": "https://filecoin.io/"
+			}
+		}
+	},
+	"4002": {
+		"title": "Fantom testnet",
+		"icon": "bnb",
+		"rpc": "https://rpc.testnet.fantom.network",
+		"explorer": "https://testnet.ftmscan.com",
+		"blocktime": 3,
+
+		"masterChef": "",
+		"mulltiCall": "",
+
+		"tokens": {
+			"DM": {
+				"contract": "",
+				"symbol": "DM",
+				"decimals": 18,
+				"projectLink": ""
+			}, 
+			"BTC": {
+				"contract": "",
+				"symbol": "BTC",
+				"decimals": 18,
+				"projectLink": ""
+			}, 
+			"ETH": {
+				"contract": "",
+				"symbol": "ETH",
+				"decimals": 18,
+				"projectLink": ""
+			}, 
+			"TRX": {
+				"contract": "",
+				"symbol": "TRX",
+				"decimals": 18,
+				"projectLink": ""
+			}, 
+			"XRP": {
+				"contract": "",
+				"symbol": "XRP",
+				"decimals": 18,
+				"projectLink": ""
+			}, 
+			"DOT": {
+				"contract": "",
+				"symbol": "DOT",
+				"decimals": 18,
+				"projectLink": ""
+			}, 
+			"ADA": {
+				"contract": "",
+				"symbol": "ADA",
+				"decimals": 18,
+				"projectLink": ""
+			}, 
+			"HT": {
+				"contract": "",
+				"symbol": "HT",
+				"decimals": 18,
+				"projectLink": ""
+			}, 
+			"FIL": {
+				"contract": "",
+				"symbol": "FIL",
+				"decimals": 18,
+				"projectLink": ""
+			}
+		}
+	}
+}
