@@ -1,8 +1,7 @@
 import {ethers} from 'ethers';
 import contracts from "./4002.json"
 
-// const rpc = process.env.REACT_APP_NETWORK_URL;
-const rpc = "https://rpc.testnet.fantom.network";
+const rpc = process.env.REACT_APP_NETWORK_URL;
 const provider = new ethers.providers.JsonRpcProvider(rpc);
 
 const DMTokenContract = new ethers.Contract(contracts.DM.address, contracts.DM.abi,provider);
