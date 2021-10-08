@@ -1,8 +1,51 @@
+import { toast } from 'react-toastify';
+import {ethers} from "ethers"
+import {DMTokenContract,USDTContract} from "./contracts";
 
+export const errHandler = (err:any) => {
+	if (err) {
+		if (err.code===4001) {
+			tips("您取消认购了")
+		} else if (err.code==='NETWORK_ERROR') {
+			tips("请检查网络连接！")
+		} else {
+			tips(err.message)
+		}
+	} else {
+		tips("无知错误")
+	}
+}
 
+export const tokenData = {
+	USDT : {
+		contract:USDTContract,
+		address:USDTContract.address,
+		decimals:6
+	},
+	DM : {
+		contract:DMTokenContract,
+		address:DMTokenContract.address,
+		decimals:18
+	}
+}
 
+export const toValue = (val, token) => ethers.utils.parseUnits((val).toString(),tokenData[token].decimals)
+export const fromValue = (val, token) => Number(ethers.utils.formatUnits((val).toString(),tokenData[token].decimals))
 
-export const NF = (num:number,p:number=2) => Number(num).toFixed(p);// .replace(/(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+export const tips = (html:string) => {
+	toast(html, {
+		position: "top-right",
+		autoClose: 1000,
+		/* hideProgressBar: false, */
+		/* closeOnClick: true,
+		pauseOnHover: true, */
+		/* draggable: true, */
+		/* progress: undefined, */
+	});
+}
+
+// export const NF = (num:number,p:number=2) => Number(num).toFixed(p);// .replace(/(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+export const NF = (num:number,p:number=2) => Number(num).toFixed(p).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 export const TF = (time:number,offset:number=2) => {
     let iOffset = Number(offset);
 	let date = time===undefined ? new Date(Date.now()*1000 + (3600000 * iOffset)) : (typeof time==='number'?new Date(time*1000 + (3600000 * iOffset)):new Date(+time + (3600000 * iOffset)));

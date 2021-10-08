@@ -10,6 +10,7 @@ import {
     ETHContract,TRXContract,FILContract,XRPContract,DOTContract,ADAContract,HTContract,
     DMStakingContract,USDTStakingContract,ETHStakingContract,TRXStakingContract,FILStakingContract,XRPStakingContract,DOTStakingContract,ADAStakingContract,HTStakingContract
 } from "../contracts"
+import { errHandler, tips } from '../util';
 
 const contracts = {
 	DM:{
@@ -54,30 +55,36 @@ const MineAct = (props) => {
 	//routing
 	let history = useHistory();
 	const {id} = props.match.params;
+	
+	
 	useEffect(()=>{
-		if(contracts[id]===undefined)
+		if(contracts[id]===undefined) {
 			history.push("/")
+		}
 	},[])
 
-	//wallet & contracts
 	const wallet = useWallet();
 	const [signedTokenContracts,setSignedTokenContracts] = useState(DMTokenContract);
 	const [signedStakingContracts,setSignedStakingContracts] = useState(DMStakingContract);
 	
 	useEffect(()=>{
-		const setSignedContracts = async ()=>{
+		if(contracts[id]===undefined) {
+			const setSignedContracts = async ()=>{
 				const provider = new ethers.providers.Web3Provider(wallet.ethereum);
 				const signer =await provider.getSigner();
-				var signedTokenContracts =contracts[id]===undefined?"":((contracts[id].stakeTokenContract).connect(signer));
-				var signedStakingContracts =contracts[id]===undefined?"":((contracts[id].stakingContract).connect(signer));
+				var signedTokenContracts = (contracts[id].stakeTokenContract).connect(signer);
+				var signedStakingContracts = (contracts[id].stakingContract).connect(signer);
 				console.log(signedTokenContracts)
 				setSignedTokenContracts(signedTokenContracts);
 				setSignedStakingContracts(signedStakingContracts);
 			}
-		
-		if(wallet.status==="connected"){
-			setSignedContracts();
+			
+			if(wallet.status==="connected"){
+				setSignedContracts();
+			}
+			
 		}
+		
 	},[wallet.status])
 
 	// status
@@ -111,81 +118,71 @@ const MineAct = (props) => {
 	//actions 
 
 	const handleStaking =async ()=>{
-		if(loading!==true&&wallet.status==="connected"&&status.stakeAmount!==0){
+		try {
+			if (status.stakeAmount<=0) return tips("少于100以上")
+			if (wallet.status!=="connected") return tips("请连接Metamask钱包")
+			if (loading) return tips("已进行中")
+			setLoading(true);
 			let tokenDecimals = (await signedTokenContracts.decimals()).toString();
 			let stakeAmount = ethers.utils.parseUnits((status.stakeAmount).toString(),tokenDecimals)
-
 			var allowance =await signedTokenContracts.allowance(wallet.account,signedStakingContracts.address);
 			if(id==="USDT"&&allowance.toString()!=="0"&&allowance<stakeAmount){
 				stakeAmount = allowance;
 			}
 			if(allowance<stakeAmount) {
 				var tx = await signedTokenContracts.approve(signedStakingContracts.address,stakeAmount.sub(allowance))
-					.catch((err)=>{
-						console.log(err)
-						alert("OOPs, Something wrong while approve!");
-						setLoading(false)
-					});
-				if(tx!=null){
+				if(tx!=null) {
 					await tx.wait();
-					staking(stakeAmount);
 				}
 			}
-			else {
-				staking(stakeAmount);
-			}
+			await staking(stakeAmount);
+		} catch (err) {
+			errHandler(err)
 		}
-		else {
-			alert("OOPs, Something wrong!");
-		}
+		setLoading(false);
 	}
 
 	const staking =async (stakeAmount:any)=>{
 		var tx = await signedStakingContracts.stake(stakeAmount)
-			.catch(err=>{
-				console.log(err)
-				setLoading(false);
-			})
 		if(tx!=null){
 			await tx.wait();
-			setLoading(false);
 		}
 	}
 
 	const handleClaimReward = async ()=>{
-		if(loading!==true&&wallet.status==="connected"){
-			
+		try {
+			if (wallet.status!=="connected") return tips("请连接Metamask钱包")
+			if (loading) return tips("已进行中")
 			setLoading(true);
-			var tx = await signedStakingContracts.claimRewards()
-			.catch(err=>{
-				alert("You can't harvest in 30 Days");
-				console.log(err)
-				setLoading(false);
-			})
+			var tx = await signedStakingContracts.claimRewards();
 			if(tx!=null){
 				await tx.wait();
-				setLoading(false);
+				
 			}
+		} catch (err) {
+			errHandler(err)
 		}
+		setLoading(false);
 	}
 
 	const handleWithdraw = async ()=>{
-		if(loading!==true&&wallet.status==="connected"){
+		try {
+			if (wallet.status!=="connected") return tips("请连接Metamask钱包")
+			if (loading) return tips("已进行中")
 			setLoading(true);
 			let tokenDecimals = (await signedTokenContracts.decimals()).toString();
 			let amount = ethers.utils.parseUnits((status.withdrawAmount).toString(),tokenDecimals)
 
 			var tx = await signedStakingContracts.withdraw(amount)
-			.catch(err=>{
-				console.log(err)
-				setLoading(false);
-			})
-			if(tx!=null){
+			if(tx!=null) {
 				await tx.wait();
-				setLoading(false);
 			}
+		} catch (err) {
+			errHandler(err)
 		}
+		setLoading(false);
 	}
+
 	return <Layout className="mine">
 		<div style={{display:'flex',padding:20}}>
 			<div style={{width:'50%'}}>

@@ -12,180 +12,211 @@ import imgIC01 from '../assets/swap-ic-01.webp';
 import imgIC02 from '../assets/swap-ic-02.webp';
 import imgICExchange from '../assets/swap-ic-exchange.webp';
 import {ethers} from "ethers"
+import {tips, NF, fromValue, toValue, tokenData, errHandler} from '../util';
 import {useWallet} from 'use-wallet';
 import {DMTokenContract,USDTContract,ExchangeRouter} from "../contracts";
+import useContract from '../useContract';
 
 const Swap = () => {
 	const wallet = useWallet();
 
-	const [token1Status,setToken1Status] = useState({
-		token:"DMToken",
-		amount:0
+	const [token1,setToken1] = useState({
+		token:"DM",
+		amount:0,
 	})
 	
-	const [token2Status,setToken2Status] = useState({
+	const [token2,setToken2] = useState({
 		token:"USDT",
-		amount:0
+		amount:0,
 	})
-
+	/* const [status, setStatus] = useState({
+		inited: false,
+		isEnd:false, 
+		limit1:0, 
+		limit2:0, 
+		remainder:0, 
+		reward:0, 
+		dmBalance:0, 
+		usdtBalance:0,
+		unlockable:0,
+		available: false
+	}) */
 	const [focus,setFocus] = useState(0)
 	const [loading,setLoading] = useState(false);
 
-	const tokenData = {
-		USDT : {
-			contract:USDTContract,
-			address:USDTContract.address,
-			decimals:6
-		},
-		DMToken : {
-			contract:DMTokenContract,
-			address:DMTokenContract.address,
-			decimals:18
-		}
-	}
+	const status = useContract(wallet.status === "connected" ? wallet.account : null)
+	
+	console.log("swap", status, +new Date())
 
-  	const getAmountIn =  ()=>{
-        var path = [tokenData[token1Status.token].address,tokenData[token2Status.token].address];
-		let decimals1 = tokenData[token1Status.token].decimals;
-		let decimals2 = tokenData[token2Status.token].decimals;
-        
-		var amount2 = token2Status.amount;
-		if(token1Status.token === "DMToken"){
-			amount2 = amount2/0.85;
-		}
-        ExchangeRouter.getAmountsIn(ethers.utils.parseUnits((Number(amount2).toFixed(decimals2)).toString(),decimals2),path)
-		.then((pairData)=>{
+  	const getAmountIn = async ()=>{
+		if (token2.amount===0) return;
+		try {
+	        var path = [tokenData[token1.token].address,tokenData[token2.token].address];
+			let decimals1 = tokenData[token1.token].decimals;
+			let decimals2 = tokenData[token2.token].decimals;
+	        
+			var amount2 = token2.amount;
+			if(token1.token === "DM"){
+				amount2 = amount2/0.85;
+			}
+	        const pairData = await ExchangeRouter.getAmountsIn(ethers.utils.parseUnits((Number(amount2).toFixed(decimals2)).toString(),decimals2),path)
 			if(pairData!=null){
 				let amout = parseFloat(Number(ethers.utils.formatUnits(pairData[0],decimals1)).toFixed(8));
-				setToken1Status({...token1Status,amount:amout});
+				setToken1({...token1,amount:amout});
 			}
-		})
-        .catch((err)=>{
-            //console.log(err);
-            setToken1Status({...token1Status,amount:0});
-        });
-
+		} catch (err) {
+			errHandler(err)	
+			setToken1({...token1,amount:0});
+		}
     }
 
-	const getAmountOut = ()=>{
-        var path = [tokenData[token1Status.token].address,tokenData[token2Status.token].address];
-		let decimals1 = tokenData[token1Status.token].decimals;
-		let decimals2 = tokenData[token2Status.token].decimals;
-
-		console.log("get amount out : ",path,token1Status.amount,ethers.utils.parseUnits((Number(token1Status.amount).toFixed(decimals1)).toString(),decimals1).toString());
-        ExchangeRouter.getAmountsOut(ethers.utils.parseUnits((Number(token1Status.amount).toFixed(decimals1)).toString(),decimals1),path)
-		.then((pairData)=>{
-			if(pairData!=null){
+	const getAmountOut = async ()=>{
+		if (token1.amount===0) return;
+		try {
+	        var path = [tokenData[token1.token].address,tokenData[token2.token].address];
+			let decimals1 = tokenData[token1.token].decimals;
+			let decimals2 = tokenData[token2.token].decimals;
+	
+			console.log("get amount out : ",path,token1.amount,ethers.utils.parseUnits((Number(token1.amount).toFixed(decimals1)).toString(),decimals1).toString());
+	        const pairData = await ExchangeRouter.getAmountsOut(ethers.utils.parseUnits((Number(token1.amount).toFixed(decimals1)).toString(),decimals1),path)
+			if(pairData!==null){
 				//fee rate
 				let amount = parseFloat(Number(ethers.utils.formatUnits(pairData[1],decimals2)).toFixed(8));
-				if(token1Status.token == "USDT"){
+				if(token1.token === "USDT"){
 					console.log("pair reserves :",pairData[0].toString(),pairData[1].toString())
-				setToken2Status({...token2Status,amount:amount});
-				}
-				else {
+					setToken2({...token2,amount:amount});
+				} else {
 					//15% fee rate
 					amount = amount*0.85;
-					setToken2Status({...token2Status,amount:amount});
+					setToken2({...token2,amount:amount});
 				}
 			}
-		})
-        .catch((err)=>{
-            // console.log(err);
-			setToken2Status({...token2Status,amount:0});  
-        });
+		} catch (err:any) {
+			errHandler(err)
+			setToken2({...token2,amount:0}); 
+		}
     }
 
 	useEffect(()=>{
-		// console.log("token1 changed",token1Status.amount)
+		// console.log("token1 changed",token1.amount)
 		if(focus === 0){
 			getAmountOut();
 		}
-	},[token1Status.amount])
+	},[token1.amount])
 
 	useEffect(()=>{
-		// console.log("token2 changed",token2Status.amount,focus)
+		// console.log("token2 changed",token2.amount,focus)
 		if(focus === 1){
 			getAmountIn();
 		}
-	},[token2Status.amount])
+	},[token2.amount])
+
+	/* useEffect(()=>{
+		checkBalance()
+		setInterval(checkBalance, 5000)
+	},[])
 
 
+	const checkBalance = async () => {
+		if(wallet.status !== "connected") return;
+		try {
+			const res = await DMTokenContract.getStakerInfo(wallet.account);
+			let {isEnd, limit1, limit2, remainder, reward, dmBalance, usdtBalance, unlockable} = res;
+			limit1=fromValue(limit1, 'DM');
+			limit2=fromValue(limit2, 'DM');
+			remainder=fromValue(remainder, 'DM');
+			reward=fromValue(reward, 'DM');
+			dmBalance=fromValue(dmBalance, 'DM');
+			usdtBalance=fromValue(usdtBalance, 'USDT');
+			unlockable=fromValue(unlockable, 'DM');
+			const available = !isEnd && limit1 <= remainder
+			setStatus({
+				inited:true,
+				isEnd, 
+				limit1, 
+				limit2, 
+				remainder, 
+				reward, 
+				dmBalance, 
+				usdtBalance,
+				unlockable,
+				available
+			})
+		} catch (err:any) {
+			errHandler(err)
+		}
+	} */
 	const handleChangeTokens = ()=>{
 		setFocus(0);
-		setToken2Status({token:token1Status.token,amount:token1Status.amount});
-		setToken1Status({...token1Status,token:token2Status.token});
+		setToken2({...token1});
+		setToken1({...token2});
 	}
 
 	const handleSwap = async ()=>{
-		if(loading!==true&&wallet.status==="connected"&&token1Status.amount!==0&&token2Status.amount!==0){
+		try {
+			if (token1.amount<=0) return tips("最少 10 u")
+			if (token2.amount<=0) return tips("最少 10 u")
+			if (wallet.status!=="connected") return tips("请连接Metamask钱包")
+			if (loading) return tips("已进行中")
+			setLoading(true)
 			const provider = new ethers.providers.Web3Provider(wallet.ethereum);
 			const signer =await provider.getSigner();
-			let swapAmount = ethers.utils.parseUnits((token1Status.amount).toString(),tokenData[token1Status.token].decimals)
-
-			const sigendContract = tokenData[token1Status.token].contract.connect(signer);
-			var allowance =await sigendContract.allowance(wallet.account,ExchangeRouter.address);
-			if(allowance<swapAmount) {
-				var tx = await sigendContract.approve(ExchangeRouter.address,swapAmount.sub(allowance))
-					.catch((err)=>{
-						//console.log(err);
-						setLoading(false)
-					});
-				if(tx!=null){
+			let swapAmount = ethers.utils.parseUnits((token1.amount).toString(),tokenData[token1.token].decimals)
+	
+			const sigendContract = tokenData[token1.token].contract.connect(signer);
+			var allowance =await sigendContract.allowance(wallet.account, ExchangeRouter.address);
+			if(allowance.lt(swapAmount)) {
+				var tx;
+				if (token1.token==="USDT" && Number(allowance) > 0) {
+					tx = await sigendContract.approve(ExchangeRouter.address, 0)
+					if(tx != null) {
+						await tx.wait();
+					}
+				}
+				tx = await sigendContract.approve(ExchangeRouter.address, swapAmount)
+				if(tx != null) {
 					await tx.wait();
-					swapToken();
 				}
 			}
-			else {
-				swapToken();
-			}
+			await swapToken();
+			
+		} catch (err:any) {
+			errHandler(err)
 		}
-		else {
-			alert("OOPs, Something wrong!");
-		}
+		setLoading(false)
 	}
 
 	const swapToken =async ()=>{
 		const provider = new ethers.providers.Web3Provider(wallet.ethereum);
 		const signer =await provider.getSigner();
-		
-		//exchange parameters
-        var path = [tokenData[token1Status.token].address,tokenData[token2Status.token].address];
-		let swapAmount = ethers.utils.parseUnits((token1Status.amount).toString(),tokenData[token1Status.token].decimals);
-        var date=new Date();
-        var seconds = Math.floor(date.getTime() / 1000)+1000000;
-
-
+		var path = [tokenData[token1.token].address,tokenData[token2.token].address];
+		let swapAmount = ethers.utils.parseUnits((token1.amount).toString(),tokenData[token1.token].decimals);
+		var date=new Date();
+		var seconds = Math.floor(date.getTime() / 1000)+1000000;
 		const sigendExchangeContract = ExchangeRouter.connect(signer);
 		var tx = await sigendExchangeContract.swapExactTokensForTokens(swapAmount,0,path,wallet.account,seconds)
-		.catch((err)=>{
-			console.log(err)
-			setLoading(false);
-		})
-		if(tx!=null){
-            await tx.wait();
-            setLoading(false);
-        }
+		if(tx != null){
+			await tx.wait();
+		}
 	}
 
 	const handleAmount1 = async (e:any)=>{
 		setFocus(0)
 		if(Number(e.target.value)<0){
-			setToken1Status({...token1Status,amount:0})
-		}
-		else {
+			setToken1({...token1,amount:0})
+		} else {
 			var amount = parseFloat(Number(e.target.value).toFixed(8))
-			setToken1Status({...token1Status,amount:amount})
+			setToken1({...token1,amount:amount})
 		}
 	}
 
 	const handleAmount2 = async (e:any)=>{
 		setFocus(1)
 		if(Number(e.target.value)<0){
-			setToken2Status({...token2Status,amount:0})
-		}
-		else {
+			setToken2({...token2,amount:0})
+		} else {
 			var amount = parseFloat(Number(e.target.value).toFixed(8))
-			setToken2Status({...token2Status,amount:amount})
+			setToken2({...token2,amount:amount})
 		}
 	}
 
@@ -201,17 +232,23 @@ const Swap = () => {
 			</div>
 		</div>
 		<div className="mt-3" style={{backgroundColor:'#363d50',borderRadius: 5, padding: 10}}>
-			<h3 className="text-center">授权钱包</h3>
-			<div>{token1Status.token}</div>
+			<h3 className="text-center">兑换</h3>
+			<div style={{display:'flex', justifyContent: 'space-between'}}>
+				<div><b>{token1.token}</b></div>
+				<div style={{color:'#aaa'}}>Balance {NF(token1.token==="USDT" ? status.usdtBalance : status.dmBalance, 2)} {token1.token}</div>
+			</div>
 			<div style={{position:'relative',border:'1px solid gray', padding: 10}}>
-				<input onChange={handleAmount1} type="number" value={parseFloat(Number(token1Status.amount).toFixed(8))} className="h3" style={{marginBottom:0}} maxLength={12} />
-				<button className="btn btn-sm btn-outline-success" style={{position:'absolute',right:10}}>选择通证</button>
+				<input onChange={handleAmount1} type="number" value={parseFloat(Number(token1.amount).toFixed(8))} className="h3" style={{marginBottom:0}} maxLength={12} />
+				<button onClick={()=>setToken1({...token1, amount:token1.token==='USDT' ? status.usdtBalance : status.dmBalance })} className="btn btn-sm btn-outline-success" style={{position:'absolute',right:10}}>MAX</button>
 			</div>
 			<p className="text-center mt-3"><img src={imgICExchange}  alt="icon" style={{width:'1.5em',height:'auto'}} onClick = {handleChangeTokens}/></p>
-			<div>{token2Status.token}</div>
+			<div style={{display:'flex', justifyContent: 'space-between'}}>
+				<div><b>{token2.token}</b></div>
+				<div style={{color:'#aaa'}}>Balance {NF(token2.token==="USDT" ? status.usdtBalance : status.dmBalance, 2)} {token2.token}</div>
+			</div>
 			<div style={{position:'relative',border:'1px solid gray', padding: 10}}>
-				<input onChange={handleAmount2} type="number" value={parseFloat(Number(token2Status.amount).toFixed(8))} className="h3" style={{marginBottom:0}} maxLength={12} />
-				<button className="btn btn-sm btn-outline-success" style={{position:'absolute',right:10}}>MAX</button>
+				<input onChange={handleAmount2} type="number" value={parseFloat(Number(token2.amount).toFixed(8))} className="h3" style={{marginBottom:0}} maxLength={12} />
+				<button onClick={()=>setToken1({...token2, amount:token2.token==='USDT' ? status.usdtBalance : status.dmBalance })} className="btn btn-sm btn-outline-success" style={{position:'absolute',right:10}}>MAX</button>
 			</div>
 			<div className="text-center mt-3">
 				<button className="btn btn-success px-5 round" onClick = {handleSwap}>输入金额</button>
@@ -233,11 +270,11 @@ const Swap = () => {
 			<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, padding: 20, display:'flex', flexDirection:'column'}}>
 				<div style={{flexGrow:1}}>
 					<h3>权益池</h3>
-					<code>180万枚</code>
+					<code>{Math.round((status.rewardPool + status.rewardedTotal)/10000)}万枚</code>
 				</div>
 				<div style={{display:'flex',justifyContent:'space-between'}}>
-					<span>剩余币量：2600</span>
-					<span>总分红币量：2.6W</span>
+					<span>剩余币量：{Math.round(status.rewardPool/10000)}万枚</span>
+					<span>总分红币量：{Math.round(status.rewardedTotal/10000)}万枚</span>
 				</div>
 			</div>
 		</div>
@@ -248,12 +285,10 @@ const Swap = () => {
 			<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, padding: 20, display:'flex', flexDirection:'column'}}>
 				<div style={{flexGrow:1}}>
 					<h3>保险池</h3>
-					<code>180万枚</code>
+					<code>{Math.round(status.insurancePool/10000)}万枚</code>
 				</div>
-				<div style={{display:'flex',justifyContent:'space-between'}}>
-					<div className="text-center">回购<br/>1万枚</div>
-					<div className="text-center">销毁<br/>1万枚</div>
-					<div className="text-center">奖励<br/>18万枚</div>
+				<div style={{display:'flex',justifyContent:'end'}}>
+					销毁 {Math.round(status.insuranceBurnt/10000)}万枚
 				</div>
 			</div>
 		</div>

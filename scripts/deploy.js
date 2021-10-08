@@ -10,7 +10,6 @@ const DMToken = require("../artifacts/contracts/DMToken.sol/DMToken.json");
 const ExchangeRouter = require("../artifacts/contracts/dexRouter.sol/PancakeswapRouter.json");
 const IERC20 = require("../artifacts/contracts/DMToken.sol/IERC20.json");
 const Staking = require("../artifacts/contracts/staking.sol/staking.json");
-const InsurrancePool = require("../artifacts/contracts/insurancePool.sol/InsurancePool.json");
 const {ethers} = require("ethers");
 const hre = require("hardhat");
 
@@ -51,14 +50,16 @@ async function main() {
   const stakeTokens = {};
   stakeTokens[stakeTokenList[0]] = {address:dMTokenAddress, abi:DMToken.abi};
   if(chainId === 4002){
-    //ganache testnet
-    for(let i = 1; i< stakeTokenList.length; i++){
+    // testnet
+    let tokenAddress = await deployUSDT(ExchangeRouterAddress);
+    stakeTokens[stakeTokenList[1]]={address:tokenAddress,abi:IERC20.abi};
+    await dMToken.setUSDTAddress(tokenAddress);
+
+    for(let i = 2; i< stakeTokenList.length; i++){
       let tokenAddress = (await deployDMToken()).address;
       stakeTokens[stakeTokenList[i]]={address:tokenAddress,abi:IERC20.abi};
-      if(i==1) {
-        await dMToken.setUSDTAddress(tokenAddress);
-      }
     }
+
   }
   else {
     //mainnet
@@ -69,6 +70,13 @@ async function main() {
       stakeTokens[stakeTokenList[i]]={address:tokenAddress,abi:IERC20.abi};
     }
   }
+
+  /* -------------- add liquidity -----------------*/
+  var tx = await dMToken.approve(ExchangeRouterAddress,ethers.utils.parseUnits("100000",18));
+  await tx.wait();
+
+  var exchangeContract =new ethers.Contract(ExchangeRouterAddress,ExchangeRouter.abi,signer);
+  exchangeContract.addLiquidity(dMToken.address,stakeTokens[stakeTokenList[1]].address,ethers.utils.parseUnits("100000",18),ethers.utils.parseUnits("1000",6),"0","0",signer.address,"1111111111111111111111111");
 
   //staking contracts
   
@@ -106,9 +114,9 @@ async function main() {
   }
 
   /* ------------ insurrance pool -------------- */
-  var insurrancePoolAddress = await deployInsurrancePool(dMTokenAddress);
+  /* var insurrancePoolAddress = await deployInsurrancePool(dMTokenAddress);
   await dMToken.setFeeAddresses(insurrancePoolAddress,signer.address);
-  var Insurrance = {address:insurrancePoolAddress,abi:InsurrancePool.abi}
+  var Insurrance = {address:insurrancePoolAddress,abi:InsurrancePool.abi} */
 
 
   //object

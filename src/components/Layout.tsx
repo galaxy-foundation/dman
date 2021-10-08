@@ -20,7 +20,7 @@ import imgBgHeader from '../assets/bg-header.webp';
 import imgEarch from '../assets/earth.webp';
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { toast } from 'react-toastify';
+/* import { toast } from 'react-toastify'; */
 import {useWallet} from 'use-wallet';
 import {ethers} from "ethers";
 
@@ -47,7 +47,7 @@ const Layout = (props:any) => {
     }, [])
 
     function changeLang(lang:string){
-        dispatch(dataSlice.actions.lang(lang));
+        dispatch(dataSlice.actions.update({lang}));
     }
 
     //check connection
@@ -143,6 +143,12 @@ const Layout = (props:any) => {
                 </Link>
             </div>
             <div>
+                <Link to="/presale">
+                    <img src={imgApp} alt="app" style={{width:"2em",height:"auto"}} /> 
+                    <div>预售</div>
+                </Link>
+            </div>
+            <div>
                 <Link to="/swap">
                     <img src={imgSwap} alt="swap" style={{width:"2em",height:"auto"}} /> 
                     <div>兑换</div>
@@ -152,12 +158,6 @@ const Layout = (props:any) => {
                 <Link to="/mine">
                     <img src={imgMine} alt="mine" style={{width:"2em",height:"auto"}} /> 
                     <div>矿池</div>
-                </Link>
-            </div>
-            <div>
-                <Link to="/presale">
-                    <img src={imgApp} alt="app" style={{width:"2em",height:"auto"}} /> 
-                    <div>应用</div>
                 </Link>
             </div>
         </footer>

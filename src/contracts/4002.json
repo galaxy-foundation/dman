@@ -976,7 +976,7 @@
         ]
     },
     "DM": {
-        "address": "0x30C8D7EF22A52A23A89920f8566bb9B97Be940BF",
+        "address": "0x5Cb88Bd6c074bEcA18DAcB6bFc7d8E64B869bf87",
         "abi": [
             {
                 "inputs": [],
@@ -1270,7 +1270,7 @@
                 "inputs": [
                     {
                         "internalType": "address",
-                        "name": "tokenAddress",
+                        "name": "token",
                         "type": "address"
                     }
                 ],
@@ -1296,7 +1296,7 @@
                 "inputs": [
                     {
                         "internalType": "address",
-                        "name": "staker",
+                        "name": "account",
                         "type": "address"
                     }
                 ],
@@ -1306,6 +1306,30 @@
                         "internalType": "uint256",
                         "name": "rewardBalance",
                         "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "getStakerInfo",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "isEnd",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "uint256[11]",
+                        "name": "params",
+                        "type": "uint256[11]"
                     }
                 ],
                 "stateMutability": "view",
@@ -1328,7 +1352,7 @@
                 "inputs": [
                     {
                         "internalType": "address",
-                        "name": "staker",
+                        "name": "account",
                         "type": "address"
                     }
                 ],
@@ -1336,7 +1360,7 @@
                 "outputs": [
                     {
                         "internalType": "uint256",
-                        "name": "unlockAmount",
+                        "name": "",
                         "type": "uint256"
                     }
                 ],
@@ -1365,19 +1389,6 @@
                     }
                 ],
                 "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "insuranceAddress",
-                "outputs": [
-                    {
-                        "internalType": "address",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
                 "type": "function"
             },
             {
@@ -1513,7 +1524,7 @@
                 "inputs": [
                     {
                         "internalType": "uint256",
-                        "name": "_amount",
+                        "name": "_usdt",
                         "type": "uint256"
                     }
                 ],
@@ -1617,17 +1628,12 @@
                     },
                     {
                         "internalType": "uint256",
+                        "name": "unlocked",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
                         "name": "rewards",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "lockedAmount",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "unlockedStep",
                         "type": "uint256"
                     }
                 ],
@@ -1684,11 +1690,6 @@
                 "inputs": [
                     {
                         "internalType": "address",
-                        "name": "_insuranceAddress",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "address",
                         "name": "_communityAddress",
                         "type": "address"
                     }
@@ -1733,6 +1734,13 @@
                     }
                 ],
                 "name": "setUSDTAddress",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "startPresale",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -1852,7 +1860,7 @@
         ]
     },
     "USDT": {
-        "address": "0x07d97C058bC9594Bed6A6bc016FF810a7C1912D3",
+        "address": "0x521E11A7157fAF29875E4e43e17541518d67C20E",
         "abi": [
             {
                 "anonymous": false,
@@ -2092,7 +2100,7 @@
         ]
     },
     "ETH": {
-        "address": "0xbf45aa3C29af4B464aAA06b01a747ed54Aa5D1C6",
+        "address": "0x2238ED2BFD6b351775C51f31d2447bf805965583",
         "abi": [
             {
                 "anonymous": false,
@@ -2332,7 +2340,7 @@
         ]
     },
     "TRX": {
-        "address": "0xee515ad293e777a63d87C608D3279e3C8fBF910C",
+        "address": "0x18416fb6698b2080538542500463744ECC07cE79",
         "abi": [
             {
                 "anonymous": false,
@@ -2572,7 +2580,7 @@
         ]
     },
     "FIL": {
-        "address": "0xf4D61E10A7173Dc6A7C17241d6b944c2d979270B",
+        "address": "0xD0B94eA490B4eF191A36B8b64C2639E988a8e086",
         "abi": [
             {
                 "anonymous": false,
@@ -2812,7 +2820,7 @@
         ]
     },
     "XRP": {
-        "address": "0x1B31c59Dc9F920B5DF6f83C6DCD48f1ddd600C7e",
+        "address": "0x8C7A99959c5dd468636d72c33D6479b557c5d8e1",
         "abi": [
             {
                 "anonymous": false,
@@ -3052,7 +3060,7 @@
         ]
     },
     "DOT": {
-        "address": "0x85D8e376B59b9ED30658F630E67f8a5e27fB38DC",
+        "address": "0x4A93408975A8b924C2375fc4bf47505B66461B0B",
         "abi": [
             {
                 "anonymous": false,
@@ -3292,7 +3300,7 @@
         ]
     },
     "ADA": {
-        "address": "0xa6747eF08Bb9ab50f4cD750eE867902DcED1CE3E",
+        "address": "0x383a5cAd0F7C1AcAaa93cb90b22141c08eD01E13",
         "abi": [
             {
                 "anonymous": false,
@@ -3532,7 +3540,7 @@
         ]
     },
     "HT": {
-        "address": "0xc1D4795FD511C231433FE976f26B844CaEEfA534",
+        "address": "0x2B0FDc2025802081Ea9F1fdDAf9e64Faf0dfc340",
         "abi": [
             {
                 "anonymous": false,
@@ -3772,7 +3780,7 @@
         ]
     },
     "DMStaking": {
-        "address": "0x39A065719DA061a8321f944bA61527479Ecc0B70",
+        "address": "0x8df24625D9AbA33B1fc03902BDa293479fb3EC79",
         "abi": [
             {
                 "inputs": [
@@ -4086,7 +4094,7 @@
         ]
     },
     "USDTStaking": {
-        "address": "0x9bAEc4b26dBb85D4b2d6074eecC9fF0dfd7894Cd",
+        "address": "0x2B8786C036ae3f4346B295EA6a50a6e06B07E812",
         "abi": [
             {
                 "inputs": [
@@ -4400,7 +4408,7 @@
         ]
     },
     "ETHStaking": {
-        "address": "0xeB48bd25cd7CccdcC99e96c6C1953612f55a2af7",
+        "address": "0xD23134dEED0AD15576EF41f298083C8B326Ae748",
         "abi": [
             {
                 "inputs": [
@@ -4714,7 +4722,7 @@
         ]
     },
     "TRXStaking": {
-        "address": "0x10c3D5734969a4FC25B90C069e8422c2Bc88c270",
+        "address": "0x2c09120e834b5Ad9Eca283A907255AB36FF3eE7f",
         "abi": [
             {
                 "inputs": [
@@ -5028,7 +5036,7 @@
         ]
     },
     "FILStaking": {
-        "address": "0x0eACB8356024aB0cD32EC3E89EAbdD48d087Bdb9",
+        "address": "0x633fD7134C3E9534042C6E0A4DA0caF23C4aF836",
         "abi": [
             {
                 "inputs": [
@@ -5342,7 +5350,7 @@
         ]
     },
     "XRPStaking": {
-        "address": "0xDD7806Fc1Bae7Bba1f4d7530327ffd60711cd62c",
+        "address": "0xBbEBFb78E736C572B80280bDEA4E6F690ce5A1f2",
         "abi": [
             {
                 "inputs": [
@@ -5656,7 +5664,7 @@
         ]
     },
     "DOTStaking": {
-        "address": "0xD3dF99d5D38098a5578816489a0Ee84C43086762",
+        "address": "0xB0c0BA14aC9d748783d1997Ad35Abeb13EaC0A34",
         "abi": [
             {
                 "inputs": [
@@ -5970,7 +5978,7 @@
         ]
     },
     "ADAStaking": {
-        "address": "0x5Ad47952328984D38Dc4749797670C5951383ca7",
+        "address": "0xA81459BfC337B8e2Cf31fc8b8785b4f9a54566CF",
         "abi": [
             {
                 "inputs": [
@@ -6284,7 +6292,7 @@
         ]
     },
     "HTStaking": {
-        "address": "0xA50Ca5F6C449b72A641516809299500f25FD9269",
+        "address": "0x4Be067a8d03A7324de91453176e2CaC4B338aE9A",
         "abi": [
             {
                 "inputs": [

@@ -8,6 +8,8 @@ import MineAct from './Pages/MineAct';
 import Swap from './Pages/Swap';
 import Presale from './Pages/Presale';
 import {UseWalletProvider } from 'use-wallet'
+import { ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 	return (
@@ -29,6 +31,7 @@ function App() {
 				</Switch>
 			}
 			</BrowserRouter>
+			<ToastContainer />
         </UseWalletProvider>
 	);
 }
