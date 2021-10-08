@@ -1,11 +1,17 @@
-import React from 'react';
-import { useSelector, useDispatch} from 'react-redux';
+import React ,{createContext, useContext, useMemo} from 'react';
 
 import { toast } from 'react-toastify';
 import {ethers} from "ethers"
 import {DMTokenContract,USDTContract} from "./contracts";
 import {tips, NF, fromValue, toValue, tokenData, errHandler} from './util';
-import reducer from './reducer'
+import { useWallet } from "use-wallet";
+
+
+const AppContext = createContext<any>({})
+
+export const useAppContext = ()=>{
+	return useContext(AppContext)
+}
 
 export interface ContractStatus {
 	inited: boolean
@@ -26,11 +32,10 @@ export interface ContractStatus {
 	insuranceBurnt: number
 }
 
-export default (account) => {
-	const status = useSelector((state:ContractStatus)=>state)
-	const dispatch = useDispatch()
-	const update = (payload:any) => dispatch(reducer.actions.update(payload))
-	/* const [status, setStatus] = React.useState<ContractStatus>({
+
+export default function Provider ({children}) {
+    const wallet = useWallet();    
+	const [status, setStatus] = React.useState<ContractStatus>({
 		inited: false,
 		available: false,
 
@@ -47,15 +52,15 @@ export default (account) => {
 		rewardedTotal: 0,
 		insurancePool: 0,
 		insuranceBurnt: 0,
-	}) */
+	})
 
 	React.useEffect(()=>{
-		checkBalance()
-		setInterval(checkBalance, 5000)
-	},[])
+		if (wallet.status==="connected") {
+			checkBalance(wallet.account);
+		}
+	},[wallet.status])
 
-
-	const checkBalance = async () => {
+	const checkBalance = async (account) => {
 		console.log('checkBalance')
 		if (!account) return;
 		try {
@@ -73,9 +78,9 @@ export default (account) => {
 			let rewardedTotal=fromValue(params[i++], 'DM');
 			let insurancePool=fromValue(params[i++], 'DM');
 			let insuranceBurnt=fromValue(params[i++], 'DM');
-
+	
 			const available = !isEnd && limit1 <= remainder
-			update({
+			setStatus({
 				inited:true,
 				available,
 				isEnd, 
@@ -95,5 +100,20 @@ export default (account) => {
 			errHandler(err)
 		}
 	}
-	return status;
+
+	return (
+		<AppContext.Provider
+			value = {useMemo(
+				()=>[
+					status,
+					{
+						checkBalance
+					}
+				],
+				[status]
+			)}
+		>
+			{children}
+		</AppContext.Provider>
+	);
 };

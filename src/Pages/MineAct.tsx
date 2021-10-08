@@ -56,7 +56,6 @@ const MineAct = (props) => {
 	let history = useHistory();
 	const {id} = props.match.params;
 	
-	
 	useEffect(()=>{
 		if(contracts[id]===undefined) {
 			history.push("/")
@@ -68,8 +67,9 @@ const MineAct = (props) => {
 	const [signedStakingContracts,setSignedStakingContracts] = useState(DMStakingContract);
 	
 	useEffect(()=>{
-		if(contracts[id]===undefined) {
+		if(contracts[id]!==undefined) {
 			const setSignedContracts = async ()=>{
+				try {
 				const provider = new ethers.providers.Web3Provider(wallet.ethereum);
 				const signer =await provider.getSigner();
 				var signedTokenContracts = (contracts[id].stakeTokenContract).connect(signer);
@@ -77,14 +77,15 @@ const MineAct = (props) => {
 				console.log(signedTokenContracts)
 				setSignedTokenContracts(signedTokenContracts);
 				setSignedStakingContracts(signedStakingContracts);
+				} catch (err) {
+					errHandler(err);
+				}
 			}
 			
 			if(wallet.status==="connected"){
 				setSignedContracts();
 			}
-			
 		}
-		
 	},[wallet.status])
 
 	// status
@@ -103,10 +104,14 @@ const MineAct = (props) => {
 	}
 
 	const setStakedStatus =async ()=>{
-		var stakedAmount =await signedStakingContracts.stakeAmounts(wallet.account);
-		setStatus({...status,stakedAmount:stakedAmount});
-		var reward =await signedStakingContracts.rewards(wallet.account);
-		setStatus({...status,reward:reward});
+		try{
+			var stakedAmount =await signedStakingContracts.stakeAmounts(wallet.account);
+			setStatus({...status,stakedAmount:stakedAmount});
+			var reward =await signedStakingContracts.rewards(wallet.account);
+			setStatus({...status,reward:reward});	
+		} catch (err) {
+			errHandler(err)
+		}
 	}
 
 	useEffect(()=>{

@@ -15,10 +15,12 @@ import {ethers} from "ethers"
 import {tips, NF, fromValue, toValue, tokenData, errHandler} from '../util';
 import {useWallet} from 'use-wallet';
 import {DMTokenContract,USDTContract,ExchangeRouter} from "../contracts";
-import useContract from '../useContract';
+
+import {useAppContext} from '../context';
 
 const Swap = () => {
 	const wallet = useWallet();
+	const [status,{checkBalance}] = useAppContext();
 
 	const [token1,setToken1] = useState({
 		token:"DM",
@@ -29,24 +31,9 @@ const Swap = () => {
 		token:"USDT",
 		amount:0,
 	})
-	/* const [status, setStatus] = useState({
-		inited: false,
-		isEnd:false, 
-		limit1:0, 
-		limit2:0, 
-		remainder:0, 
-		reward:0, 
-		dmBalance:0, 
-		usdtBalance:0,
-		unlockable:0,
-		available: false
-	}) */
+
 	const [focus,setFocus] = useState(0)
 	const [loading,setLoading] = useState(false);
-
-	const status = useContract(wallet.status === "connected" ? wallet.account : null)
-	
-	console.log("swap", status, +new Date())
 
   	const getAmountIn = async ()=>{
 		if (token2.amount===0) return;
@@ -98,54 +85,17 @@ const Swap = () => {
     }
 
 	useEffect(()=>{
-		// console.log("token1 changed",token1.amount)
 		if(focus === 0){
 			getAmountOut();
 		}
 	},[token1.amount])
 
 	useEffect(()=>{
-		// console.log("token2 changed",token2.amount,focus)
 		if(focus === 1){
 			getAmountIn();
 		}
 	},[token2.amount])
 
-	/* useEffect(()=>{
-		checkBalance()
-		setInterval(checkBalance, 5000)
-	},[])
-
-
-	const checkBalance = async () => {
-		if(wallet.status !== "connected") return;
-		try {
-			const res = await DMTokenContract.getStakerInfo(wallet.account);
-			let {isEnd, limit1, limit2, remainder, reward, dmBalance, usdtBalance, unlockable} = res;
-			limit1=fromValue(limit1, 'DM');
-			limit2=fromValue(limit2, 'DM');
-			remainder=fromValue(remainder, 'DM');
-			reward=fromValue(reward, 'DM');
-			dmBalance=fromValue(dmBalance, 'DM');
-			usdtBalance=fromValue(usdtBalance, 'USDT');
-			unlockable=fromValue(unlockable, 'DM');
-			const available = !isEnd && limit1 <= remainder
-			setStatus({
-				inited:true,
-				isEnd, 
-				limit1, 
-				limit2, 
-				remainder, 
-				reward, 
-				dmBalance, 
-				usdtBalance,
-				unlockable,
-				available
-			})
-		} catch (err:any) {
-			errHandler(err)
-		}
-	} */
 	const handleChangeTokens = ()=>{
 		setFocus(0);
 		setToken2({...token1});
@@ -197,6 +147,7 @@ const Swap = () => {
 		var tx = await sigendExchangeContract.swapExactTokensForTokens(swapAmount,0,path,wallet.account,seconds)
 		if(tx != null){
 			await tx.wait();
+			checkBalance();
 		}
 	}
 

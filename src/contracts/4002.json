@@ -976,7 +976,7 @@
         ]
     },
     "DM": {
-        "address": "0x5Cb88Bd6c074bEcA18DAcB6bFc7d8E64B869bf87",
+        "address": "0x86989606A88841E2Fb56787806a5f7a3A89641e2",
         "abi": [
             {
                 "inputs": [],
@@ -1860,7 +1860,7 @@
         ]
     },
     "USDT": {
-        "address": "0x521E11A7157fAF29875E4e43e17541518d67C20E",
+        "address": "0x2685751d3C7A49EbF485e823079ac65e2A35A3DD",
         "abi": [
             {
                 "anonymous": false,
@@ -2100,7 +2100,7 @@
         ]
     },
     "ETH": {
-        "address": "0x2238ED2BFD6b351775C51f31d2447bf805965583",
+        "address": "0x948e7B62804b676Fe0196bCA4fEE7da7d5b8aBBa",
         "abi": [
             {
                 "anonymous": false,
@@ -2340,7 +2340,7 @@
         ]
     },
     "TRX": {
-        "address": "0x18416fb6698b2080538542500463744ECC07cE79",
+        "address": "0x5DfD639C7754C775308f8A865Adf2fBb080e55eC",
         "abi": [
             {
                 "anonymous": false,
@@ -2580,7 +2580,7 @@
         ]
     },
     "FIL": {
-        "address": "0xD0B94eA490B4eF191A36B8b64C2639E988a8e086",
+        "address": "0x1DD0De48E7E06Ca811Ee5985846Fc43dF3E03AA2",
         "abi": [
             {
                 "anonymous": false,
@@ -2820,7 +2820,7 @@
         ]
     },
     "XRP": {
-        "address": "0x8C7A99959c5dd468636d72c33D6479b557c5d8e1",
+        "address": "0x6933A9d111A56E7BcC34F854907cD96726c4Ae52",
         "abi": [
             {
                 "anonymous": false,
@@ -3060,7 +3060,7 @@
         ]
     },
     "DOT": {
-        "address": "0x4A93408975A8b924C2375fc4bf47505B66461B0B",
+        "address": "0xaBcf5f7f6BBbAb97A1dCbCD0F683fbAc2175a31B",
         "abi": [
             {
                 "anonymous": false,
@@ -3300,7 +3300,7 @@
         ]
     },
     "ADA": {
-        "address": "0x383a5cAd0F7C1AcAaa93cb90b22141c08eD01E13",
+        "address": "0x569483C4843fE6d8993eC365dA19A0c14fc03894",
         "abi": [
             {
                 "anonymous": false,
@@ -3540,7 +3540,7 @@
         ]
     },
     "HT": {
-        "address": "0x2B0FDc2025802081Ea9F1fdDAf9e64Faf0dfc340",
+        "address": "0x3ff5402a7Fc538e7fAf7ECC792F793404E4E07D3",
         "abi": [
             {
                 "anonymous": false,
@@ -3780,7 +3780,7 @@
         ]
     },
     "DMStaking": {
-        "address": "0x8df24625D9AbA33B1fc03902BDa293479fb3EC79",
+        "address": "0xC76Ac104A7BF360af2127B534BbcAd5A294a9F95",
         "abi": [
             {
                 "inputs": [
@@ -4094,7 +4094,7 @@
         ]
     },
     "USDTStaking": {
-        "address": "0x2B8786C036ae3f4346B295EA6a50a6e06B07E812",
+        "address": "0x2852C2B1de66488B6C98659Ff9BE482FF572E5cc",
         "abi": [
             {
                 "inputs": [
@@ -4408,7 +4408,7 @@
         ]
     },
     "ETHStaking": {
-        "address": "0xD23134dEED0AD15576EF41f298083C8B326Ae748",
+        "address": "0x011721E17fD73deCaff129d5A31279e6B92c771D",
         "abi": [
             {
                 "inputs": [
@@ -4722,7 +4722,7 @@
         ]
     },
     "TRXStaking": {
-        "address": "0x2c09120e834b5Ad9Eca283A907255AB36FF3eE7f",
+        "address": "0xA527F50706BB1FCaEd6F864afB2e3FCe4943AF68",
         "abi": [
             {
                 "inputs": [
@@ -5036,7 +5036,7 @@
         ]
     },
     "FILStaking": {
-        "address": "0x633fD7134C3E9534042C6E0A4DA0caF23C4aF836",
+        "address": "0x15940b28CfFb5Ef90536760Bb429D2C72e348E97",
         "abi": [
             {
                 "inputs": [
@@ -5350,7 +5350,7 @@
         ]
     },
     "XRPStaking": {
-        "address": "0xBbEBFb78E736C572B80280bDEA4E6F690ce5A1f2",
+        "address": "0x430b013C1Fad1fC8E377e96Dbe656C89d7052832",
         "abi": [
             {
                 "inputs": [
@@ -5664,7 +5664,7 @@
         ]
     },
     "DOTStaking": {
-        "address": "0xB0c0BA14aC9d748783d1997Ad35Abeb13EaC0A34",
+        "address": "0x72C440679f03270C54E44052345fb99391a7dD63",
         "abi": [
             {
                 "inputs": [
@@ -5978,7 +5978,7 @@
         ]
     },
     "ADAStaking": {
-        "address": "0xA81459BfC337B8e2Cf31fc8b8785b4f9a54566CF",
+        "address": "0x0B7bfFD09680c81b8a654b1eDDC42916F1507209",
         "abi": [
             {
                 "inputs": [
@@ -6292,7 +6292,7 @@
         ]
     },
     "HTStaking": {
-        "address": "0x4Be067a8d03A7324de91453176e2CaC4B338aE9A",
+        "address": "0x2eeb8090C681c57ADA975ccA0602472FE5420184",
         "abi": [
             {
                 "inputs": [

@@ -11,6 +11,8 @@ import {UseWalletProvider } from 'use-wallet'
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import AppContextProvier from './context'
+
 function App() {
 	return (
 		<UseWalletProvider
@@ -20,18 +22,20 @@ function App() {
             portis: { dAppId: 'my-dapp-id-123-xyz' },
           }}
         > 
-			<BrowserRouter>
-			{
-				<Switch>
-					<Route exact path="/swap" component={Swap}></Route>
-					<Route exact path="/mine" component={Mine}></Route>
-					<Route exact path="/presale" component={Presale}></Route>
-					<Route exact path="/mine/action/:id" component={MineAct}></Route>
-					<Route path="*" component={Home}></Route>
-				</Switch>
-			}
-			</BrowserRouter>
-			<ToastContainer />
+			<AppContextProvier>
+				<BrowserRouter>
+				{
+					<Switch>
+						<Route exact path="/swap" component={Swap}></Route>
+						<Route exact path="/mine" component={Mine}></Route>
+						<Route exact path="/presale" component={Presale}></Route>
+						<Route exact path="/mine/action/:id" component={MineAct}></Route>
+						<Route path="*" component={Home}></Route>
+					</Switch>
+				}
+				</BrowserRouter>
+				<ToastContainer />
+			</AppContextProvier>
         </UseWalletProvider>
 	);
 }

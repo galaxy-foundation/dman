@@ -15,7 +15,8 @@ import imgICExchange from '../assets/swap-ic-exchange.webp'; */
 import {ethers} from "ethers"
 import {useWallet} from 'use-wallet';
 import {DMTokenContract,USDTContract,ExchangeRouter} from "../contracts";
-import useContract from '../useContract';
+
+import {useAppContext} from '../context';
 
 
 const PRICE = 0.005;
@@ -39,8 +40,8 @@ const Presale = () => {
 		unlockable:0,
 		available: false
 	}) */
-	const status = useContract(wallet.status === "connected" ? wallet.account : null)
-	console.log("presale", status, +new Date())
+	const [status,{checkBalance}] = useAppContext();
+	
 	/* const [reward,setReward] = useState(0)
 	const [usdt,setUsdt] = useState(0)
 	const [maxAmount,setMaxAmount] = useState(-1)
@@ -150,7 +151,7 @@ const Presale = () => {
 			if(tx) {
 				await tx.wait();
 			}
-			/* await checkBalance(); */
+			checkBalance();
 		} catch (err:any) {
 			errHandler(err)
 		}
@@ -189,7 +190,7 @@ const Presale = () => {
 				var tx = await sigendDMTokenContract.unlock();
 				if(tx){
 					await tx.wait();
-					/* await checkBalance(); */
+					checkBalance();
 				}
 				setLoading(false);
 			}
@@ -208,6 +209,7 @@ const Presale = () => {
 				var tx = await sigendDMTokenContract.claimReward();
 				if(tx){
 					await tx.wait();
+					checkBalance();
 				}
 				setLoading(false);
 			}
