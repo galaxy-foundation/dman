@@ -409,8 +409,8 @@ contract DMToken is Context, IERC20, Mintable {
 
 	IPancakeswapRouter public pancakeswapRouter;
 	address public pancakeswapMDUSDTPair;
+	address public USDTAddress;
 
-	address public USDTAddress = 0xE5f0aA6feafF59748488591Ae49580aCc229bde9;
 	uint startTime;
 	constructor() public {
 		_balances[msg.sender] = _totalSupply;
@@ -425,9 +425,9 @@ contract DMToken is Context, IERC20, Mintable {
 		emit Transfer(address(0), msg.sender, _totalSupply);
 	}
 	
-	function setUSDTAddress(address _USDTAddress) external onlyOwner {
+	function setInitialAddresses(address _RouterAddress, address _USDTAddress) external onlyOwner {
 		USDTAddress = _USDTAddress;
-		IPancakeswapRouter _pancakeswapRouter = IPancakeswapRouter(0x8e12fD09f7A761AABaD0C8E0e574d797FE27b8A6);
+		IPancakeswapRouter _pancakeswapRouter = IPancakeswapRouter(_RouterAddress);
 		
 		pancakeswapRouter = _pancakeswapRouter;
 		pancakeswapMDUSDTPair = IPancakeswapFactory(_pancakeswapRouter.factory()).createPair(address(this), USDTAddress); //MD vs USDT pair
