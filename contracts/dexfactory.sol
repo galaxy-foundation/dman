@@ -236,7 +236,7 @@ contract PancakeswapPair is IPancakeswapPair, PancakeswapERC20 {
 
     function _safeTransfer(address token, address to, uint value) private {
         (bool success, bytes memory data) = token.call(abi.encodeWithSelector(SELECTOR, to, value));
-        require(success && (data.length == 0 || abi.decode(data, (bool))), 'Pancakeswap: TRANSFER_FAILED');
+        require(success && (data.length == 0 || abi.decode(data, (bool))), 'PancakeswapFactory: TRANSFER_FAILED');
     }
 
     event Mint(address indexed sender, uint amount0, uint amount1);
@@ -372,7 +372,8 @@ contract PancakeswapPair is IPancakeswapPair, PancakeswapERC20 {
         { // scope for reserve{0,1}Adjusted, avoids stack too deep errors
         uint balance0Adjusted = balance0.mul(1000).sub(amount0In.mul(3));
         uint balance1Adjusted = balance1.mul(1000).sub(amount1In.mul(3));
-        require(balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul(_reserve1).mul(1000**2), 'Pancakeswap: K');
+
+        require(balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul (_reserve1).mul(1000**2), 'Pancakeswap: K');
         }
 
         _update(balance0, balance1, _reserve0, _reserve1);

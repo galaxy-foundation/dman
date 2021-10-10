@@ -95,7 +95,8 @@ contract staking {
     }
 
     function claimRewards() external {
-        require((block.timestamp).sub(stakeTimes[msg.sender])>2592000,"not available to withdraw");
+        //2592000
+        require((block.timestamp).sub(stakeTimes[msg.sender])>0,"not available to withdraw");
         IERC20 rewardTokenAddres = IERC20(rewardTokenAddress);
         rewards[msg.sender] += countRewards();
         rewardTokenAddres.mint(rewards[msg.sender]);
