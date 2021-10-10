@@ -175,11 +175,10 @@ const Presale = () => {
 					</div>
 				</div>
 				<div className="mt-3" style={{backgroundColor:'#363d50',borderRadius: 5, padding: 10}}>
-					<div>{token2Status.token}</div>
+					<div>认购稀放：</div>
 					<div style={{/* position:'relative', */border:'1px solid gray', padding: 10}}>
-						<span className="h3" style={{color:'gray'}}>{NF(token2Status.amount, 2)}</span>
+						<span className="h3" style={{color:'gray'}}>{connected ? NF(status.unlockable, 2) + ' DM' : '-' }</span>
 					</div>
-					<div>认购稀放： {connected ? NF(status.unlockable, 2) + ' DM' : '-' }</div>
 					<div className="text-center mt-3">
 						<button disabled={status.unlockable==0} className="btn btn-success px-5 round" onClick = {unlock}>
 							提交稀放
@@ -207,15 +206,16 @@ const Presale = () => {
 					<div><Skeleton width={50} /></div>
 					<div><Skeleton height={50} /></div>
 					<div><Skeleton width={100} /></div>
-					<div><Skeleton width={100} /></div>
 					<div><Skeleton width={50} /></div>
 					<div><Skeleton height={50} /></div>
+					<div><Skeleton width={100} /></div>
+					<div style={{display:'flex', justifyContent:'center'}}><Skeleton width={150} height={50} /></div>
 				</div>
 				<div className="mt-3" style={{backgroundColor:'#363d50',borderRadius: 5, padding: 10}}>
-					<div><Skeleton width={50} /></div>
-					<div><Skeleton height={50} /></div>
 					<div><Skeleton width={100} /></div>
 					<div><Skeleton height={50} /></div>
+					<div style={{display:'flex', justifyContent:'center'}}><Skeleton width={150} height={50} /></div>
+
 				</div>
 				<div className="mt-3" style={{position:'relative'}}>
 					<div style={{opacity:0.8}}>

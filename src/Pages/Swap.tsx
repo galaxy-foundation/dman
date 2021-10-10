@@ -263,7 +263,7 @@ const Swap = () => {
 						<Skeleton width={100} />
 					</div>
 					<div><Skeleton height={50} /></div>
-					<div><Skeleton height={50} /></div>
+					<div style={{display:'flex', justifyContent:'center'}}><Skeleton width={150} height={50} /></div>
 				</div>
 				<div className="mt-3" style={{position:'relative'}}>
 					<div style={{opacity:0.8}}>
