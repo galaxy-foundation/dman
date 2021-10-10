@@ -16,10 +16,12 @@ import {tips, NF, fromValue, toValue, tokenData, errHandler} from '../util';
 import {useWallet} from 'use-wallet';
 import {DMTokenContract,USDTContract,ExchangeRouter} from "../contracts";
 
+import Skeleton, {SkeletonTheme} from 'react-loading-skeleton';
 import {useAppContext} from '../context';
 
 const Swap = () => {
 	const wallet = useWallet();
+	const connected = wallet.status==="connected"
 	const [status,{checkBalance}] = useAppContext();
 
 	const [token1,setToken1] = useState({
@@ -182,67 +184,98 @@ const Swap = () => {
 				<h2>兑换获得奖励</h2>
 			</div>
 		</div>
-		<div className="mt-3" style={{backgroundColor:'#363d50',borderRadius: 5, padding: 10}}>
-			<h3 className="text-center">兑换</h3>
-			<div style={{display:'flex', justifyContent: 'space-between'}}>
-				<div><b>{token1.token}</b></div>
-				<div style={{color:'#aaa'}}>Balance {NF(token1.token==="USDT" ? status.usdtBalance : status.dmBalance, 2)} {token1.token}</div>
-			</div>
-			<div style={{position:'relative',border:'1px solid gray', padding: 10}}>
-				<input onChange={handleAmount1} type="number" value={parseFloat(Number(token1.amount).toFixed(8))} className="h3" style={{marginBottom:0}} maxLength={12} />
-				<button onClick={()=>setToken1({...token1, amount:token1.token==='USDT' ? status.usdtBalance : status.dmBalance })} className="btn btn-sm btn-outline-success" style={{position:'absolute',right:10}}>MAX</button>
-			</div>
-			<p className="text-center mt-3"><img src={imgICExchange}  alt="icon" style={{width:'1.5em',height:'auto'}} onClick = {handleChangeTokens}/></p>
-			<div style={{display:'flex', justifyContent: 'space-between'}}>
-				<div><b>{token2.token}</b></div>
-				<div style={{color:'#aaa'}}>Balance {NF(token2.token==="USDT" ? status.usdtBalance : status.dmBalance, 2)} {token2.token}</div>
-			</div>
-			<div style={{position:'relative',border:'1px solid gray', padding: 10}}>
-				<input onChange={handleAmount2} type="number" value={parseFloat(Number(token2.amount).toFixed(8))} className="h3" style={{marginBottom:0}} maxLength={12} />
-				<button onClick={()=>setToken1({...token2, amount:token2.token==='USDT' ? status.usdtBalance : status.dmBalance })} className="btn btn-sm btn-outline-success" style={{position:'absolute',right:10}}>MAX</button>
-			</div>
-			<div className="text-center mt-3">
-				<button className="btn btn-success px-5 round" onClick = {handleSwap}>输入金额</button>
-			</div>
-		</div>
-		<div className="mt-3" style={{position:'relative'}}>
-			<div style={{opacity:0.8}}>
-				<img src={imgBgCell} alt="bg" style={{width:'100%',height:'auto'}} />
-			</div>
-			<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, display:'flex', alignItems:'center', justifyContent: 'center'}}>
-				<h3 style={{marginRight:20}}>交易就送DM</h3>
-				<img src={imgIC02} alt="bg" style={{width:'10em',height:'auto'}} />
-			</div>
-		</div>
-		<div className="mt-3" style={{position:'relative'}}>
-			<div style={{opacity:0.8}}>
-				<img src={imgBG03} alt="bg" style={{width:'100%',height:'auto'}} />
-			</div>
-			<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, padding: 20, display:'flex', flexDirection:'column'}}>
-				<div style={{flexGrow:1}}>
-					<h3>权益池</h3>
-					<code>{Math.round((status.rewardPool + status.rewardedTotal)/10000)}万枚</code>
+		{status.inited ? (
+			<>
+				<div className="mt-3" style={{backgroundColor:'#363d50',borderRadius: 5, padding: 10}}>
+					<h3 className="text-center">兑换</h3>
+					<div style={{display:'flex', justifyContent: 'space-between'}}>
+						<div><b>{token1.token}</b></div>
+						<div style={{color:'#aaa'}}>余额 {connected ? NF(token1.token==="USDT" ? status.usdtBalance : status.dmBalance, 2) + ' ' + token1.token : '-'}</div>
+					</div>
+					<div style={{position:'relative',border:'1px solid gray', padding: 10}}>
+						<input onChange={handleAmount1} type="number" value={parseFloat(Number(token1.amount).toFixed(8))} className="h3" style={{marginBottom:0}} maxLength={12} />
+						<button onClick={()=>setToken1({...token1, amount:token1.token==='USDT' ? status.usdtBalance : status.dmBalance })} className="btn btn-sm btn-outline-success" style={{position:'absolute',right:10}}>MAX</button>
+					</div>
+					<p className="text-center mt-3"><img src={imgICExchange}  alt="icon" style={{width:'1.5em',height:'auto'}} onClick = {handleChangeTokens}/></p>
+					<div style={{display:'flex', justifyContent: 'space-between'}}>
+						<div><b>{token2.token}</b></div>
+						<div style={{color:'#aaa'}}>余额 {connected ? NF(token2.token==="USDT" ? status.usdtBalance : status.dmBalance, 2) + ' ' + token2.token : '-'}</div>
+					</div>
+					<div style={{position:'relative',border:'1px solid gray', padding: 10}}>
+						<input onChange={handleAmount2} type="number" value={parseFloat(Number(token2.amount).toFixed(8))} className="h3" style={{marginBottom:0}} maxLength={12} />
+						<button onClick={()=>setToken1({...token2, amount:token2.token==='USDT' ? status.usdtBalance : status.dmBalance })} className="btn btn-sm btn-outline-success" style={{position:'absolute',right:10}}>MAX</button>
+					</div>
+					<div className="text-center mt-3">
+						{connected ? <button className="btn btn-success px-5 round" onClick = {handleSwap}>提交</button> : <span>请连接钱包</span>}
+					</div>
 				</div>
-				<div style={{display:'flex',justifyContent:'space-between'}}>
-					<span>剩余币量：{Math.round(status.rewardPool/10000)}万枚</span>
-					<span>总分红币量：{Math.round(status.rewardedTotal/10000)}万枚</span>
+				<div className="mt-3" style={{position:'relative'}}>
+					<div style={{opacity:0.8}}>
+						<img src={imgBgCell} alt="bg" style={{width:'100%',height:'auto'}} />
+					</div>
+					<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, display:'flex', alignItems:'center', justifyContent: 'center'}}>
+						<h3 style={{marginRight:20}}>交易就送DM</h3>
+						<img src={imgIC02} alt="bg" style={{width:'10em',height:'auto'}} />
+					</div>
 				</div>
-			</div>
-		</div>
-		<div className="mt-3" style={{position:'relative'}}>
-			<div style={{opacity:0.8}}>
-				<img src={imgBG03} alt="bg" style={{width:'100%',height:'auto'}} />
-			</div>
-			<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, padding: 20, display:'flex', flexDirection:'column'}}>
-				<div style={{flexGrow:1}}>
-					<h3>保险池</h3>
-					<code>{Math.round(status.insurancePool/10000)}万枚</code>
+				<div className="mt-3" style={{position:'relative'}}>
+					<div style={{opacity:0.8}}>
+						<img src={imgBG03} alt="bg" style={{width:'100%',height:'auto'}} />
+					</div>
+					<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, padding: 20, display:'flex', flexDirection:'column'}}>
+						<div style={{flexGrow:1}}>
+							<h3>权益池</h3>
+							<code>{Math.round((status.rewardPool + status.rewardedTotal)/10000)}万枚</code>
+						</div>
+						<div style={{display:'flex',justifyContent:'space-between'}}>
+							<span>剩余币量：{Math.round(status.rewardPool/10000)}万枚</span>
+							<span>总分红币量：{Math.round(status.rewardedTotal/10000)}万枚</span>
+						</div>
+					</div>
 				</div>
-				<div style={{display:'flex',justifyContent:'end'}}>
-					销毁 {Math.round(status.insuranceBurnt/10000)}万枚
+				<div className="mt-3" style={{position:'relative'}}>
+					<div style={{opacity:0.8}}>
+						<img src={imgBG03} alt="bg" style={{width:'100%',height:'auto'}} />
+					</div>
+					<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, padding: 20, display:'flex', flexDirection:'column'}}>
+						<div style={{flexGrow:1}}>
+							<h3>保险池</h3>
+							<code>{Math.round(status.insurancePool/10000)}万枚</code>
+						</div>
+						<div style={{display:'flex',justifyContent:'end'}}>
+							销毁 {Math.round(status.insuranceBurnt/10000)}万枚
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
+			</>
+		) : (
+			<SkeletonTheme color="#3a455f" highlightColor="#45516e">
+				<div className="mt-3" style={{backgroundColor:'#363d50',borderRadius: 5, padding: 10}}>
+					<h3 className="text-center">兑换</h3>
+					<div style={{display:'flex', justifyContent:'space-between'}}>
+						<Skeleton width={50} />
+						<Skeleton width={100} />
+					</div>
+					<div><Skeleton height={50} /></div>
+					<p className="text-center mt-3"><img src={imgICExchange}  alt="icon" style={{width:'1.5em',height:'auto'}} /></p>
+					<div style={{display:'flex', justifyContent:'space-between'}}>
+						<Skeleton width={50} />
+						<Skeleton width={100} />
+					</div>
+					<div><Skeleton height={50} /></div>
+					<div><Skeleton height={50} /></div>
+				</div>
+				<div className="mt-3" style={{position:'relative'}}>
+					<div style={{opacity:0.8}}>
+						<img src={imgBgCell} alt="bg" style={{width:'100%',height:'auto'}} />
+					</div>
+					<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, display:'flex', alignItems:'center', justifyContent: 'center'}}>
+						<h3 style={{marginRight:20}}>交易就送DM</h3>
+						<img src={imgIC02} alt="bg" style={{width:'10em',height:'auto'}} />
+					</div>
+				</div>
+			</SkeletonTheme>
+		)}
 	</Layout>;
 };
 

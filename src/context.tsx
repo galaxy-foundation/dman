@@ -55,16 +55,13 @@ export default function Provider ({children}) {
 	})
 
 	React.useEffect(()=>{
-		if (wallet.status==="connected") {
-			checkBalance(wallet.account);
-		}
+		checkBalance(wallet.account);
 	},[wallet.status])
 
 	const checkBalance = async (account) => {
 		console.log('checkBalance')
-		if (!account) return;
 		try {
-			const res = await DMTokenContract.getStakerInfo(account);
+			const res = await DMTokenContract.getStakerInfo(account || '0x0000000000000000000000000000000000000000');
 			let {isEnd, params} = res;
 			let i = 0;
 			let limit1=fromValue(params[i++], 'DM');

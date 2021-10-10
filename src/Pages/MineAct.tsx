@@ -52,6 +52,8 @@ const contracts = {
 }
 
 const MineAct = (props) => {
+	const wallet = useWallet();
+	const connected = wallet.status==="connected"
 	//routing
 	let history = useHistory();
 	const {id} = props.match.params;
@@ -62,10 +64,8 @@ const MineAct = (props) => {
 		}
 	},[])
 
-	const wallet = useWallet();
 	const [signedTokenContracts,setSignedTokenContracts] = useState(DMTokenContract);
 	const [signedStakingContracts,setSignedStakingContracts] = useState(DMStakingContract);
-	
 	useEffect(()=>{
 		if(contracts[id]!==undefined) {
 			const setSignedContracts = async ()=>{
@@ -82,7 +82,7 @@ const MineAct = (props) => {
 				}
 			}
 			
-			if(wallet.status==="connected"){
+			if(connected){
 				setSignedContracts();
 			}
 		}
@@ -115,7 +115,7 @@ const MineAct = (props) => {
 	}
 
 	useEffect(()=>{
-		if(wallet.status==="connected"){
+		if(connected){
 			setStakedStatus();
 		}
 	},[signedStakingContracts])
