@@ -15,128 +15,133 @@ const hre = require("hardhat");
 
 async function main() {
 
-  // get network
-  let signer = await hre.ethers.getSigner();
-  
-  let network = await signer.provider._networkPromise;
-  let chainId = network.chainId;
-  
-  //DM token
-  let dMToken = await deployDMToken();
-  let dMTokenAddress = dMToken.address;
-  
-  let ExchangeRouterAddress
-  if(chainId === 4002){
-    //ganache testnet
-    ExchangeRouterAddress = "0x8e12fD09f7A761AABaD0C8E0e574d797FE27b8A6";
-  }
-  else {
-    //mainnet
-    ExchangeRouterAddress = process.env.ROUTER;
-  }
+	// get network
+	let signer = await hre.ethers.getSigner();
+	
+	let network = await signer.provider._networkPromise;
+	let chainId = network.chainId;
 
-  //staking contracts
-  const stakeTokenList = [
-    "DM",
-    "USDT",
-    "ETH",
-    "TRX",
-    "FIL",
-    "XRP",
-    "DOT",
-    "ADA",
-    "HT"
-  ]
-  const stakeTokens = {};
-  stakeTokens[stakeTokenList[0]] = {address:dMTokenAddress, abi:DMToken.abi};
-  if(chainId === 4002){
-    // testnet
-    let tokenAddress = await deployUSDT(ExchangeRouterAddress);
-    stakeTokens[stakeTokenList[1]]={address:tokenAddress,abi:IERC20.abi};
-    await dMToken.setUSDTAddress(tokenAddress);
+	/* -------------- exchange --------------- */
 
-    for(let i = 2; i< stakeTokenList.length; i++){
-      let tokenAddress = (await deployDMToken()).address;
-      stakeTokens[stakeTokenList[i]]={address:tokenAddress,abi:IERC20.abi};
-    }
+	let ExchangeRouterAddress
+	if(chainId === 4002){
+		//fantom testnet
+		ExchangeRouterAddress = "0x8e12fD09f7A761AABaD0C8E0e574d797FE27b8A6";
+	}
+	else {
+		//mainnet
+		ExchangeRouterAddress = process.env.ROUTER;
+	}
 
-  }
-  else {
-    //mainnet
-    for(let i = 1; i<stakeTokenList.length; i++){
-      let tokenAddress = process.env[stakeTokenList[i]];
+	/* -------------- USDT --------------- */
 
-      console.log(tokenAddress);
-      stakeTokens[stakeTokenList[i]]={address:tokenAddress,abi:IERC20.abi};
-    }
-  }
-
-  /* -------------- add liquidity -----------------*/
-  var tx = await dMToken.approve(ExchangeRouterAddress,ethers.utils.parseUnits("100000",18));
-  await tx.wait();
-
-  var exchangeContract =new ethers.Contract(ExchangeRouterAddress,ExchangeRouter.abi,signer);
-  exchangeContract.addLiquidity(dMToken.address,stakeTokens[stakeTokenList[1]].address,ethers.utils.parseUnits("100000",18),ethers.utils.parseUnits("1000",6),"0","0",signer.address,"1111111111111111111111111");
-
-  //staking contracts
-  
-  const stakingContractsList = [
-    "DMStaking",
-    "USDTStaking",
-    "ETHStaking",
-    "TRXStaking",
-    "FILStaking",
-    "XRPStaking",
-    "DOTStaking",
-    "ADAStaking",
-    "HTStaking"
-  ];
-
-  const stakeTokenPrices = [
-    ethers.BigNumber.from("1000000000000"),
-    ethers.BigNumber.from("1000000000000000000000000"),
-    ethers.BigNumber.from("3000000000000000"),
-    ethers.BigNumber.from("108000000000000000000000"),
-    ethers.BigNumber.from("77820000000000"),
-    ethers.BigNumber.from("1070000000000"),
-    ethers.BigNumber.from("35150000000000"),
-    ethers.BigNumber.from("2410000000000"),
-    ethers.BigNumber.from("14260000000000")
-  ]
-
-  /* ------------ stake pool -------------- */
-
-  var stakingContracts = {};
-  for(var i=0; i<stakingContractsList.length; i++){
-    var stakingContractAddress =await deployStaking(stakeTokens[stakeTokenList[i]].address,dMTokenAddress,stakeTokenPrices[i]); 
-    stakingContracts[stakingContractsList[i]] = {address:stakingContractAddress,abi:Staking.abi};
-    await dMToken.setMinter(stakingContractAddress);
-  }
-
-  /* ------------ insurrance pool -------------- */
-  /* var insurrancePoolAddress = await deployInsurrancePool(dMTokenAddress);
-  await dMToken.setFeeAddresses(insurrancePoolAddress,signer.address);
-  var Insurrance = {address:insurrancePoolAddress,abi:InsurrancePool.abi} */
+	var usdtAddress;
+	if(chainId === 4002){
+		usdtAddress= await deployUSDT(ExchangeRouterAddress);
+	} 
+	else usdtAddress = process.env["USDT"];
 
 
-  //object
-  var exchangeRouter = {address:ExchangeRouterAddress, abi:ExchangeRouter.abi}
-  var contractObject = {ExchangeRouter:exchangeRouter};
+	/* -------------- DM --------------- */
 
-  contractObject = {...contractObject,...stakeTokens,...stakingContracts}
+	let dMToken = await deployDMToken(usdtAddress,ExchangeRouterAddress);
+	let dMTokenAddress = dMToken.address;
 
-  fs.writeFile(`./src/contracts/${network.chainId}.json`,JSON.stringify(contractObject, undefined, 4), function(err,content){
-          if (err) throw err;
-          console.log('complete');
-  });
 
-}
+	/* -------------- mining tokens --------------- */
 
-main()
-  .then(() => {
-    // process.exit(0)
-  })
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+	const stakeTokenList = [
+		"DM",
+		"USDT",
+		"ETH",
+		"TRX",
+		"FIL",
+		"XRP",
+		"DOT",
+		"ADA",
+		"HT"
+	]
+	const stakeTokens = {};
+	stakeTokens[stakeTokenList[0]] = {address:dMTokenAddress, abi:DMToken.abi};
+	if(chainId === 4002){
+		// testnet
+		stakeTokens[stakeTokenList[1]] = {address:usdtAddress, abi:IERC20.abi};
+		for(let i = 2; i< stakeTokenList.length; i++){
+		let tokenAddress = (await deployUSDT(ExchangeRouterAddress));
+		console.log(tokenAddress)
+		stakeTokens[stakeTokenList[i]] = {address:tokenAddress, abi:IERC20.abi};
+		}
+	}
+	else {
+		//mainnet
+		for(let i = 1; i<stakeTokenList.length; i++){
+		let tokenAddress = process.env[stakeTokenList[i]];
+		stakeTokens[stakeTokenList[i]] = {address:tokenAddress, abi:IERC20.abi};
+		}
+	}
+
+	/* -------------- add liquidity -----------------*/
+
+	var tx = await dMToken.approve(ExchangeRouterAddress, ethers.utils.parseUnits("100000", 18));
+	await tx.wait();
+
+	var exchangeContract = new ethers.Contract(ExchangeRouterAddress,ExchangeRouter.abi, signer);
+	exchangeContract.addLiquidity(dMToken.address, stakeTokens[stakeTokenList[1]].address, ethers.utils.parseUnits("100000",18),ethers.utils.parseUnits("1000",6),"0","0",signer.address,"1111111111111111111111111");
+
+	/* -------------- staking contract -----------------*/
+	
+	const stakingContractsList = [
+		"DMStaking",
+		"USDTStaking",
+		"ETHStaking",
+		"TRXStaking",
+		"FILStaking",
+		"XRPStaking",
+		"DOTStaking",
+		"ADAStaking",
+		"HTStaking"
+	];
+
+	const stakeTokenPrices = [
+		ethers.BigNumber.from("1000000000000"),
+		ethers.BigNumber.from("1000000000000000000000000"),
+		ethers.BigNumber.from("3000000000000000"),
+		ethers.BigNumber.from("108000000000000000000000"),
+		ethers.BigNumber.from("77820000000000"),
+		ethers.BigNumber.from("1070000000000"),
+		ethers.BigNumber.from("35150000000000"),
+		ethers.BigNumber.from("2410000000000"),
+		ethers.BigNumber.from("14260000000000")
+	]
+
+	/* ------------ stake pool -------------- */
+
+	var stakingContracts = {};
+	for(var i = 0; i < stakingContractsList.length; i++){
+		var stakingContractAddress = await deployStaking(stakeTokens[stakeTokenList[i]].address, dMTokenAddress, stakeTokenPrices[i]); 
+		
+		stakingContracts[stakingContractsList[i]] = {address:stakingContractAddress, abi:Staking.abi};
+		await dMToken.setMinter(stakingContractAddress);
+	}
+
+	/* ------------ objects -------------- */
+
+	var exchangeRouter = {address:ExchangeRouterAddress, abi:ExchangeRouter.abi}
+	var contractObject = {ExchangeRouter:exchangeRouter};
+
+	contractObject = {...contractObject, ...stakeTokens, ...stakingContracts}
+
+	fs.writeFile(`./src/contracts/${network.chainId}.json`,JSON.stringify(contractObject, undefined, 4), function(err,content){
+		if (err) throw err;
+		console.log('complete');
+	});
+	}
+
+	main()
+	.then(() => {
+		// process.exit(0)
+	})
+	.catch((error) => {
+		console.error(error);
+		process.exit(1);
+	});

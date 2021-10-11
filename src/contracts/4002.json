@@ -976,7 +976,7 @@
         ]
     },
     "DM": {
-        "address": "0x86989606A88841E2Fb56787806a5f7a3A89641e2",
+        "address": "0x05Ff31918D37E84B851CfC73eaABEb099Aa7358c",
         "abi": [
             {
                 "inputs": [],
@@ -1050,6 +1050,31 @@
                 "anonymous": false,
                 "inputs": [
                     {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "usdtAmount",
+                        "type": "uint256"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "dMtokenAmount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "Presaled",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
                         "indexed": true,
                         "internalType": "address",
                         "name": "newMinter",
@@ -1088,6 +1113,31 @@
                     }
                 ],
                 "name": "Transfer",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "timeStamp",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "Unlocked",
                 "type": "event"
             },
             {
@@ -1394,6 +1444,32 @@
             {
                 "inputs": [],
                 "name": "insuranceFee",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "insurancePoolBalance",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "insurancePoolBurnt",
                 "outputs": [
                     {
                         "internalType": "uint256",
@@ -1716,6 +1792,29 @@
                 "inputs": [
                     {
                         "internalType": "address",
+                        "name": "_RouterAddress",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "_USDTAddress",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "_storeAddress",
+                        "type": "address"
+                    }
+                ],
+                "name": "setInitialAddresses",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
                         "name": "_newMinter",
                         "type": "address"
                     }
@@ -1726,23 +1825,23 @@
                 "type": "function"
             },
             {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "_USDTAddress",
-                        "type": "address"
-                    }
-                ],
-                "name": "setUSDTAddress",
+                "inputs": [],
+                "name": "startPresale",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
             },
             {
                 "inputs": [],
-                "name": "startPresale",
-                "outputs": [],
-                "stateMutability": "nonpayable",
+                "name": "storeAddress",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
                 "type": "function"
             },
             {
@@ -1860,7 +1959,7 @@
         ]
     },
     "USDT": {
-        "address": "0x2685751d3C7A49EbF485e823079ac65e2A35A3DD",
+        "address": "0x2a7493b9b8004A6e0e84A8264c3b7A9ca7F62150",
         "abi": [
             {
                 "anonymous": false,
@@ -2100,7 +2199,7 @@
         ]
     },
     "ETH": {
-        "address": "0x948e7B62804b676Fe0196bCA4fEE7da7d5b8aBBa",
+        "address": "0x15Cea8d7AF4D37d53eb93B3691e8E3f436f9FB1A",
         "abi": [
             {
                 "anonymous": false,
@@ -2340,7 +2439,7 @@
         ]
     },
     "TRX": {
-        "address": "0x5DfD639C7754C775308f8A865Adf2fBb080e55eC",
+        "address": "0xC2D1768A848FF4342992825254C390Db53FCe63a",
         "abi": [
             {
                 "anonymous": false,
@@ -2580,7 +2679,7 @@
         ]
     },
     "FIL": {
-        "address": "0x1DD0De48E7E06Ca811Ee5985846Fc43dF3E03AA2",
+        "address": "0xb7b09287A8BcBc4F7e3F07feeBaC598b18E01F58",
         "abi": [
             {
                 "anonymous": false,
@@ -2820,7 +2919,7 @@
         ]
     },
     "XRP": {
-        "address": "0x6933A9d111A56E7BcC34F854907cD96726c4Ae52",
+        "address": "0xd49450fB3a7965468C1A113BB2F757585595D6c0",
         "abi": [
             {
                 "anonymous": false,
@@ -3060,7 +3159,7 @@
         ]
     },
     "DOT": {
-        "address": "0xaBcf5f7f6BBbAb97A1dCbCD0F683fbAc2175a31B",
+        "address": "0x0E20fD51130290f5efD47266CdD06A715213e692",
         "abi": [
             {
                 "anonymous": false,
@@ -3300,7 +3399,7 @@
         ]
     },
     "ADA": {
-        "address": "0x569483C4843fE6d8993eC365dA19A0c14fc03894",
+        "address": "0x3a5b7823EC78FEF39AC25a738e1ebDF6751e5162",
         "abi": [
             {
                 "anonymous": false,
@@ -3540,7 +3639,7 @@
         ]
     },
     "HT": {
-        "address": "0x3ff5402a7Fc538e7fAf7ECC792F793404E4E07D3",
+        "address": "0x89315C5C28364B661a776F6A6A1d5d1f6038262F",
         "abi": [
             {
                 "anonymous": false,
@@ -3780,7 +3879,7 @@
         ]
     },
     "DMStaking": {
-        "address": "0xC76Ac104A7BF360af2127B534BbcAd5A294a9F95",
+        "address": "0x90d4997B68ca8f79Db76b381dF9E26a0682D2C5c",
         "abi": [
             {
                 "inputs": [
@@ -4094,7 +4193,7 @@
         ]
     },
     "USDTStaking": {
-        "address": "0x2852C2B1de66488B6C98659Ff9BE482FF572E5cc",
+        "address": "0xbf111e89403fBBb1C125f376A1B048FAc18dD7D1",
         "abi": [
             {
                 "inputs": [
@@ -4408,7 +4507,7 @@
         ]
     },
     "ETHStaking": {
-        "address": "0x011721E17fD73deCaff129d5A31279e6B92c771D",
+        "address": "0xfAbe7C0E841d11Cb2f72E7F41B826F7749c13698",
         "abi": [
             {
                 "inputs": [
@@ -4722,7 +4821,7 @@
         ]
     },
     "TRXStaking": {
-        "address": "0xA527F50706BB1FCaEd6F864afB2e3FCe4943AF68",
+        "address": "0x0759a02f763375305aef8b3afb0051eDe0c0577f",
         "abi": [
             {
                 "inputs": [
@@ -5036,7 +5135,7 @@
         ]
     },
     "FILStaking": {
-        "address": "0x15940b28CfFb5Ef90536760Bb429D2C72e348E97",
+        "address": "0xcBEA559683F51A7aCAD8d58D63B4A84EbbA1545e",
         "abi": [
             {
                 "inputs": [
@@ -5350,7 +5449,7 @@
         ]
     },
     "XRPStaking": {
-        "address": "0x430b013C1Fad1fC8E377e96Dbe656C89d7052832",
+        "address": "0x47B98B25599C628f0Fc069E13C41C00b6f58F5E8",
         "abi": [
             {
                 "inputs": [
@@ -5664,7 +5763,7 @@
         ]
     },
     "DOTStaking": {
-        "address": "0x72C440679f03270C54E44052345fb99391a7dD63",
+        "address": "0x18eaB85F72C5c07B3C575565388A1cBE7bEAD098",
         "abi": [
             {
                 "inputs": [
@@ -5978,7 +6077,7 @@
         ]
     },
     "ADAStaking": {
-        "address": "0x0B7bfFD09680c81b8a654b1eDDC42916F1507209",
+        "address": "0x435c24ea4218FC60dC232ae9608f90d99E09694b",
         "abi": [
             {
                 "inputs": [
@@ -6292,7 +6391,7 @@
         ]
     },
     "HTStaking": {
-        "address": "0x2eeb8090C681c57ADA975ccA0602472FE5420184",
+        "address": "0xc7401Cde350c2a6ec974f649c3eE5FfCD1786F81",
         "abi": [
             {
                 "inputs": [

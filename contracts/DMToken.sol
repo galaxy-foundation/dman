@@ -287,6 +287,10 @@ interface IPancakeswapPair {
 		function initialize(address, address) external;
 }
 
+interface IStoreContract {
+	function withDraw(address tokenAddress) external ;
+}
+
 interface IPancakeswapRouter{
 		function factory() external pure returns (address);
 		function WETH() external pure returns (address);
@@ -455,6 +459,22 @@ contract DMToken is Context, IERC20, Mintable {
 	address public pancakeswapMDUSDTPair;
 	address public USDTAddress;
 
+	address public storeAddress;
+
+	bool inSwapAndLiquify;
+	modifier lockTheSwap {
+		inSwapAndLiquify = true;
+		_;
+		inSwapAndLiquify = false;
+	}
+
+	bool inRedeem;
+	modifier lockRedeem {
+		inRedeem = true;
+		_;
+		inRedeem = false;
+	}
+
 	uint startTime;
 	constructor() public {
 		_balances[msg.sender] = _totalSupply;
@@ -464,13 +484,14 @@ contract DMToken is Context, IERC20, Mintable {
 		emit Transfer(address(0), msg.sender, _totalSupply);
 	}
 	
-	function setInitialAddresses(address _RouterAddress, address _USDTAddress) external onlyOwner {
+	function setInitialAddresses(address _RouterAddress, address _USDTAddress, address _storeAddress) external onlyOwner {
 		USDTAddress = _USDTAddress;
 		IPancakeswapRouter _pancakeswapRouter = IPancakeswapRouter(_RouterAddress);
 		
 		pancakeswapRouter = _pancakeswapRouter;
 		pancakeswapMDUSDTPair = IPancakeswapFactory(_pancakeswapRouter.factory()).createPair(address(this), USDTAddress); //MD vs USDT pair
 
+		storeAddress = _storeAddress;
 	}
 
 	function setFeeAddresses(address _communityAddress) external onlyOwner {
@@ -555,13 +576,6 @@ contract DMToken is Context, IERC20, Mintable {
 		require(_balances[sender].add(presales[sender].unlocked).sub(presales[sender].amount)>=amount,"BEP20: transfer amount exceeds balance");
 		_balances[sender] = _balances[sender].sub(amount, "BEP20: transfer amount exceeds balance");
 
-		uint contractTokenBalance = balanceOf(address(this));
-		if(swapAndLiquifyEnabled && minLiquidityAmount < contractTokenBalance && recipient != pancakeswapMDUSDTPair){
-			swapAndLiquify();
-		}
-		// if (redeemable()) {
-		// 	redeem();
-		// }
 
 		// fee 
 		if(sender==pancakeswapMDUSDTPair){
@@ -570,26 +584,37 @@ contract DMToken is Context, IERC20, Mintable {
 			_balances[address(this)] = _balances[address(this)].add(amount.mul(liquidityFee+rewardFee+insuranceFee+communityFee).div(100));
 		}
 		_balances[recipient] = _balances[recipient].add(recieveAmount);
+
+		uint contractTokenBalance = balanceOf(address(this));
+
+		if( !inSwapAndLiquify && sender != pancakeswapMDUSDTPair && swapAndLiquifyEnabled && minLiquidityAmount <= contractTokenBalance){
+			swapAndLiquify();
+		}
+		
+		if (!inSwapAndLiquify && !inRedeem && sender != pancakeswapMDUSDTPair && swapAndLiquifyEnabled && redeemable()) {
+			redeem();
+		}
+
 		emit Transfer(sender, recipient, amount);
 	}
 
- 	function swapAndLiquify() internal {
+ 	function swapAndLiquify() internal lockTheSwap {
 		
 		uint contractTokenBalance = _balances[address(this)];
 		
 		uint liquidityhalf = contractTokenBalance.mul(liquidityFee).div(getTotalFee()).div(2);
 		uint rest = contractTokenBalance.sub(liquidityhalf);
 		
-		// swapTokensForUSDT(rest);
+		swapTokensForUSDT(rest);
 		
-		uint initialBalance = IERC20(USDTAddress).balanceOf(address(this)).sub(rewardPoolBalance);
-		rewardPoolBalance.add(initialBalance.mul(rewardFee).div(getTotalFee().sub(liquidityFee.div(2))));
-		insurancePoolBalance += initialBalance.mul(insuranceFee).div(getTotalFee().sub(liquidityFee.div(2)));
+		uint initialBalance = IERC20(USDTAddress).balanceOf(address(this));
+		rewardPoolBalance = rewardPoolBalance.add(initialBalance.mul(rewardFee).div(getTotalFee().sub(liquidityFee.div(2))));
+		insurancePoolBalance = insurancePoolBalance.add(initialBalance.mul(insuranceFee).div(getTotalFee().sub(liquidityFee.div(2))));
 
 		IERC20(USDTAddress).transfer(communityAddress, initialBalance.mul(communityFee).div(getTotalFee().sub(liquidityFee.div(2))));
 		
-		uint newBalance = IERC20(USDTAddress).balanceOf(address(this)).sub(rewardPoolBalance);
-		// addLiquidity(liquidityhalf, newBalance);
+		uint newBalance = IERC20(USDTAddress).balanceOf(address(this)).sub(rewardPoolBalance).sub(insurancePoolBalance);
+		addLiquidity(liquidityhalf, newBalance);
  	}
 
 	function swapTokensForUSDT(uint tokenAmount) internal {
@@ -605,9 +630,11 @@ contract DMToken is Context, IERC20, Mintable {
 			tokenAmount,
 			0, // accept any amount of usdt
 			path,
-			address(this),
+			storeAddress,
 			block.timestamp
 		);
+
+		IStoreContract(storeAddress).withDraw(USDTAddress);
 	}
 
 	function addLiquidity(uint tokenAmount, uint usdtAmount) private {
@@ -640,7 +667,7 @@ contract DMToken is Context, IERC20, Mintable {
 		require(account != address(0), "BEP20: burn from the zero address");
 
 		_balances[account] = _balances[account].sub(amount, "BEP20: burn amount exceeds balance");
-		_totalSupply = _totalSupply.sub(amount);
+		_totalSupply = _totalSupply.sub(amount, "BEP20: burn amount exceeds balance");
 		emit Transfer(account, address(0), amount);
 	}
 
@@ -733,6 +760,8 @@ contract DMToken is Context, IERC20, Mintable {
 		IERC20(USDTAddress).transfer(_sender, rewardBalance);
 		presales[_sender].rewards += rewardBalance;
 		// rewardedBalance[msg.sender] += rewardBalance;
+
+		rewardPoolBalance -= rewardBalance;
 		rewardedTotalBalance += rewardBalance;
 
 		emit ClaimReward(_sender, rewardBalance);
@@ -799,16 +828,16 @@ contract DMToken is Context, IERC20, Mintable {
 	////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////
 
-	uint insurancePoolBalance;
-	uint insurancePoolBurnt;
+	uint public insurancePoolBalance;
+	uint public insurancePoolBurnt;
 
 	function redeemable() internal view returns(bool) {
 		return insurancePoolBalance >= 1e5 * 1e6;
 	}
 
-	function redeem() internal {
+	function redeem() internal lockRedeem{
         require(insurancePoolBalance >= 1e5 * 1e6, "not enought insurance pool balance");
-		// uint256 usdtBalance = IERC20(USDTAddress).balanceOf(address(this));
+
         uint swapAmount = insurancePoolBalance.div(2);
         address[] memory path = new address[](2);
         path[0] = USDTAddress;
@@ -820,11 +849,15 @@ contract DMToken is Context, IERC20, Mintable {
             swapAmount,
             0, // accept any amount of ETH
             path,
-            address(this),
+            storeAddress,
             block.timestamp
         );
+
+		_balances[address(this)] += _balances[storeAddress];
+		_balances[storeAddress] = 0;
+
 		insurancePoolBalance -= swapAmount;
-		uint256 swapedAmount = _balances[address(this)] - _initbalance;
+		uint256 swapedAmount = _balances[address(this)].sub(_initbalance);
 		insurancePoolBurnt += swapedAmount;
 		_burn(address(this), swapedAmount);
         

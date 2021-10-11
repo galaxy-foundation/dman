@@ -7,16 +7,19 @@ const deployUSDT =async (ExchangeRouterAddress)=>{
 
         await uSDTToken.deployed();
 
-        await uSDTToken.transfer("0xC5df89579D7A2f85b8a4b1a6395083da394Bba92", "0xE8D4A51000")
+        var tx = await uSDTToken.transfer("0xC5df89579D7A2f85b8a4b1a6395083da394Bba92", "0xE8D4A51000")
         .catch(err=>{
                 console.log(err)
         });
 
-        await uSDTToken.approve(ExchangeRouterAddress, "0xE8D4A5100000")
+        await tx.wait();
+        tx = await uSDTToken.approve(ExchangeRouterAddress, "0xE8D4A5100000")
         .catch(err=>{
                 console.log(err)
         });
 
+        await tx.wait();
+        
         console.log("uSDTToken deployed to:", uSDTToken.address);
         return uSDTToken.address;
 }

@@ -435,6 +435,7 @@ contract PancakeswapRouter is IPancakeswapRouter {
             );
         }
     }
+
     function swapExactTokensForTokens(
         uint amountIn,
         uint amountOutMin,
@@ -449,6 +450,7 @@ contract PancakeswapRouter is IPancakeswapRouter {
         );
         _swap(amounts, path, to);
     }
+
     function swapTokensForExactTokens(
         uint amountOut,
         uint amountInMax,
@@ -463,6 +465,7 @@ contract PancakeswapRouter is IPancakeswapRouter {
         );
         _swap(amounts, path, to);
     }
+    
     function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline)
         external
         virtual
@@ -478,6 +481,7 @@ contract PancakeswapRouter is IPancakeswapRouter {
         assert(IWETH(WETH).transfer(PancakeswapLibrary.pairFor(factory, path[0], path[1]), amounts[0]));
         _swap(amounts, path, to);
     }
+
     function swapTokensForExactETH(uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline)
         external
         virtual
@@ -495,6 +499,7 @@ contract PancakeswapRouter is IPancakeswapRouter {
         IWETH(WETH).withdraw(amounts[amounts.length - 1]);
         TransferHelper.safeTransferETH(to, amounts[amounts.length - 1]);
     }
+
     function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline)
         external
         virtual
@@ -512,6 +517,7 @@ contract PancakeswapRouter is IPancakeswapRouter {
         IWETH(WETH).withdraw(amounts[amounts.length - 1]);
         TransferHelper.safeTransferETH(to, amounts[amounts.length - 1]);
     }
+
     function swapETHForExactTokens(uint amountOut, address[] calldata path, address to, uint deadline)
         external
         virtual
@@ -550,6 +556,7 @@ contract PancakeswapRouter is IPancakeswapRouter {
             pair.swap(amount0Out, amount1Out, to, new bytes(0));
         }
     }
+
     function swapExactTokensForTokensSupportingFeeOnTransferTokens(
         uint amountIn,
         uint amountOutMin,
@@ -567,6 +574,7 @@ contract PancakeswapRouter is IPancakeswapRouter {
             'PancakeswapRouter: INSUFFICIENT_OUTPUT_AMOUNT'
         );
     }
+
     function swapExactETHForTokensSupportingFeeOnTransferTokens(
         uint amountOutMin,
         address[] calldata path,
@@ -590,6 +598,7 @@ contract PancakeswapRouter is IPancakeswapRouter {
             'PancakeswapRouter: INSUFFICIENT_OUTPUT_AMOUNT'
         );
     }
+
     function swapExactTokensForETHSupportingFeeOnTransferTokens(
         uint amountIn,
         uint amountOutMin,

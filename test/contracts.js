@@ -54,8 +54,15 @@ describe("Token contract deploy", function () {
 	it("DM Deploy and Initial", async function () {
 		const DMToken = await ethers.getContractFactory("DMToken");
 		dMToken = await DMToken.deploy();
+
+        const Store = await hre.ethers.getContractFactory("store");
+        const store = await Store.deploy();
+
+        await store.deployed();
+
+		store.transferOwnership(dMToken.address);
 		
-		var tx = await dMToken.setInitialAddresses(exchangeRouter.address,usdt.address);
+		var tx = await dMToken.setInitialAddresses(exchangeRouter.address, usdt.address, store.address);
 		await tx.wait();
 
 		tx = await dMToken.startPresale();
@@ -145,7 +152,7 @@ describe("dM test", function () {
 
 	it("USDT-DM test", async function () {
 
-		var swapAmount = ethers.utils.parseUnits("5000000",6);
+		var swapAmount = ethers.utils.parseUnits("50000000",6);
 		
 		var initUsdtBalance = await usdt.balanceOf(owner.address);
 		var initDMTokenBalance = await dMToken.balanceOf(owner.address);
@@ -166,21 +173,19 @@ describe("dM test", function () {
 		let  buyUsdtAmount= await usdt.balanceOf(owner.address);
 		let  buyDMTokenAmount= await dMToken.balanceOf(owner.address);
 
-		// console.log(
-		// 	"USDT-DM",
-		// 	ethers.utils.formatUnits(initUsdtBalance.sub(buyUsdtAmount),6),
-		// 	ethers.utils.formatUnits(buyDMTokenAmount.sub(initDMTokenBalance),18),
-		// 	ethers.utils.formatUnits(exceptSwapBalance,18)
-		// );
-
 	});
 
 	it("transfer test", async function () {
-		var tx = await dMToken.transfer(owner.address,"1000000000000");
+		var tx = await dMToken.transfer(owner.address,"1");
 		await tx.wait();
-		console.log("token Balance", fromBigNum(await dMToken.balanceOf(dMToken.address),18))
-		console.log("rewardPoolBalance", fromBigNum(await dMToken.rewardPoolBalance(),6))
-		console.log("rewardedTotalBalance", fromBigNum(await dMToken.rewardedTotalBalance(),6))
+		var rewardPoolBalance = fromBigNum(await dMToken.rewardPoolBalance(), 6);
+		var rewardedTotalBalance = fromBigNum( await dMToken.rewardedTotalBalance(), 6);
+		var insurancePoolBalance = fromBigNum( await dMToken.insurancePoolBalance(), 6);
+
+		var insurancePoolBurnt = fromBigNum( await dMToken.insurancePoolBurnt(), 18)
+		console.log(rewardPoolBalance,rewardedTotalBalance,insurancePoolBalance,insurancePoolBurnt);
+
+		
 	})
 
 	it("presale test", async function () {
@@ -203,7 +208,7 @@ describe("dM test", function () {
 
 	});
 
-	it("unlock test", async function () {
+	it("unlock and rewards test", async function () {
 		// get total lockedAmount
 		var lockedAmount = ethers.utils.formatUnits((await dMToken.presales(owner.address)).amount,18);
 		var unlockedAmount = 0 ;
@@ -228,13 +233,24 @@ describe("dM test", function () {
 				console.log(unlockedAmount,Number(sumEvent.args[2]))
 			}
 			await delay(3000);
+
+			var rewards = await dMToken.getReward(owner.address);
+			console.log("reward amount", fromBigNum(rewards,6));
+			
+			if(Number(rewards) > 0){
+				var tx = await dMToken.claimReward();
+				await tx.wait();
+			}
+
+			var presaleInfo = await dMToken.presales(owner.address);
+			console.log("reward amount", fromBigNum(presaleInfo.rewards,6));
+
 		}
 
 		expect(unlockedAmount).to.equal(Number(lockedAmount),"All presale unlocked")
 	})
 
 });
-
 
 describe("staking test", function () {
 	
