@@ -75,8 +75,8 @@ const Presale = () => {
 			var tx = await sigendDMTokenContract.presale(swapAmount);
 			if(tx) {
 				await tx.wait();
+				await checkBalance(wallet.account);
 			}
-			checkBalance();
 		} catch (err:any) {
 			errHandler(err)
 		}
@@ -115,7 +115,7 @@ const Presale = () => {
 				var tx = await sigendDMTokenContract.unlock();
 				if(tx){
 					await tx.wait();
-					checkBalance();
+					await checkBalance(wallet.account);
 				}
 				setLoading(false);
 			}
@@ -134,7 +134,7 @@ const Presale = () => {
 				var tx = await sigendDMTokenContract.claimReward();
 				if(tx){
 					await tx.wait();
-					checkBalance();
+					await checkBalance(wallet.account);
 				}
 				setLoading(false);
 			}

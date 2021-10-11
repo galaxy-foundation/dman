@@ -71,7 +71,7 @@ const Swap = () => {
 			if(pairData!==null){
 				//fee rate
 				let amount = parseFloat(Number(ethers.utils.formatUnits(pairData[1],decimals2)).toFixed(8));
-				if(token1.token === "USDT"){
+				if(token1.token === "USDT") {
 					console.log("pair reserves :",pairData[0].toString(),pairData[1].toString())
 					setToken2({...token2,amount:amount});
 				} else {
@@ -149,7 +149,7 @@ const Swap = () => {
 		var tx = await sigendExchangeContract.swapExactTokensForTokens(swapAmount,0,path,wallet.account,seconds)
 		if(tx != null){
 			await tx.wait();
-			checkBalance();
+			await checkBalance(wallet.account);
 		}
 	}
 
