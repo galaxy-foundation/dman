@@ -19,10 +19,14 @@ import {DMTokenContract,USDTContract,ExchangeRouter} from "../contracts";
 import Skeleton, {SkeletonTheme} from 'react-loading-skeleton';
 import {useAppContext} from '../context';
 
+const styledNum = (data:Number)=>{
+	return parseFloat(Number(data).toFixed(8))
+}
+
 const Swap = () => {
 	const wallet = useWallet();
 	const connected = wallet.status==="connected"
-	const [status,{checkBalance}] = useAppContext();
+	const [status,poolBalance,{checkBalance}] = useAppContext();
 
 	const [token1,setToken1] = useState({
 		token:"DM",
@@ -38,51 +42,39 @@ const Swap = () => {
 	const [loading,setLoading] = useState(false);
 
   	const getAmountIn = async ()=>{
-		if (token2.amount===0) return;
-		try {
-	        var path = [tokenData[token1.token].address,tokenData[token2.token].address];
-			let decimals1 = tokenData[token1.token].decimals;
-			let decimals2 = tokenData[token2.token].decimals;
-	        
-			var amount2 = token2.amount;
-			if(token1.token === "DM"){
-				amount2 = amount2/0.85;
-			}
-	        const pairData = await ExchangeRouter.getAmountsIn(ethers.utils.parseUnits((Number(amount2).toFixed(decimals2)).toString(),decimals2),path)
-			if(pairData!=null){
-				let amout = parseFloat(Number(ethers.utils.formatUnits(pairData[0],decimals1)).toFixed(8));
-				setToken1({...token1,amount:amout});
-			}
-		} catch (err) {
-			errHandler(err)	
-			setToken1({...token1,amount:0});
+		if (token2.amount === 0&&poolBalance.reserve0 === 0&&poolBalance.reserve1 === 0) return;
+		if(token1.token === "USDT"){
+			let numerator = poolBalance.reserve0 * token2.amount;
+			let denominator = (poolBalance.reserve1 - token2.amount)*0.997;
+			var amountIn =   (numerator /denominator) + 1;
+			setToken1({...token1,amount:amountIn});
+		}
+		else {
+			let numerator = poolBalance.reserve1 * token2.amount;
+			let denominator = (poolBalance.reserve0 - token2.amount)*0.997;
+			var amountIn =   (numerator /denominator) + 1;
+			setToken1({...token1,amount:amountIn});
 		}
     }
 
 	const getAmountOut = async ()=>{
-		if (token1.amount===0) return;
-		try {
-	        var path = [tokenData[token1.token].address,tokenData[token2.token].address];
-			let decimals1 = tokenData[token1.token].decimals;
-			let decimals2 = tokenData[token2.token].decimals;
-	
-			console.log("get amount out : ",path,token1.amount,ethers.utils.parseUnits((Number(token1.amount).toFixed(decimals1)).toString(),decimals1).toString());
-	        const pairData = await ExchangeRouter.getAmountsOut(ethers.utils.parseUnits((Number(token1.amount).toFixed(decimals1)).toString(),decimals1),path)
-			if(pairData!==null){
-				//fee rate
-				let amount = parseFloat(Number(ethers.utils.formatUnits(pairData[1],decimals2)).toFixed(8));
-				if(token1.token === "USDT"){
-					console.log("pair reserves :",pairData[0].toString(),pairData[1].toString())
-					setToken2({...token2,amount:amount});
-				} else {
-					//15% fee rate
-					amount = amount*0.85;
-					setToken2({...token2,amount:amount});
-				}
-			}
-		} catch (err:any) {
-			errHandler(err)
-			setToken2({...token2,amount:0}); 
+		if (token1.amount === 0&&poolBalance.reserve0 === 0&&poolBalance.reserve1 === 0) return;
+		if(token1.token === "USDT"){
+			let amountWithFee = token1.amount*997;
+			let numerator = amountWithFee*(poolBalance.reserve1);
+  		    let denominator = poolBalance.reserve0*1000+amountWithFee;
+			var amountOut =   numerator /denominator;
+			
+			setToken2({...token2,amount:styledNum(amountOut*0.85)});
+		}
+		else {
+			
+			let amountWithFee = token1.amount*997;
+			let numerator = amountWithFee*(poolBalance.reserve0);
+  		    let denominator = poolBalance.reserve1*1000+amountWithFee;
+			var amountOut =   numerator /denominator;
+			
+			setToken2({...token2,amount:styledNum(amountOut)});
 		}
     }
 
@@ -105,6 +97,8 @@ const Swap = () => {
 	}
 
 	const handleSwap = async ()=>{
+		var amountInBalance = token1.token == "DM" ? status.dmBalance :status.usdtBalance ;
+		if(amountInBalance < token1.amount ) return tips("余额不足");
 		try {
 			if (token1.amount<=0) return tips("最少 10 u")
 			if (token2.amount<=0) return tips("最少 10 u")

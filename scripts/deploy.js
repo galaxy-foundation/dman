@@ -10,6 +10,7 @@ const DMToken = require("../artifacts/contracts/DMToken.sol/DMToken.json");
 const ExchangeRouter = require("../artifacts/contracts/dexRouter.sol/PancakeswapRouter.json");
 const IERC20 = require("../artifacts/contracts/DMToken.sol/IERC20.json");
 const Staking = require("../artifacts/contracts/staking.sol/staking.json");
+const Pool = require("../artifacts/contracts/dexfactory.sol/IPancakeswapPair.json");
 const {ethers} = require("ethers");
 const hre = require("hardhat");
 
@@ -126,8 +127,9 @@ async function main() {
 
 	/* ------------ objects -------------- */
 
+	var ExchangePool = {abi : Pool.abi}
 	var exchangeRouter = {address:ExchangeRouterAddress, abi:ExchangeRouter.abi}
-	var contractObject = {ExchangeRouter:exchangeRouter};
+	var contractObject = {ExchangeRouter:exchangeRouter,ExchangePool};
 
 	contractObject = {...contractObject, ...stakeTokens, ...stakingContracts}
 

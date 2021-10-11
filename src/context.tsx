@@ -2,7 +2,7 @@ import React ,{createContext, useContext, useMemo} from 'react';
 
 import { toast } from 'react-toastify';
 import {ethers} from "ethers"
-import {DMTokenContract,USDTContract} from "./contracts";
+import {DMTokenContract,USDTContract,ExchangeRouter,poolAbi,provider} from "./contracts";
 import {tips, NF, fromValue, toValue, tokenData, errHandler} from './util';
 import { useWallet } from "use-wallet";
 
@@ -32,6 +32,11 @@ export interface ContractStatus {
 	insuranceBurnt: number
 }
 
+export interface PoolResearve {
+	reserve0: Number 
+	reserve1: Number
+}
+
 
 export default function Provider ({children}) {
     const wallet = useWallet();    
@@ -54,9 +59,29 @@ export default function Provider ({children}) {
 		insuranceBurnt: 0,
 	})
 
+	const [poolBalance , setPoolBalance] = React.useState<PoolResearve>({
+		reserve0:0,
+		reserve1:0
+	})
+
 	React.useEffect(()=>{
 		checkBalance(wallet.account);
+		getPoolBalance();
 	},[wallet.status])
+
+	const getPoolBalance = async () => {
+		try{
+			var pairAddress = await DMTokenContract.pancakeswapMDUSDTPair();
+			var pairUsdtBalance = await USDTContract.balanceOf(pairAddress);
+			var pairDMBalance = await DMTokenContract.balanceOf(pairAddress);
+			setPoolBalance ({
+				reserve0 : Number(ethers.utils.formatUnits(pairUsdtBalance,6)),
+				reserve1 : Number(ethers.utils.formatUnits(pairDMBalance,18))
+			})
+		} catch (err:any) {
+			errHandler(err)
+		}
+	}
 
 	const checkBalance = async (account) => {
 		console.log('checkBalance')
@@ -96,6 +121,12 @@ export default function Provider ({children}) {
 		} catch (err:any) {
 			errHandler(err)
 		}
+
+		try {
+			getPoolBalance()
+		} catch (err:any) {
+			errHandler(err)
+		}
 	}
 
 	return (
@@ -103,11 +134,12 @@ export default function Provider ({children}) {
 			value = {useMemo(
 				()=>[
 					status,
+					poolBalance,
 					{
 						checkBalance
 					}
 				],
-				[status]
+				[status,poolBalance]
 			)}
 		>
 			{children}
