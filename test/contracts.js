@@ -184,8 +184,6 @@ describe("dM test", function () {
 
 		var insurancePoolBurnt = fromBigNum( await dMToken.insurancePoolBurnt(), 18)
 		console.log(rewardPoolBalance,rewardedTotalBalance,insurancePoolBalance,insurancePoolBurnt);
-
-		
 	})
 
 	it("presale test", async function () {
@@ -259,7 +257,7 @@ describe("staking test", function () {
 		var tx = await usdt.approve(staking.address, stakeAmount);
 		await tx.wait();
 
-		var tx = await staking.stake(stakeAmount)
+		tx = await staking.stake(stakeAmount)
 		var res = await tx.wait();
 
 		let sumEvent = res.events.pop();
@@ -272,7 +270,7 @@ describe("staking test", function () {
 		var withdrawAmount = ethers.utils.parseUnits("1000", 6); 
 		var initialBalance = await usdt.balanceOf(owner.address);
 		
-		tx = await staking.withdraw(withdrawAmount);
+		var tx = await staking.withdraw(withdrawAmount);
 		await tx.wait();
 
 		var cBalance = await usdt.balanceOf(owner.address);
@@ -283,7 +281,7 @@ describe("staking test", function () {
 	it("getRewards test", async function () {
 		var initialBalance = await dMToken.balanceOf(owner.address);
 		
-		tx = await staking.claimRewards();
+		var tx = await staking.claimRewards();
 		await tx.wait();
 
 		var cBalance = await dMToken.balanceOf(owner.address);

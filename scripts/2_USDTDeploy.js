@@ -1,6 +1,6 @@
 const hre = require("hardhat");
 
-const deployUSDT =async (ExchangeRouterAddress)=>{
+const deployUSDT =async (ExchangeRouterAddress, nonce)=>{
 
         const USDTToken = await hre.ethers.getContractFactory("FakeUsdt");
         const uSDTToken = await USDTToken.deploy();
@@ -20,7 +20,7 @@ const deployUSDT =async (ExchangeRouterAddress)=>{
 
         await tx.wait();
         
-        console.log("uSDTToken deployed to:", uSDTToken.address);
+        
         return uSDTToken.address;
 }
 

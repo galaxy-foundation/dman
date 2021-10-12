@@ -18,7 +18,7 @@ const deployDMToken =async (usdtAddress,ExchangeRouterAddress)=>{
 	tx = await dMToken.setInitialAddresses(ExchangeRouterAddress, usdtAddress, store.address);
 	await tx.wait();
 
-	console.log("dMToken deployed to:", dMToken.address);
+	
 	return dMToken;
 }
 

@@ -14,6 +14,7 @@
     "@types/react-router-dom": "^5.1.8",
     "@uniswap/v3-core": "^1.0.0",
     "@uniswap/v3-periphery": "^1.1.1",
+    "colors": "^1.4.0",
     "hardhat": "^2.6.2",
     "node-sass": "^6.0.1",
     "react": "^17.0.2",
@@ -35,7 +36,8 @@
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.4.0",
-    "ethers": "^5.4.5"
+    "ethers": "^5.4.5",
+    "hardhat-deploy": "^0.9.3"
   },
   "scripts": {
     "start": "react-scripts start",
