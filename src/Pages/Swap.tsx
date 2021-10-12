@@ -143,7 +143,7 @@ const Swap = () => {
 		var tx = await sigendExchangeContract.swapExactTokensForTokens(swapAmount,0,path,wallet.account,seconds)
 		if(tx != null){
 			await tx.wait();
-			checkBalance();
+			await checkBalance(wallet.account);
 		}
 	}
 
