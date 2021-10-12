@@ -14,11 +14,8 @@
     "@types/react-router-dom": "^5.1.8",
     "@uniswap/v3-core": "^1.0.0",
     "@uniswap/v3-periphery": "^1.1.1",
-<<<<<<< HEAD
     "axios": "^0.23.0",
-=======
     "colors": "^1.4.0",
->>>>>>> b84dd78135a98afd9c35e43a5b62b09611b6d1d9
     "hardhat": "^2.6.2",
     "node-sass": "^6.0.1",
     "react": "^17.0.2",
