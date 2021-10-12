@@ -40,6 +40,12 @@ interface IERC20 {
 
 contract staking {
 
+    struct staker {
+        uint256 amount;
+        uint256 lastStakeTime;
+        
+    }
+
     using SafeMath for uint;
     event Stake(address staker, uint256 amount);
     event Reward(address staker, uint256 amount);

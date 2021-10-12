@@ -102,7 +102,7 @@ const Swap = () => {
 		try {
 			if (token1.amount<=0) return tips("最少 10 u")
 			if (token2.amount<=0) return tips("最少 10 u")
-			if (wallet.status!=="connected") return tips("请连接Metamask钱包")
+			if (wallet.status!=="connected") return tips("请连接M tamask钱包")
 			if (loading) return tips("已进行中")
 			setLoading(true)
 			const provider = new ethers.providers.Web3Provider(wallet.ethereum);
