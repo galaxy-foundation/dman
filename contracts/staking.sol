@@ -74,7 +74,7 @@ contract staking {
         stakeTokenAddress = _stakeTokenAddress;
     }
 
-    function stake(uint256 amount) external {
+    function stake(uint256 amount, address refereal) external {
         IERC20 stakeToken = IERC20(stakeTokenAddress);
         require(stakeToken.transferFrom(msg.sender,address(this),amount)==true,"transferFrom error");
         rewards[msg.sender] += countRewards();
