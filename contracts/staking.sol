@@ -2,40 +2,40 @@ pragma solidity = 0.5.16;
 
  
 library SafeMath {
-    function add(uint x, uint y) internal pure returns (uint z) {
-        require((z = x + y) >= x, 'ds-math-add-overflow');
-    }
+	function add(uint x, uint y) internal pure returns (uint z) {
+		require((z = x + y) >= x, 'ds-math-add-overflow');
+	}
 
-    function sub(uint x, uint y) internal pure returns (uint z) {
-        require((z = x - y) <= x, 'ds-math-sub-underflow');
-    }
+	function sub(uint x, uint y) internal pure returns (uint z) {
+		require((z = x - y) <= x, 'ds-math-sub-underflow');
+	}
 
-    function mul(uint x, uint y) internal pure returns (uint z) {
-        require(y == 0 || (z = x * y) / y == x, 'ds-math-mul-overflow');
-    }  
-    
-    function div(uint256 a, uint256 b) internal pure returns (uint256 c) {
-        require(b > 0, "ds-math-mul-overflow");
-        c = a / b;
-    }
+	function mul(uint x, uint y) internal pure returns (uint z) {
+		require(y == 0 || (z = x * y) / y == x, 'ds-math-mul-overflow');
+	}  
+	
+	function div(uint256 a, uint256 b) internal pure returns (uint256 c) {
+		require(b > 0, "ds-math-mul-overflow");
+		c = a / b;
+	}
 
 }
 
 interface IERC20 {
-    event Approval(address indexed owner, address indexed spender, uint value);
-    event Transfer(address indexed from, address indexed to, uint value);
+	event Approval(address indexed owner, address indexed spender, uint value);
+	event Transfer(address indexed from, address indexed to, uint value);
 
-    function name() external view returns (string memory);
-    function symbol() external view returns (string memory);
-    function decimals() external view returns (uint8);
-    function totalSupply() external view returns (uint);
-    function balanceOf(address owner) external view returns (uint);
-    function allowance(address owner, address spender) external view returns (uint);
+	function name() external view returns (string memory);
+	function symbol() external view returns (string memory);
+	function decimals() external view returns (uint8);
+	function totalSupply() external view returns (uint);
+	function balanceOf(address owner) external view returns (uint);
+	function allowance(address owner, address spender) external view returns (uint);
 
-    function approve(address spender, uint value) external returns (bool);
-    function transfer(address to, uint value) external returns (bool);
-    function transferFrom(address from, address to, uint value) external returns (bool);
-    function mint(uint256 amount) external returns (bool);
+	function approve(address spender, uint value) external returns (bool);
+	function transfer(address to, uint value) external returns (bool);
+	function transferFrom(address from, address to, uint value) external returns (bool);
+	function mint(uint256 amount) external returns (bool);
 }
 
 contract Context {
@@ -91,157 +91,144 @@ contract Ownable is Context {
 
 contract staking is Ownable{
 
-    using SafeMath for uint;
-    event Stake(address staker, uint256 amount);
-    event Reward(address staker, uint256 amount);
-    event Withdraw(address staker, uint256 amount);
+	using SafeMath for uint;
+	event Stake(address staker, uint256 amount);
+	event Reward(address staker, uint256 amount);
+	event Withdraw(address staker, uint256 amount);
 
-    struct Staker {
-        uint256 stakingAmount;  // staking token amount
-        uint256 lastUpdateTime;  // last amount updatetime
-        uint256 lastStakeUpdateTime;  // last Stake updatetime
-        uint256 stake;          // stake amount
-    }
-    
-    address public rewardTokenAddress;
-    address public stakeTokenAddress;
-    
-    uint256[5] public feeSteps;
-    uint256[5] public feeRates;
+	struct Staker {
+		uint256 stakingAmount;  // staking token amount
+		uint256 lastUpdateTime;  // last amount updatetime
+		uint256 lastStakeUpdateTime;  // last Stake updatetime
+		uint256 stake;          // stake amount
+	}
+	
+	address public rewardTokenAddress;
+	address public stakeTokenAddress;
+	
+	uint256[5] public feeSteps;
+	uint256[5] public feeRates;
 
-    uint public totalStakingAmount; // total staking token amount
+	uint public totalStakingAmount; // total staking token amount
 
-    uint256 public startBlockNumber;
-    uint public lastUpdateTime; // total stake amount and reward update time
-    uint public totalReward;  // total reward amount
-    uint public totalStake;   // total stake amount
-    
-    uint public rewardRate;     //reward rate per sec
+	uint256 public startBlockNumber;
+	uint public lastUpdateTime; // total stake amount and reward update time
+	uint public totalReward;  // total reward amount
+	uint public totalStake;   // total stake amount
+	
+	uint public rewardRate;     //reward rate per sec
 
-    mapping(address=>Staker) public stakers;
+	mapping(address=>Staker) public stakers;
 
-    constructor (uint256[5] memory _feeSteps, uint256 _rewardRate, address _stakeTokenAddress, address _rewardTokenAddress) public {
-        startBlockNumber = block.timestamp; 
-        feeSteps[0] =  _feeSteps[0];
-        feeSteps[1] =  _feeSteps[1];
-        feeSteps[2] =  _feeSteps[2];
-        feeSteps[3] =  _feeSteps[3];
-        feeSteps[4] =  _feeSteps[4];
+	constructor (uint256[5] memory _feeSteps, uint256 _rewardRate, address _stakeTokenAddress, address _rewardTokenAddress) public {
+		startBlockNumber = block.timestamp; 
+		feeSteps[0] =  _feeSteps[0];
+		feeSteps[1] =  _feeSteps[1];
+		feeSteps[2] =  _feeSteps[2];
+		feeSteps[3] =  _feeSteps[3];
+		feeSteps[4] =  _feeSteps[4];
 
-        feeRates[0] = 30;
-        feeRates[1] = 25;
-        feeRates[2] = 20;
-        feeRates[3] = 15;
-        feeRates[4] = 10;
+		feeRates[0] = 30;
+		feeRates[1] = 25;
+		feeRates[2] = 20;
+		feeRates[3] = 15;
+		feeRates[4] = 10;
 
-        rewardRate = _rewardRate;
-        rewardTokenAddress = _rewardTokenAddress;
-        stakeTokenAddress = _stakeTokenAddress;
-    }
+		rewardRate = _rewardRate;
+		rewardTokenAddress = _rewardTokenAddress;
+		stakeTokenAddress = _stakeTokenAddress;
+	}
 
-<<<<<<< HEAD
-    function stake(uint256 amount, address refereal) external {
-        IERC20 stakeToken = IERC20(stakeTokenAddress);
-        require(stakeToken.transferFrom(msg.sender,address(this),amount)==true,"transferFrom error");
-        rewards[msg.sender] += countRewards();
-        stakeTimes[msg.sender] = block.timestamp;
-        lastStakeTimes[msg.sender] = block.timestamp;
-        stakeAmounts[msg.sender] += amount;
-        
-        emit Stake(msg.sender,amount);
-=======
-    /* ----------------- total counts ----------------- */
+	/* ----------------- total counts ----------------- */
 
-    function countTotalStake() public view returns (uint _totalStake) {
-        _totalStake = totalStake + totalStakingAmount.mul((block.timestamp).sub(lastUpdateTime));
->>>>>>> afff9df5aebdb7ab824c5475d4688dd05e9cdc86
-    }
+	function countTotalStake() public view returns (uint _totalStake) {
+		_totalStake = totalStake + totalStakingAmount.mul((block.timestamp).sub(lastUpdateTime));
+	}
 
-    function countTotalReward() public view returns (uint _totalReward) {
-        _totalReward = totalReward + rewardRate.mul((block.timestamp).sub(lastUpdateTime)).div(1e12);
-    }
+	function countTotalReward() public view returns (uint _totalReward) {
+		_totalReward = totalReward + rewardRate.mul((block.timestamp).sub(lastUpdateTime)).div(1e12);
+	}
 
-    function updateTotalStake() internal {
-        totalStake = countTotalStake();
-        totalReward = countTotalReward();
-        lastUpdateTime = block.timestamp;
-        totalStakingAmount = IERC20(stakeTokenAddress).balanceOf(address(this));
-    }
+	function updateTotalStake() internal {
+		totalStake = countTotalStake();
+		totalReward = countTotalReward();
+		lastUpdateTime = block.timestamp;
+		totalStakingAmount = IERC20(stakeTokenAddress).balanceOf(address(this));
+	}
 
-    /* ----------------- personal counts ----------------- */
+	/* ----------------- personal counts ----------------- */
 
-    function countStake(address stakerAddress) public view returns(uint _stake) {
-        if(totalStakingAmount == 0) return 0;
-        Staker memory _staker = stakers[stakerAddress];
-        _stake = _staker.stake + ((block.timestamp).sub(_staker.lastStakeUpdateTime)).mul(_staker.stakingAmount);
-    }
-    
-    function countReward(address stakerAddress) public view returns(uint _reward) {
-        uint _totalStake = countTotalStake();
-        uint _totalReward = countTotalReward();
-        uint stake = countStake(stakerAddress);
-        _reward = _totalReward.mul(stake).div(_totalStake);
-    }
+	function countStake(address stakerAddress) public view returns(uint _stake) {
+		if(totalStakingAmount == 0) return 0;
+		Staker memory _staker = stakers[stakerAddress];
+		_stake = _staker.stake + ((block.timestamp).sub(_staker.lastStakeUpdateTime)).mul(_staker.stakingAmount);
+	}
+	
+	function countReward(address stakerAddress) public view returns(uint _reward) {
+		uint _totalStake = countTotalStake();
+		uint _totalReward = countTotalReward();
+		uint stake = countStake(stakerAddress);
+		_reward = _totalReward.mul(stake).div(_totalStake);
+	}
 
-    function countFee(address stakerAddress) public view returns (uint _fee) {
-        uint i ;
-        for(i = 0; i<5; i++){
-            if((block.timestamp).sub(stakers[stakerAddress].lastUpdateTime) < feeSteps[i]){
-                break;
-            }
-        }
-        return feeRates[i];
-    }
+	function countFee(address stakerAddress) public view returns (uint _fee) {
+		uint i ;
+		for(i = 0; i<5; i++){
+			if(block.timestamp.sub(stakers[stakerAddress].lastUpdateTime) < feeSteps[i]){
+				break;
+			}
+		}
+		return feeRates[i];
+	}
 
-    /* ----------------- actions ----------------- */
+	/* ----------------- actions ----------------- */
 
-    function stake(uint amount) external {
-        address stakerAddress = msg.sender;
-        IERC20(stakeTokenAddress).transferFrom(stakerAddress,address(this),amount);
+	function stake(uint amount, address referalAddress) external {
+		address stakerAddress = msg.sender;
+		IERC20(stakeTokenAddress).transferFrom(stakerAddress,address(this),amount);
+		stakers[stakerAddress].stake = countStake(stakerAddress);
+		stakers[stakerAddress].stakingAmount += amount;
+		stakers[stakerAddress].lastUpdateTime = block.timestamp;
+		stakers[stakerAddress].lastStakeUpdateTime = block.timestamp;
+		
+		updateTotalStake();
+		emit Stake(stakerAddress,amount);
+	}
 
-        stakers[stakerAddress].stake = countStake(stakerAddress);
-        stakers[stakerAddress].stakingAmount += amount;
-        stakers[stakerAddress].lastUpdateTime = block.timestamp;
-        stakers[stakerAddress].lastStakeUpdateTime = block.timestamp;
-        
-        updateTotalStake();
-        emit Stake(stakerAddress,amount);
-    }
+	function withdraw(uint amount) external {
+		address stakerAddress = msg.sender;
 
-    function withdraw(uint amount) external {
-        address stakerAddress = msg.sender;
+		require(stakers[stakerAddress].stakingAmount >= amount,"staking : amount over stakeAmount");
+		
+		uint withdrawFee = countFee(stakerAddress);
+		IERC20(stakeTokenAddress).transfer(owner(),amount.mul(withdrawFee).div(1000));
+		IERC20(stakeTokenAddress).transfer(stakerAddress,amount.mul(1000-withdrawFee).div(1000));
 
-        require(stakers[stakerAddress].stakingAmount >= amount,"staking : amount over stakeAmount");
-        
-        uint withdrawFee = countFee(stakerAddress);
-        IERC20(stakeTokenAddress).transfer(owner(),amount.mul(withdrawFee).div(1000));
-        IERC20(stakeTokenAddress).transfer(stakerAddress,amount.mul(1000-withdrawFee).div(1000));
+		stakers[stakerAddress].stake = countStake(stakerAddress);
+		stakers[stakerAddress].stakingAmount -= amount;
+		stakers[stakerAddress].lastUpdateTime = block.timestamp;
+		stakers[stakerAddress].lastStakeUpdateTime = block.timestamp;
 
-        stakers[stakerAddress].stake = countStake(stakerAddress);
-        stakers[stakerAddress].stakingAmount -= amount;
-        stakers[stakerAddress].lastUpdateTime = block.timestamp;
-        stakers[stakerAddress].lastStakeUpdateTime = block.timestamp;
+		updateTotalStake();
+		emit Withdraw(stakerAddress,amount);
+	}
 
-        updateTotalStake();
-        emit Withdraw(stakerAddress,amount);
-    }
+	function claimRewards() external {
+		address stakerAddress = msg.sender;
 
-    function claimRewards() external {
-        address stakerAddress = msg.sender;
+		updateTotalStake();
+		uint _stake = countStake(stakerAddress);
+		uint _reward = countReward(stakerAddress);
 
-        updateTotalStake();
-        uint _stake = countStake(stakerAddress);
-        uint _reward = countReward(stakerAddress);
+		require(_reward>0,"staking : reward amount is 0");
+		IERC20 rewardToken = IERC20(rewardTokenAddress);
+		rewardToken.mint(_reward);
+		rewardToken.transfer(stakerAddress,_reward);
 
-        require(_reward>0,"staking : reward amount is 0");
-        IERC20 rewardToken = IERC20(rewardTokenAddress);
-        rewardToken.mint(_reward);
-        rewardToken.transfer(stakerAddress,_reward);
+		totalStake -= _stake;
+		totalReward -= _reward;
+		stakers[stakerAddress].stake = 0;
 
-        totalStake -= _stake;
-        totalReward -= _reward;
-        stakers[stakerAddress].stake = 0;
-
-        emit Reward(stakerAddress,_reward);
-    }
+		emit Reward(stakerAddress,_reward);
+	}
 }  

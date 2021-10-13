@@ -108,7 +108,7 @@ export default function Provider ({children}) {
 	}
 
 	useEffect(()=>{
-		setInterval(updateTokenPrices,15000);
+		setInterval(updateTokenPrices,5000);
 	},[])
 
 	const checkBalance = async (account) => {
