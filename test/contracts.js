@@ -92,7 +92,7 @@ describe("Token contract deploy", function () {
 		
 		var price = ethers.BigNumber.from("1000000000000");
 		//parameters
-		let rewardSteps = [
+		let feeSteps = [
 			7776000,
 			10368000,
 			15552000,
@@ -100,15 +100,10 @@ describe("Token contract deploy", function () {
 			100000000000
 		];
 
-		let rewardPerBlocks = [];
-		rewardPerBlocks.push(price.div(18800000).mul(30));
-		rewardPerBlocks.push(price.div(18800000).mul(25));
-		rewardPerBlocks.push(price.div(18800000).mul(20));
-		rewardPerBlocks.push(price.div(18800000).mul(15));
-		rewardPerBlocks.push(price.div(18800000).mul(10));
+		let rewardPersecond = price.mul(1000000000000).mul(3).div(100).div(86400);
 		
 		const Staking = await ethers.getContractFactory("staking");
-		staking = await Staking.deploy(rewardSteps,rewardPerBlocks,usdt.address,dMToken.address);
+		staking = await Staking.deploy(feeSteps,rewardPersecond,usdt.address,dMToken.address);
 		await staking.deployed();
 		
 		var tx = await dMToken.setMinter(staking.address);
@@ -206,47 +201,47 @@ describe("dM test", function () {
 
 	});
 
-	it("unlock and rewards test", async function () {
-		// get total lockedAmount
-		var lockedAmount = ethers.utils.formatUnits((await dMToken.presales(owner.address)).amount,18);
-		var unlockedAmount = 0 ;
+	// it("unlock and rewards test", async function () {
+	// 	// get total lockedAmount
+	// 	var lockedAmount = ethers.utils.formatUnits((await dMToken.presales(owner.address)).amount,18);
+	// 	var unlockedAmount = 0 ;
 
-		for (var i=0;i<6;i++){
+	// 	for (var i=0;i<6;i++){
 			
-			// test transactions
-			var buyAmount = ethers.utils.parseUnits("500",6);
-			var tx = await usdt.approve(dMToken.address,buyAmount);
-			await tx.wait();
+	// 		// test transactions
+	// 		var buyAmount = ethers.utils.parseUnits("500",6);
+	// 		var tx = await usdt.approve(dMToken.address,buyAmount);
+	// 		await tx.wait();
 			
-			// get unlockable amount
-			var unlockAmount = await dMToken.getUnlockAmount(owner.address);
+	// 		// get unlockable amount
+	// 		var unlockAmount = await dMToken.getUnlockAmount(owner.address);
 
-			if(Number(unlockAmount)>0){
-				var tx =await dMToken.unlock();
-				var res = await tx.wait();
+	// 		if(Number(unlockAmount)>0){
+	// 			var tx =await dMToken.unlock();
+	// 			var res = await tx.wait();
 
-				let sumEvent = res.events.pop();
-				let _stakeAmount = ethers.utils.formatUnits(sumEvent.args[1],18);
-				unlockedAmount += Number(_stakeAmount);
-				console.log(unlockedAmount,Number(sumEvent.args[2]))
-			}
-			await delay(3000);
+	// 			let sumEvent = res.events.pop();
+	// 			let _stakeAmount = ethers.utils.formatUnits(sumEvent.args[1],18);
+	// 			unlockedAmount += Number(_stakeAmount);
+	// 			console.log(unlockedAmount,Number(sumEvent.args[2]))
+	// 		}
+	// 		await delay(3000);
 
-			var rewards = await dMToken.getReward(owner.address);
-			console.log("reward amount", fromBigNum(rewards,6));
+	// 		var rewards = await dMToken.getReward(owner.address);
+	// 		console.log("reward amount", fromBigNum(rewards,6));
 			
-			if(Number(rewards) > 0){
-				var tx = await dMToken.claimReward();
-				await tx.wait();
-			}
+	// 		if(Number(rewards) > 0){
+	// 			var tx = await dMToken.claimReward();
+	// 			await tx.wait();
+	// 		}
 
-			var presaleInfo = await dMToken.presales(owner.address);
-			console.log("reward amount", fromBigNum(presaleInfo.rewards,6));
+	// 		var presaleInfo = await dMToken.presales(owner.address);
+	// 		console.log("reward amount", fromBigNum(presaleInfo.rewards,6));
 
-		}
+	// 	}
 
-		expect(unlockedAmount).to.equal(Number(lockedAmount),"All presale unlocked")
-	})
+	// 	expect(unlockedAmount).to.equal(Number(lockedAmount),"All presale unlocked")
+	// })
 
 });
 
@@ -275,6 +270,9 @@ describe("staking test", function () {
 
 		var cBalance = await usdt.balanceOf(owner.address);
 
+		var fee = await staking.countFee(owner.address);
+
+		console.log(fee.toString(),cBalance.sub(initialBalance),withdrawAmount);
 		expect(cBalance.sub(initialBalance)).to.equal(withdrawAmount,"withdraw test");
 	})
 
@@ -286,6 +284,7 @@ describe("staking test", function () {
 
 		var cBalance = await dMToken.balanceOf(owner.address);
 
+		console.log(Number(cBalance.sub(initialBalance)));
 		expect(Number(cBalance.sub(initialBalance))).to.greaterThan(0,"get Reward test");
 	})
 })

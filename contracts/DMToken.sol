@@ -721,13 +721,20 @@ contract DMToken is Context, IERC20, Mintable {
 	}
 
 	uint[][] unlockSteps = [
-		[8,   5 minutes],
-		[18,  8 minutes],
-		[30,  12 minutes],
-		[45,  15 minutes],
-		[62,  18 minutes],
-		[80,  21 minutes],
-		[100, 25 minutes]
+		[8,   5 ],
+		[18,  8 ],
+		[30,  12 ],
+		[45,  15 ],
+		[62,  18 ],
+		[80,  21 ],
+		[100, 25 ]
+		// [8,   5 minutes],
+		// [18,  8 minutes],
+		// [30,  12 minutes],
+		// [45,  15 minutes],
+		// [62,  18 minutes],
+		// [80,  21 minutes],
+		// [100, 25 minutes]
 		/* [8,   40  days],
 		[18,  90  days],
 		[30,  150 days],

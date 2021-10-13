@@ -2,7 +2,7 @@ const hre = require("hardhat");
 
 const deployStaking =async (stakeTokenAddress,rewardTokenAddress,price)=>{
     //parameters
-    let rewardSteps = [
+    let feeSteps = [
         7776000,
         10368000,
         15552000,
@@ -10,15 +10,10 @@ const deployStaking =async (stakeTokenAddress,rewardTokenAddress,price)=>{
         100000000000
     ];
 
-    let rewardPerBlocks = [];
-    rewardPerBlocks.push(price.div(18800000).mul(30));
-    rewardPerBlocks.push(price.div(18800000).mul(25));
-    rewardPerBlocks.push(price.div(18800000).mul(20));
-    rewardPerBlocks.push(price.div(18800000).mul(15));
-    rewardPerBlocks.push(price.div(18800000).mul(10));
+    let rewardPersecond = price.mul(3).div(100).div(86400);
 
     const Staking = await hre.ethers.getContractFactory("staking");
-    const staking = await Staking.deploy(rewardSteps,rewardPerBlocks,stakeTokenAddress,rewardTokenAddress)
+    const staking = await Staking.deploy(feeSteps,rewardPersecond,stakeTokenAddress,rewardTokenAddress)
     .catch((err)=>{
         console.log("staking error : ",err);
     });
