@@ -1,3 +1,27 @@
 {
-    
+    "4002": {
+        "router": "0x8e12fD09f7A761AABaD0C8E0e574d797FE27b8A6",
+        "tokens": {
+            "USDT": "0xe161f5cf6B32620718C4F3A82606A799242eC59a",
+            "DM": "0xf96fcbB9E396d0F5316D5F695c96C8347255F7Ed",
+            "ETH": "0x4d3A297fA92CA1EFE79DDe0F20673f4836e5a0c4",
+            "TRX": "0xbaEcaFe19D519de1D5a235f98FB0d1A7C1942c28",
+            "FIL": "0x52b72E9b47772F08d4BE47510D0b7c0Ba5df3BB0",
+            "XRP": "0xff0b2a9d9Ab05074a634A1FDEbd2C7b75A8A1cf8",
+            "DOT": "0xCffF1956f6D4f8878192e293E81B28E72Bd01A1D",
+            "ADA": "0x6Ec7a336576d62FA728555280e5f8916EebcE304",
+            "HT": "0xF0886370b77cB2fAC87059DaCbE2478913a95a0E"
+        },
+        "staking": {
+            "DM": "0xe5b3c14bAE4979ED9Ccd188967E9E9ace37a29B5",
+            "USDT": "0x0Fe4a419E5ffd318759483b8179BBAe89DDdfD0D",
+            "ETH": "0x2612ce57fecdb461CA2d5AD4Ad68ae2Af1b9A120",
+            "TRX": "0xb9CE5010d121063F372B009F5ed802E15b610Fe5",
+            "FIL": "0x040F67a3D30349cFEb0B2cF42514a4Ba66750F35",
+            "XRP": "0xf16437c196D2F976cA7796e8ab83442f4bf7Ca13",
+            "DOT": "0xfe911Ac7bA834594bc5cDb44c51fFC9BEEF6FA0E",
+            "ADA": "0xD4a91a919c7812F8Df0D3EDCb1e9a9b4dDEB7651",
+            "HT": "0xE7f8c84BB925270122Dc504a0B5d1C96053E0Cd4"
+        }
+    }
 }

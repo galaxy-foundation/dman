@@ -173,7 +173,7 @@ contract staking is Ownable{
 		uint _totalStake = countTotalStake();
 		uint _totalReward = countTotalReward();
 		uint stake = countStake(stakerAddress);
-		_reward = _totalReward.mul(stake).div(_totalStake);
+		_reward = _totalStake==0 ? 0 : _totalReward.mul(stake).div(_totalStake);
 	}
 
 	function countFee(address stakerAddress) public view returns (uint _fee) {

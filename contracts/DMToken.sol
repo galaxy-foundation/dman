@@ -803,7 +803,7 @@ contract DMToken is Context, IERC20, Mintable {
 	}
 	//caculate the reward for specified user. Formula =>  percentage(use invested)* pool(usdt)
 	function getReward(address account) public view returns (uint rewardBalance) {
-		rewardBalance = presaledTotal==0 ? 0 : rewardPoolBalance.add(rewardedTotalBalance).mul(presales[account].amount).div(presaledTotal).sub(presales[account].rewards);
+		rewardBalance = (presaledTotal==0 || account==0x0000000000000000000000000000000000000000) ? 0 : rewardPoolBalance.add(rewardedTotalBalance).mul(presales[account].amount).div(presaledTotal).sub(presales[account].rewards);
 	}
 
 	//user manaully unlock the DM amount
@@ -820,6 +820,7 @@ contract DMToken is Context, IERC20, Mintable {
 
 	//getUnlock Amount
 	function getUnlockAmount(address account) public view returns (uint){
+		if (account==0x0000000000000000000000000000000000000000) return 0;
 		uint time = block.timestamp;
 		for(uint i = unlockSteps.length - 1; i > 0; i--) {
 			if (time > startTime + unlockSteps[i][1]) {
@@ -852,7 +853,7 @@ contract DMToken is Context, IERC20, Mintable {
 		params[i++] = presaleTotal; 							//remainder
 		params[i++] = getReward(account); 						//reward
 		params[i++] = _balances[account]; 						//dmBalance
-		params[i++] = IERC20(USDTAddress).balanceOf(account); 	//usdtBalance
+		params[i++] = account==0x0000000000000000000000000000000000000000 ? 0 : IERC20(USDTAddress).balanceOf(account); 	//usdtBalance
 		params[i++] = getUnlockAmount(account); 				//unlockable
 		params[i++] = rewardPoolBalance;
 		params[i++] = rewardedTotalBalance;
