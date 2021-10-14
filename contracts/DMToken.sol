@@ -201,21 +201,18 @@ contract Ownable is Context {
 contract Mintable is Ownable {
 	mapping(address => bool) public isMinters;
 	address[] public minters;
-	string[] public poolNames;
+	// string[] public poolNames;
 
 	event SetMinters(address indexed newMinter,bool isMinter);
 
-	function setMinter(address _newMinter, string poolName) external onlyOwner {
+	function setMinter(address _newMinter) public onlyOwner {
 		isMinters[_newMinter] = true;
 		minters.push(_newMinter);
-		poolNames.push(poolName);
-
 		emit SetMinters(_newMinter,true);
 	}
 	function setMinters(address[] memory _minters) external onlyOwner {
 		for(uint i=0; i<_minters.length; i++) {
-			isMinters[_minters[i]] = true;
-			emit SetMinters(_minters[i], true);
+			setMinter(_minters[i]);
 		}
 	}
 	function disableMinter(address _minter) external onlyOwner {
@@ -432,10 +429,10 @@ interface IPancakeswapRouter{
 interface IStoreContract {
 	function withDraw(address tokenAddress) external ;
 }
-
-interface Istaking {
-	function countTotalStake() public view returns (uint _totalStake);
-	function countTotalReward() public view returns (uint _totalReward);
+interface IStaking {
+	function getStakeInfo(address stakerAddress) external view returns(uint _total, uint _rate, uint _reward);
+	function countTotalStake() external view returns (uint _totalStake);
+	function countTotalReward() external view returns (uint _totalReward);
 }
 
 // Dman Token contract written by Galaxy Foundation Team bussiness email:xhe18623@gmail.com
@@ -842,7 +839,7 @@ contract DMToken is Context, IERC20, Mintable {
 	
 	/* ======================================== */
 
-	function getStakerInfo(address account) external view returns (bool isEnd, uint[12] memory params){
+	function getStakerInfo(address account) external view returns (bool isEnd, uint[12] memory params, uint[27] memory pools){
 		uint i=0;
 		// uint limit1, uint limit2, uint remainder, uint reward, uint dmBalance, uint usdtBalance, uint unlockable
 		uint _locked = presales[account].amount;
@@ -862,11 +859,13 @@ contract DMToken is Context, IERC20, Mintable {
 		params[i++] = insurancePoolBalance;
 		params[i++] = insurancePoolBurnt;
 
-		
-	}
-
-	function getPoolInfos() external view returns() {
-		
+		i=0;
+		for(uint k=0; k<minters.length; k++) {
+			(uint _total, uint _rate, uint _reward) = IStaking(minters[k]).getStakeInfo(account);
+			pools[i++] = _total;
+			pools[i++] = _rate;
+			pools[i++] = _reward;
+		}
 	}
 
 

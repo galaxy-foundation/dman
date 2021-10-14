@@ -6,6 +6,7 @@ import imgBgCell from '../assets/bg-cell.webp'
 import imgCurve from '../assets/mine-curve.svg'
 import imgRadial from '../assets/mine-radial.webp'
 import imgSpin from '../assets/spin.svg'
+import {useWallet} from 'use-wallet';
 
 import {MineState} from '../@types/store'
 import {useAppContext} from '../context'
@@ -13,31 +14,33 @@ import {AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer} from 
 import Skeleton, {SkeletonTheme} from 'react-loading-skeleton'
 
 const Mine = () => {
-	const [status, prices] = useAppContext();
-	const Daily = 328767;
+	const wallet = useWallet();
+	const [status,,prices] = useAppContext();
+	/* const Daily = 328767; */
 
 	const [data] = React.useState<MineState>({
 		pairs: [
-			{token1:'USDT', token2:'DM',  price:prices.USDT, priceCN:prices.USDT* prices.CNY, daily:Math.round(Daily*0.10), apr:30.34},  
-			{token1:'ETH',  token2:'DM',  price:prices.ETH,  priceCN:prices.ETH * prices.CNY, daily:Math.round(Daily*0.10), apr:-30.34},  
-			{token1:'TRX',  token2:'DM',  price:prices.TRX,  priceCN:prices.TRX * prices.CNY, daily:Math.round(Daily*0.10), apr:30.34},  
-			{token1:'FIL',  token2:'DM',  price:prices.FIL,  priceCN:prices.FIL * prices.CNY, daily:Math.round(Daily*0.10), apr:30.34},  
-			{token1:'XRP',  token2:'DM',  price:prices.XRP,  priceCN:prices.XRP * prices.CNY, daily:Math.round(Daily*0.10), apr:30.34},  
-			{token1:'DOT',  token2:'DM',  price:prices.DOT,  priceCN:prices.DOT * prices.CNY, daily:Math.round(Daily*0.10), apr:30.34},  
-			{token1:'ADA',  token2:'DM',  price:prices.ADA,  priceCN:prices.ADA * prices.CNY, daily:Math.round(Daily*0.10), apr:-30.34},  
-			{token1:'HT',   token2:'DM',  price:prices.HT,   priceCN:prices.HT  * prices.CNY, daily:Math.round(Daily*0.8),  apr:30.34},  
-			{token1:'DM',   token2:'DM',  price:prices.DM,   priceCN:prices.DM  * prices.CNY, daily:Math.round(Daily*0.22), apr:-30.34},  
+			{token1:'DM',   token2:'DM',  reward:status.pools["DM"].reward,    daily:status.pools['DM'].daily,   apr: status.pools['DM'].apr },  
+			{token1:'USDT', token2:'DM',  reward:status.pools["USDT"].reward,  daily:status.pools['USDT'].daily, apr: status.pools['USDT'].apr },  
+			{token1:'ETH',  token2:'DM',  reward:status.pools["ETH"].reward,   daily:status.pools['ETH'].daily,  apr: status.pools['ETH'].apr },  
+			{token1:'TRX',  token2:'DM',  reward:status.pools["TRX"].reward,   daily:status.pools['TRX'].daily,  apr: status.pools['TRX'].apr },  
+			{token1:'FIL',  token2:'DM',  reward:status.pools["FIL"].reward,   daily:status.pools['FIL'].daily,  apr: status.pools['FIL'].apr },  
+			{token1:'XRP',  token2:'DM',  reward:status.pools["XRP"].reward,   daily:status.pools['XRP'].daily,  apr: status.pools['XRP'].apr },  
+			{token1:'DOT',  token2:'DM',  reward:status.pools["DOT"].reward,   daily:status.pools['DOT'].daily,  apr: status.pools['DOT'].apr },  
+			{token1:'ADA',  token2:'DM',  reward:status.pools["ADA"].reward,   daily:status.pools['ADA'].daily,  apr: status.pools['ADA'].apr },  
+			{token1:'HT',   token2:'DM',  reward:status.pools["HT"].reward,    daily:status.pools['HT'].daily,   apr: status.pools['HT'].apr },  
 		],
 
 		chart: [
 			{time:'17:00', y:100},
 			{time:'18:00', y:200},
-			{time:'19:00', y:150},
+			{time:'19:00', y:150}, 
 			{time:'20:00', y:300},
 			{time:'21:00', y:250},
 			{time:'22:00', y:500}
 		]
 	});
+	const connected = wallet.status==="connected"
 
 	/* useEffect(()=>{
 		console.log("prices",prices);
@@ -143,11 +146,11 @@ const Mine = () => {
 									<span>{v.token1}/{v.token2}</span>
 								</td>
 								<td>
-									<div>$ {prices[v.token1]}</div>
-									<small>￥ {v.priceCN}</small>
+									<div>{connected ? '$ '+v.reward : '-'}</div>
+									<small>{connected ? '￥ ' + Number((Number(v.reward) *prices.CNY).toFixed(2)) : '-'}</small>
 								</td>
 								<td>
-									<div>{v.daily} DM</div>
+									<div>{connected ? v.daily + ' DM' : '-'}</div>
 								</td>
 								<td>
 									<Link to = {`/mine/action/${v.token1}`}>

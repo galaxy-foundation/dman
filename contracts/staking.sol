@@ -158,8 +158,10 @@ contract staking is Ownable{
 
 	/* ----------------- personal counts ----------------- */
 
-	function getAccount(address stakerAddress) public view returns(uint _stake) {
-
+	function getStakeInfo(address stakerAddress) public view returns(uint _total, uint _rate, uint _reward) {
+		_total = totalStakingAmount;
+		_rate = stakers[stakerAddress].stakingAmount;
+		_reward = countReward(stakerAddress);
 	}
 	function countStake(address stakerAddress) public view returns(uint _stake) {
 		if(totalStakingAmount == 0) return 0;

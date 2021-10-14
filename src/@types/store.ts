@@ -15,8 +15,7 @@ export type Data =  {
 export type Pair =  {
 	token1:string,
 	token2:string,
-	price:number,
-	priceCN:number,
+	reward:string,
 	daily:number,
 	apr:number
 }

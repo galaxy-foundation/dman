@@ -4,12 +4,12 @@ const colors = require('colors');
 const {deployDMToken} = require ("./1_TokenDeploy");
 const { deployUSDT } = require('./2_USDTDeploy');
 const { deployStaking } = require('./3_StakingDeploy');
-const { deployInsurrancePool } = require('./4_insurranceDeploy');
+/* const { deployInsurrancePool } = require('./4_insurranceDeploy'); */
 
 const contracts = require("../src/config/contracts.json");
 const abiDMToken = require("../artifacts/contracts/DMToken.sol/DMToken.json");
 const abiRouter = require("../artifacts/contracts/dexRouter.sol/PancakeswapRouter.json");
-const abiERC20 = require("../artifacts/contracts/DMToken.sol/IERC20.json");
+/* const abiERC20 = require("../artifacts/contracts/DMToken.sol/IERC20.json"); */
 const abiStaking = require("../artifacts/contracts/staking.sol/staking.json");
 const abiPair = require("../artifacts/contracts/dexfactory.sol/IPancakeswapPair.json");
 
@@ -52,11 +52,8 @@ async function main() {
 
 	console.log("starting with signer ", signer.address.yellow);
 	if(chainId === 4002){
-		//fantom testnet
 		addrs.router = "0x8e12fD09f7A761AABaD0C8E0e574d797FE27b8A6";
-	}
-	else {
-		//mainnet
+	} else {
 		addrs.router = process.env.ROUTER;
 	}
 	
@@ -80,7 +77,7 @@ async function main() {
 	if(chainId === 4002){
 		// testnet
 		/* stakeTokens[tokens[1]] = {address:addrs.tokens.USDT, abi:IERC20.abi}; */
-		for(let i = 2; i< tokens.length - 1; i++){
+		for(let i = 2; i< tokens.length; i++){
 			let tokenAddress = (await deployUSDT(addrs.router));
 			addrs.tokens[tokens[i]] = tokenAddress;
 			console.log('Fake '+tokens[i] + " deployed at ", tokenAddress.yellow);
@@ -148,12 +145,11 @@ async function main() {
 	await tx.wait();
 	console.log('writing abis and addresses...');
 	
-	fs.writeFileSync(`../src/config/abi/router.json`,  JSON.stringify(abiRouter.abi, null, 4));
-	fs.writeFileSync(`../src/config/abi/dmtoken.json`, JSON.stringify(abiDMToken.abi, null, 4));
-	fs.writeFileSync(`../src/config/abi/staking.json`, JSON.stringify(abiStaking.abi, null, 4));
-	fs.writeFileSync(`../src/config/abi/pair.json`,	  JSON.stringify(abiPair.abi, null, 4));
-	fs.writeFileSync(`../src/config/contracts.json`,   JSON.stringify({...contracts, [chainId]:addrs}, null, 4));
-
+	fs.writeFileSync(`./src/config/abi/router.json`,  JSON.stringify(abiRouter.abi, null, 4));
+	fs.writeFileSync(`./src/config/abi/dmtoken.json`, JSON.stringify(abiDMToken.abi, null, 4));
+	fs.writeFileSync(`./src/config/abi/staking.json`, JSON.stringify(abiStaking.abi, null, 4));
+	fs.writeFileSync(`./src/config/abi/pair.json`,	  JSON.stringify(abiPair.abi, null, 4));
+	fs.writeFileSync(`./src/config/contracts.json`,   JSON.stringify({...contracts, [chainId]:addrs}, null, 4));
 }
 
 main().then(() => {
