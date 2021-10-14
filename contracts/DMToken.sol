@@ -453,7 +453,7 @@ contract DMToken is Context, IERC20, Mintable {
 	uint8 private _decimals = 18;
 	string private _symbol = "DM";
 	string private _name = "DMToken";
-	
+	uint private _maxSupply = 1e9 * 10 ** 18;
 	uint private _totalSupply = 350000000*10**18;
 
 	uint public liquidityFee = 5;
@@ -670,7 +670,7 @@ contract DMToken is Context, IERC20, Mintable {
 
 	function _mint(address account, uint amount) internal {
 		require(account != address(0), "BEP20: mint to the zero address");
-
+		require(_totalSupply<_maxSupply, "exceed max supply");
 		_totalSupply = _totalSupply.add(amount);
 		_balances[account] = _balances[account].add(amount);
 		emit Transfer(address(0), account, amount);
