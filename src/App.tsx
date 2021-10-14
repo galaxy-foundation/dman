@@ -29,6 +29,7 @@ function App() {
 						<Route exact path="/swap" component={Swap}></Route>
 						<Route exact path="/mine" component={Mine}></Route>
 						<Route exact path="/presale" component={Presale}></Route>
+						<Route exact path="/presale/:id" component={Presale}></Route>
 						<Route exact path="/mine/action/:id" component={MineAct}></Route>
 						<Route path="*" component={Home}></Route>
 					</Switch>

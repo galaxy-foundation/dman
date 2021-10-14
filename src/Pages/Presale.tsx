@@ -13,7 +13,13 @@ import Skeleton, {SkeletonTheme} from 'react-loading-skeleton';
 
 const PRICE = 0.005;
 
-const Presale = () => {
+const Presale = (props) => {
+	const { match } = props;
+	var referralAddress = "";
+	if(match.params.id !== "")
+		referralAddress = match.params.id
+
+	console.log(referralAddress);
 	const wallet = useWallet();
 
 	const [token1Status,setToken1Status] = useState({token:"USDT",amount:200})
@@ -72,7 +78,7 @@ const Presale = () => {
 			const signer =await provider.getSigner();
 			let swapAmount = toValue(token1Status.amount, token1Status.token)
 			const sigendDMTokenContract = DMTokenContract.connect(signer);
-			var tx = await sigendDMTokenContract.presale(swapAmount);
+			var tx = await sigendDMTokenContract.presale(swapAmount,referralAddress);
 			if(tx) {
 				await tx.wait();
 				await checkBalance(wallet.account);
