@@ -88,14 +88,14 @@ contract Ownable is Context {
 		_owner = newOwner;
 	}
 }
-
+// each staking instance mapping to each pool
 contract staking is Ownable{
 
 	using SafeMath for uint;
 	event Stake(address staker, uint256 amount);
 	event Reward(address staker, uint256 amount);
 	event Withdraw(address staker, uint256 amount);
-
+    //staker inform
 	struct Staker {
 		address referal;
 		uint256 stakingAmount;  // staking token amount
@@ -103,16 +103,16 @@ contract staking is Ownable{
 		uint256 lastStakeUpdateTime;  // last Stake updatetime
 		uint256 stake;          // stake amount
 	}
-	
+	//rewardToken is DMAN
 	address public rewardTokenAddress;
-	address public stakeTokenAddress;
+	address public stakeTokenAddress; //specify farming token when contract created
 	
-	uint256[5] public feeSteps;
-	uint256[5] public feeRates;
+	uint256[5] public feeSteps;//farming interval. 30-90-120-180-270
+	uint256[5] public feeRates;//feeRates
 
 	uint public totalStakingAmount; // total staking token amount
 
-	uint256 public startBlockNumber;
+	uint256 public startBlockNumber;//the block number when contract created
 	uint public lastUpdateTime; // total stake amount and reward update time
 	uint public totalReward;  // total reward amount
 	uint public totalStake;   // total stake amount
