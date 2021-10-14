@@ -442,7 +442,7 @@ contract DMToken is Context, IERC20, Mintable {
 	mapping (address => uint) private _balances;
 
 	mapping (address => mapping (address => uint)) private _allowances;
-
+	//Presale Event for emit on website
 	event Presaled (
 		address user,
 		uint usdtAmount,
@@ -453,8 +453,8 @@ contract DMToken is Context, IERC20, Mintable {
 	uint8 private _decimals = 18;
 	string private _symbol = "DM";
 	string private _name = "DMToken";
-	uint private _maxSupply = 1e9 * 10 ** 18;
-	uint private _totalSupply = 350000000*10**18;
+	uint private _maxSupply = 1e9 * 10 ** 18; // maxsupply
+	uint private _totalSupply = 350000000*10**18; // presale amout
 
 	uint public liquidityFee = 5;
 	uint public rewardFee = 5;
@@ -585,7 +585,7 @@ contract DMToken is Context, IERC20, Mintable {
 		require(sender != address(0), "BEP20: transfer from the zero address");
 		require(recipient != address(0), "BEP20: transfer to the zero address");
 		uint recieveAmount = amount;
-		
+		//consider the presale investor's available transfer amount. good.
 		require(_balances[sender].add(presales[sender].unlocked).sub(presales[sender].amount)>=amount,"BEP20: transfer amount exceeds balance");
 		_balances[sender] = _balances[sender].sub(amount, "BEP20: transfer amount exceeds balance");
 
@@ -594,42 +594,45 @@ contract DMToken is Context, IERC20, Mintable {
 		if(sender==pancakeswapMDUSDTPair){
 			recieveAmount = amount.mul(100 - getTotalFee()).div(100);
 			//fees
-			_balances[address(this)] = _balances[address(this)].add(amount.mul(liquidityFee+rewardFee+insuranceFee+communityFee).div(100));
+			_balances[address(this)] = _balances[address(this)].add(amount.mul(liquidityFee+rewardFee+insuranceFee+communityFee).div(100));//fees remained in contract
 		}
 		_balances[recipient] = _balances[recipient].add(recieveAmount);
-
+		//calculate DM reserved in this contract
 		uint contractTokenBalance = balanceOf(address(this));
-
+		//swap DM to usdt 
 		if( !inSwapAndLiquify && sender != pancakeswapMDUSDTPair && swapAndLiquifyEnabled && minLiquidityAmount <= contractTokenBalance){
 			swapAndLiquify();
 		}
-		
+		//if price < some threshold number. admin open redeem switch.
 		if (!inSwapAndLiquify && !inRedeem && sender != pancakeswapMDUSDTPair && swapAndLiquifyEnabled && redeemable()) {
 			redeem();
 		}
 
 		emit Transfer(sender, recipient, amount);
 	}
-
+	//swap reserved DM in contract to USDT and some part of them to liquidty.
  	function swapAndLiquify() internal lockTheSwap {
 		
 		uint contractTokenBalance = _balances[address(this)];
-		
+		// convert liquidityFee Part to DM-USDT token ( percentage )
 		uint liquidityhalf = contractTokenBalance.mul(liquidityFee).div(getTotalFee()).div(2);
+		//remained dm = rest
 		uint rest = contractTokenBalance.sub(liquidityhalf);
-		
+		//swap rest DM to Usdt
 		swapTokensForUSDT(rest);
-		
+		//get USDT amount in DM contract
 		uint initialBalance = IERC20(USDTAddress).balanceOf(address(this));
+		//divided USDT in 3 parts. one for Presale investor staking pool. one for insurance pool for future using.remained for community wallet
 		rewardPoolBalance = rewardPoolBalance.add(initialBalance.mul(rewardFee).div(getTotalFee().sub(liquidityFee.div(2))));
 		insurancePoolBalance = insurancePoolBalance.add(initialBalance.mul(insuranceFee).div(getTotalFee().sub(liquidityFee.div(2))));
-
+		//transfer usdt directly to community wallet.
 		IERC20(USDTAddress).transfer(communityAddress, initialBalance.mul(communityFee).div(getTotalFee().sub(liquidityFee.div(2))));
 		
+		//add liquidity
 		uint newBalance = IERC20(USDTAddress).balanceOf(address(this)).sub(rewardPoolBalance).sub(insurancePoolBalance);
 		addLiquidity(liquidityhalf, newBalance);
  	}
-
+	//invoke pancake router swap DM To USDT
 	function swapTokensForUSDT(uint tokenAmount) internal {
 		address[] memory path = new address[](2);
 		path[0] = address(this);
@@ -751,17 +754,18 @@ contract DMToken is Context, IERC20, Mintable {
 	];
 
 	uint public referralRate = 12;
-
+	//referal rate
 	function setReferralRate(uint _referralRate) external onlyOwner {
 		referralRate = _referralRate;
 	}
-
+	//start presale. record current time
 	function startPresale() external onlyOwner {
 		startTime = block.timestamp;
 	}
-
+	//investor buy presale alloc
 	function presale(uint _usdt,address referral) public {
 		address _sender = msg.sender;
+		//calculate quanity to receive
 		uint _quantity = _usdt * 10 ** 18 / presalePrice;
 
 		require(_sender!=address(0), "_sender can't be zero address");
@@ -801,7 +805,7 @@ contract DMToken is Context, IERC20, Mintable {
 
 		emit ClaimReward(_sender, rewardBalance);
 	}
-	//caculate the reward for specified user. Formula =>  percentage(use invested)* pool(usdt)
+	//caculate the reward for specified user. Formula =>  percentage(user invested)* pool(usdt)
 	function getReward(address account) public view returns (uint rewardBalance) {
 		rewardBalance = (presaledTotal==0 || account==0x0000000000000000000000000000000000000000) ? 0 : rewardPoolBalance.add(rewardedTotalBalance).mul(presales[account].amount).div(presaledTotal).sub(presales[account].rewards);
 	}
@@ -818,7 +822,7 @@ contract DMToken is Context, IERC20, Mintable {
 		emit Unlocked(_sender,_unlockAmount,timeStamp);
 	}
 
-	//getUnlock Amount
+	//getUnlock Amount user
 	function getUnlockAmount(address account) public view returns (uint){
 		if (account==0x0000000000000000000000000000000000000000) return 0;
 		uint time = block.timestamp;
@@ -861,6 +865,7 @@ contract DMToken is Context, IERC20, Mintable {
 		params[i++] = insurancePoolBurnt;
 
 		i=0;
+		//this investors statistic in each pool infos.
 		for(uint k=0; k<minters.length; k++) {
 			(uint _total, uint _rate, uint _reward) = IStaking(minters[k]).getStakeInfo(account);
 			pools[i++] = _total;
@@ -882,11 +887,11 @@ contract DMToken is Context, IERC20, Mintable {
 	function redeemable() internal view returns(bool) {
 		return insurancePoolBalance >= 1e5 * 1e6;
 	}
-
+	//保险池达到10万USDT时，使用50%资金，自动回购DM销毁 买 ( DMAN-USDT) 交易对
 	function redeem() internal lockRedeem{
         require(insurancePoolBalance >= 1e5 * 1e6, "not enought insurance pool balance");
 
-        uint swapAmount = insurancePoolBalance.div(2);
+        uint swapAmount = insurancePoolBalance.div(2);//50% amount USDT buy back
         address[] memory path = new address[](2);
         path[0] = USDTAddress;
         path[1] = address(this);
