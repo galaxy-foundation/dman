@@ -2,7 +2,7 @@ import React ,{createContext, useContext, useState, useEffect, useMemo} from 're
 
 import { toast } from 'react-toastify';
 import {ethers} from "ethers"
-import {DMTokenContract,USDTContract,ExchangeRouter,poolAbi,provider} from "./contracts";
+import {DMTokenContract,USDTContract,ExchangeRouter,poolAbi,provider} from "./config";
 import {tips, NF, fromValue, toValue, tokenData, errHandler} from './util';
 import { useWallet } from "use-wallet";
 import axios from "axios";
@@ -32,7 +32,18 @@ export interface ContractStatus {
 	insurancePool: number
 	insuranceBurnt: number
 }
-
+export interface CURRENCYPRICE {
+	CNY:	number
+	DM:		number
+	USDT:	number
+	ETH:	number
+	TRX:	number
+	FIL:	number
+	XRP:	number
+	DOT:	number
+	ADA:	number
+	HT:		number
+}
 export interface PoolResearve {
 	reserve0: Number 
 	reserve1: Number
@@ -65,7 +76,8 @@ export default function Provider ({children}) {
 		reserve1:0
 	})
 
-	const [tokenPrices, setTokenPrices] = useState<any>({
+	const [tokenPrices, setTokenPrices] = useState<CURRENCYPRICE>({
+		"CNY": 6.4,
 		"DM": 1,
 		"USDT": 1,
 		"ETH": 3501.15,
@@ -100,7 +112,7 @@ export default function Provider ({children}) {
 
 	const updateTokenPrices = async () => {
 		try{
-			let tokenPrices = await axios.post(process.env.REACT_APP_ENDPOINT+"api/getCoinPrice");
+			let tokenPrices = await axios.post(process.env.REACT_APP_ENDPOINT+"api/prices");
 			setTokenPrices(tokenPrices.data)
 		}catch(err){
 

@@ -1,32 +1,34 @@
-import React, { useEffect } from 'react';
-import { Link } from "react-router-dom";
-/* import { useSelector} from 'react-redux'; */
-import Layout from '../components/Layout';
+import React, { useEffect } from 'react'
+import { Link } from "react-router-dom"
+import Layout from '../components/Layout'
 import Icons from '../components/Icons'
-import imgBgCell from '../assets/bg-cell.webp';
-import imgCurve from '../assets/mine-curve.svg';
-import imgRadial from '../assets/mine-radial.webp';
-import imgSpin from '../assets/spin.svg';
+import imgBgCell from '../assets/bg-cell.webp'
+import imgCurve from '../assets/mine-curve.svg'
+import imgRadial from '../assets/mine-radial.webp'
+import imgSpin from '../assets/spin.svg'
 
-import {MineState} from '../@types/store';
-import {useAppContext} from '../context';
-import {AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer} from 'recharts';
-import Skeleton, {SkeletonTheme} from 'react-loading-skeleton';
+import {MineState} from '../@types/store'
+import {useAppContext} from '../context'
+import {AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer} from 'recharts'
+import Skeleton, {SkeletonTheme} from 'react-loading-skeleton'
 
 const Mine = () => {
-	const [status,,tokenPrices] = useAppContext();
+	const [status, prices] = useAppContext();
+	const Daily = 328767;
+
 	const [data] = React.useState<MineState>({
 		pairs: [
-			{token1:'USDT',token2:'DM',price:6718.75,priceCN:4561150.44,daily:0.01,apr:30.34},
-			{token1:'ETH',token2:'DM',price:6718.75,priceCN:4561150.44,daily:0.01,apr:-30.34},
-			{token1:'TRX',token2:'DM',price:6718.75,priceCN:4561150.44,daily:0.01,apr:30.34},
-			{token1:'FIL',token2:'DM',price:6718.75,priceCN:4561150.44,daily:0.01,apr:30.34},
-			{token1:'XRP',token2:'DM',price:6718.75,priceCN:4561150.44,daily:0.01,apr:30.34},
-			{token1:'DOT',token2:'DM',price:6718.75,priceCN:4561150.44,daily:0.01,apr:30.34},
-			{token1:'ADA',token2:'DM',price:6718.75,priceCN:4561150.44,daily:0.01,apr:-30.34},
-			{token1:'HT',token2:'DM',price:6718.75,priceCN:4561150.44,daily:0.01,apr:30.34},
-			{token1:'DM',token2:'DM',price:6718.75,priceCN:4561150.44,daily:0.01,apr:-30.34},
+			{token1:'USDT', token2:'DM',  price:prices.USDT, priceCN:prices.USDT* prices.CNY, daily:Math.round(Daily*0.10), apr:30.34},  
+			{token1:'ETH',  token2:'DM',  price:prices.ETH,  priceCN:prices.ETH * prices.CNY, daily:Math.round(Daily*0.10), apr:-30.34},  
+			{token1:'TRX',  token2:'DM',  price:prices.TRX,  priceCN:prices.TRX * prices.CNY, daily:Math.round(Daily*0.10), apr:30.34},  
+			{token1:'FIL',  token2:'DM',  price:prices.FIL,  priceCN:prices.FIL * prices.CNY, daily:Math.round(Daily*0.10), apr:30.34},  
+			{token1:'XRP',  token2:'DM',  price:prices.XRP,  priceCN:prices.XRP * prices.CNY, daily:Math.round(Daily*0.10), apr:30.34},  
+			{token1:'DOT',  token2:'DM',  price:prices.DOT,  priceCN:prices.DOT * prices.CNY, daily:Math.round(Daily*0.10), apr:30.34},  
+			{token1:'ADA',  token2:'DM',  price:prices.ADA,  priceCN:prices.ADA * prices.CNY, daily:Math.round(Daily*0.10), apr:-30.34},  
+			{token1:'HT',   token2:'DM',  price:prices.HT,   priceCN:prices.HT  * prices.CNY, daily:Math.round(Daily*0.8),  apr:30.34},  
+			{token1:'DM',   token2:'DM',  price:prices.DM,   priceCN:prices.DM  * prices.CNY, daily:Math.round(Daily*0.22), apr:-30.34},  
 		],
+
 		chart: [
 			{time:'17:00', y:100},
 			{time:'18:00', y:200},
@@ -37,13 +39,15 @@ const Mine = () => {
 		]
 	});
 
-	useEffect(()=>{
-		console.log("tokenPrices",tokenPrices);
-	},[])
+	/* useEffect(()=>{
+		console.log("prices",prices);
+	},[]) */
+
 	const chart = {
 		min: -1000,
 		max: 0
 	};
+
 	for(let v of data.chart) {
 		if (v.y && chart.max < v.y) {
 			chart.max = v.y;
@@ -54,7 +58,7 @@ const Mine = () => {
 			chart.min = v.y;
 		}
 	}
-	/* const L = useSelector(state => state.contract.L); */
+	
 	return <Layout className="mine">
 		<div style={{position:'relative'}}>
 			<div>
@@ -139,8 +143,8 @@ const Mine = () => {
 									<span>{v.token1}/{v.token2}</span>
 								</td>
 								<td>
-									<div>$ {tokenPrices[v.token1]}</div>
-									<small>￥ {parseFloat((tokenPrices[v.token1]*6.4).toFixed(3))}</small>
+									<div>$ {prices[v.token1]}</div>
+									<small>￥ {v.priceCN}</small>
 								</td>
 								<td>
 									<div>{v.daily} DM</div>
@@ -154,7 +158,7 @@ const Mine = () => {
 						</tbody>
 					</table>
 				</div>
-				<div className="mt-3" style={{backgroundColor:'#2e3548', borderRadius: 5, padding:20}}>
+				{/* <div className="mt-3" style={{backgroundColor:'#2e3548', borderRadius: 5, padding:20}}>
 					<div style={{display:'flex',justifyContent:'space-between'}}>
 						<div className="text-center">
 							<h3>选区总量</h3>
@@ -179,7 +183,7 @@ const Mine = () => {
 							<div>12</div>
 						</div>
 					</div>
-				</div>
+				</div> */}
 				<div className="mt-4 text-center">
 					<h1><span style={{color:'#cc0404'}}>DM</span><span style={{color:'#14d1cb'}}>Staking</span></h1>
 					<h2 className="mt-3">流动性总锁仓</h2>

@@ -14,7 +14,7 @@ import imgICExchange from '../assets/swap-ic-exchange.webp';
 import {ethers} from "ethers"
 import {tips, NF, fromValue, toValue, tokenData, errHandler} from '../util';
 import {useWallet} from 'use-wallet';
-import {DMTokenContract,USDTContract,ExchangeRouter} from "../contracts";
+import {DMTokenContract,USDTContract,ExchangeRouter} from "../config";
 
 import Skeleton, {SkeletonTheme} from 'react-loading-skeleton';
 import {useAppContext} from '../context';

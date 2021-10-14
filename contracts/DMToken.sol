@@ -818,14 +818,16 @@ contract DMToken is Context, IERC20, Mintable {
 	
 	/* ======================================== */
 
-	function getStakerInfo(address account) external view returns (bool isEnd, uint[11] memory params){
+	function getStakerInfo(address account) external view returns (bool isEnd, uint[12] memory params){
 		uint i=0;
 		// uint limit1, uint limit2, uint remainder, uint reward, uint dmBalance, uint usdtBalance, uint unlockable
 		uint _locked = presales[account].amount;
+
 		isEnd = block.timestamp > startTime + presaleEndTime;
 
-		params[i++] = _locked > 0 ? 0 : presaleLimit1; 		//limit1
-		params[i++] = presaleLimit2 - _locked; 				//limit2
+		params[i++] = startTime + presaleEndTime; 		 		//presale endtime
+		params[i++] = _locked > 0 ? 0 : presaleLimit1; 			//limit1
+		params[i++] = presaleLimit2 - _locked; 					//limit2
 		params[i++] = presaleTotal; 							//remainder
 		params[i++] = getReward(account); 						//reward
 		params[i++] = _balances[account]; 						//dmBalance
@@ -835,6 +837,7 @@ contract DMToken is Context, IERC20, Mintable {
 		params[i++] = rewardedTotalBalance;
 		params[i++] = insurancePoolBalance;
 		params[i++] = insurancePoolBurnt;
+
 		
 	}
 

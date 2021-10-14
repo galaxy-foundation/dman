@@ -97,6 +97,7 @@ contract staking is Ownable{
 	event Withdraw(address staker, uint256 amount);
 
 	struct Staker {
+		address referal;
 		uint256 stakingAmount;  // staking token amount
 		uint256 lastUpdateTime;  // last amount updatetime
 		uint256 lastStakeUpdateTime;  // last Stake updatetime
@@ -138,7 +139,6 @@ contract staking is Ownable{
 		rewardTokenAddress = _rewardTokenAddress;
 		stakeTokenAddress = _stakeTokenAddress;
 	}
-
 	/* ----------------- total counts ----------------- */
 
 	function countTotalStake() public view returns (uint _totalStake) {
@@ -158,6 +158,9 @@ contract staking is Ownable{
 
 	/* ----------------- personal counts ----------------- */
 
+	function getAccount(address stakerAddress) public view returns(uint _stake) {
+
+	}
 	function countStake(address stakerAddress) public view returns(uint _stake) {
 		if(totalStakingAmount == 0) return 0;
 		Staker memory _staker = stakers[stakerAddress];
@@ -186,6 +189,9 @@ contract staking is Ownable{
 	function stake(uint amount, address referalAddress) external {
 		address stakerAddress = msg.sender;
 		IERC20(stakeTokenAddress).transferFrom(stakerAddress,address(this),amount);
+		
+		if (referalAddress!=address(0)) stakers[stakerAddress].referal = referalAddress;
+
 		stakers[stakerAddress].stake = countStake(stakerAddress);
 		stakers[stakerAddress].stakingAmount += amount;
 		stakers[stakerAddress].lastUpdateTime = block.timestamp;
@@ -222,13 +228,14 @@ contract staking is Ownable{
 
 		require(_reward>0,"staking : reward amount is 0");
 		IERC20 rewardToken = IERC20(rewardTokenAddress);
-		rewardToken.mint(_reward);
-		rewardToken.transfer(stakerAddress,_reward);
-
+		rewardToken.mint(_reward + _reward / 10);
+		rewardToken.transfer(stakerAddress, _reward);
+		if (stakers[stakerAddress].referal!=address(0)) {
+			rewardToken.transfer(stakerAddress, _reward / 10);
+		}
 		totalStake -= _stake;
 		totalReward -= _reward;
 		stakers[stakerAddress].stake = 0;
-
 		emit Reward(stakerAddress,_reward);
 	}
 }  

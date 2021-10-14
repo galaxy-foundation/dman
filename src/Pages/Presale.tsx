@@ -6,7 +6,7 @@ import imgBG03 from '../assets/swap-bg-03.webp';
 import imgIC01 from '../assets/swap-ic-01.webp';
 import {ethers} from "ethers"
 import {useWallet} from 'use-wallet';
-import {DMTokenContract} from "../contracts";
+import {DMTokenContract} from "../config";
 
 import {useAppContext} from '../context';
 import Skeleton, {SkeletonTheme} from 'react-loading-skeleton';
