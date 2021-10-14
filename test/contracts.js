@@ -55,7 +55,7 @@ describe("Token contract deploy", function () {
 		const DMToken = await ethers.getContractFactory("DMToken");
 		dMToken = await DMToken.deploy();
 
-        const Store = await hre.ethers.getContractFactory("store");
+        const Store = await ethers.getContractFactory("store");
         const store = await Store.deploy();
 
         await store.deployed();
@@ -190,12 +190,15 @@ describe("dM test", function () {
 		var tx = await usdt.approve(dMToken.address,buyAmount);
 		await tx.wait();
 
-		tx = await dMToken.presale(buyAmount);
+		tx = await dMToken.presale(buyAmount,userWallet.address);
 		
 		var res = await tx.wait();
 		let sumEvent = res.events.pop();
 		let  buyUsdtAmount= sumEvent.args[1];
 		let  buyDMTokenAmount= sumEvent.args[2];
+
+		var referralAmount = await dMToken.balanceOf(userWallet.address);
+		expect(Number(referralAmount)).to.equal(Number("12000000000000000000000"),"referral amount");
 
 		expect(buyDMTokenAmount).to.equal("100000000000000000000000","presale amount");
 

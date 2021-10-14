@@ -1685,7 +1685,7 @@
         ]
     },
     "DM": {
-        "address": "0x9309Ad4452f82506c5DDdB0F1A2FAD02f0998175",
+        "address": "0xc3147e8396AFBe4F9eC33EEe7e9b98F6E789Df22",
         "abi": [
             {
                 "inputs": [],
@@ -2311,6 +2311,11 @@
                         "internalType": "uint256",
                         "name": "_usdt",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "referral",
+                        "type": "address"
                     }
                 ],
                 "name": "presale",
@@ -2419,6 +2424,19 @@
                     {
                         "internalType": "uint256",
                         "name": "rewards",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "referralRate",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
                         "type": "uint256"
                     }
                 ],
@@ -2542,6 +2560,19 @@
                     }
                 ],
                 "name": "setMinters",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "_referralRate",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "setReferralRate",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -2681,7 +2712,7 @@
         ]
     },
     "USDT": {
-        "address": "0xddE4BAf17cFe7a13C25927B84F32eF333e54D328",
+        "address": "0x9Eb443225059306338C8F4FfCd3B5F904a595F61",
         "abi": [
             {
                 "anonymous": false,
@@ -2921,7 +2952,7 @@
         ]
     },
     "ETH": {
-        "address": "0xD3d6310397E23BF70bd192AfB30E8317438C3f6c",
+        "address": "0x0989bCa3cf25fDF9a8490935a1438F543a0c95cb",
         "abi": [
             {
                 "anonymous": false,
@@ -3161,7 +3192,7 @@
         ]
     },
     "TRX": {
-        "address": "0x55367e945a3F05Fc2560059ca65056Ff882a8729",
+        "address": "0x48c2eC75449ed0BCc61A6610Cba9C56285693832",
         "abi": [
             {
                 "anonymous": false,
@@ -3401,7 +3432,7 @@
         ]
     },
     "FIL": {
-        "address": "0xEa3F5923d728d1326813f71242F125dEf7429544",
+        "address": "0xe2D3d413827AFd283B9c26A214d644B3A797c95A",
         "abi": [
             {
                 "anonymous": false,
@@ -3641,7 +3672,7 @@
         ]
     },
     "XRP": {
-        "address": "0x19F5889a5e315413b3A14066F79635b70222F26f",
+        "address": "0xD955469a57DBf0CB859c1079aBD898E65AE536Ba",
         "abi": [
             {
                 "anonymous": false,
@@ -3881,7 +3912,7 @@
         ]
     },
     "DOT": {
-        "address": "0x2Eaf27341AB2a5A949d5808aCd31eFF388a74679",
+        "address": "0x3fFBA52EFeE72Ff8eF62A3fdeb266A964b12bD7D",
         "abi": [
             {
                 "anonymous": false,
@@ -4121,7 +4152,7 @@
         ]
     },
     "ADA": {
-        "address": "0x0BeCE775FA38C2B854D054Fc27e2D474ECd8042f",
+        "address": "0x7e34E0e18B2c7dA4351DEAf7DeD3735638C5FCFF",
         "abi": [
             {
                 "anonymous": false,
@@ -4361,7 +4392,7 @@
         ]
     },
     "HT": {
-        "address": "0x3863874ADDb84313b255799484fEE8c78e2827b5",
+        "address": "0x6E4cb4f9cE1D8238344001f9A2C8663514CDD745",
         "abi": [
             {
                 "anonymous": false,
@@ -4601,7 +4632,7 @@
         ]
     },
     "DMStaking": {
-        "address": "0x5864ee9F0C0a7fA18489B46FA8B8220B989Feb8D",
+        "address": "0x569a93d61506947E9FC6D007C23c1853601b160e",
         "abi": [
             {
                 "inputs": [
@@ -5078,7 +5109,7 @@
         ]
     },
     "USDTStaking": {
-        "address": "0xF83f1712a88543f8126eD517C001d117E414Ce1F",
+        "address": "0xafCFC60FF7Aac6d335bcE118427BeDa0DFe87b7C",
         "abi": [
             {
                 "inputs": [
@@ -5555,7 +5586,7 @@
         ]
     },
     "ETHStaking": {
-        "address": "0x15549D56d1068d6Ac3C773E3db3C19c5ac495057",
+        "address": "0x2581bF9B258E4cB87da234ae4A9948D0c4977Cff",
         "abi": [
             {
                 "inputs": [
@@ -6032,7 +6063,7 @@
         ]
     },
     "TRXStaking": {
-        "address": "0xC49D1aE5aB1796922566b4dD51eEC2a662519d6e",
+        "address": "0x7aDB4a5E24A4f60E1dC14f3A39cB48deaD0fD856",
         "abi": [
             {
                 "inputs": [
@@ -6509,7 +6540,7 @@
         ]
     },
     "FILStaking": {
-        "address": "0xb43bc46Df88D297Ba10527bb4d8b26547E909D0d",
+        "address": "0x2F213328DC4dac7305ba70c3ba8B775E7a8BB440",
         "abi": [
             {
                 "inputs": [
@@ -6986,7 +7017,7 @@
         ]
     },
     "XRPStaking": {
-        "address": "0x5f5f64C67a94A4E04cF486847c04c613C9d30Bb3",
+        "address": "0x593e79384D2111C4b27B2BdC199fbb590585fB84",
         "abi": [
             {
                 "inputs": [
@@ -7463,7 +7494,7 @@
         ]
     },
     "DOTStaking": {
-        "address": "0x762b54551b5F7afa4baDC0825F1806267060d122",
+        "address": "0x95457c65304943A9389580e9e0Da3FF20750b502",
         "abi": [
             {
                 "inputs": [
@@ -7940,7 +7971,7 @@
         ]
     },
     "ADAStaking": {
-        "address": "0xc25cCE0066DDd52F73d3d3ef74768aC8C7aA6989",
+        "address": "0x3b143F0e33C7076dea70E7Fa9131d178C2DCCc34",
         "abi": [
             {
                 "inputs": [
@@ -8418,7 +8449,7 @@
     },
     
     "HTStaking": {
-        "address": "0x5Fd69c63FE0d3cCd3e57691d7621e019f1F1C96b",
+        "address": "0x19c2a3B500f14472bAe45bc190cF1CC5d4Bb59E3",
         "abi": [
             {
                 "inputs": [
