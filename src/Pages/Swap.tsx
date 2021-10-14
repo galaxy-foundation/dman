@@ -26,7 +26,7 @@ const styledNum = (data:Number)=>{
 const Swap = () => {
 	const wallet = useWallet();
 	const connected = wallet.status==="connected"
-	const [status,poolBalance,{checkBalance}] = useAppContext();
+	const [status,poolBalance,,{checkBalance}] = useAppContext();
 
 	const [token1,setToken1] = useState({
 		token:"DM",
