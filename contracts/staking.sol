@@ -150,10 +150,10 @@ contract staking is Ownable{
     }
 
     function updateTotalStake() internal {
-        totalStake = countTotalStake();
-        totalReward = countTotalReward();
+        totalStake = countTotalStake();//计算更新前 pool中的 代币数量
+        totalReward = countTotalReward();//计算更新钱 pool中的 奖励数量
         lastUpdateTime = block.timestamp;
-        totalStakingAmount = IERC20(stakeTokenAddress).balanceOf(address(this));
+        totalStakingAmount = IERC20(stakeTokenAddress).balanceOf(address(this)); //计算现在的代币数量
     }
 
     /* ----------------- personal counts ----------------- */
