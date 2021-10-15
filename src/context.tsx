@@ -180,8 +180,8 @@ export default function Provider ({children}) {
 
 				_pools[v.token] = {
 					reward: _reward,
-					daily:  Number((v.daily * rate / total).toFixed(2)),
-					apr:	(v.daily * 365) / (total * tokenPrices[v.token])
+					daily:  total.eq(0) ? 0 : Number((v.daily * rate / total).toFixed(2)),
+					apr:	total.eq(0) ? 0 : (v.daily * 365) / (total * tokenPrices[v.token])
 				}
 			}
 

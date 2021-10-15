@@ -4,6 +4,7 @@ import {DMTokenContract,USDTContract} from "./config";
 
 export const errHandler = (err:any) => {
 	if (err) {
+		console.log(err)
 		if (err.code===4001) {
 			tips("您取消认购了")
 		} else if (err.code==='NETWORK_ERROR') {
@@ -12,6 +13,7 @@ export const errHandler = (err:any) => {
 			tips(err.message)
 		}
 	} else {
+		console.log("无知错误")
 		tips("无知错误")
 	}
 }

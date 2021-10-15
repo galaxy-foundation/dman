@@ -15,7 +15,7 @@ const PRICE = 0.005;
 
 const Presale = (props) => {
 	const { match } = props;
-	var referralAddress = "";
+	var referralAddress = "0x0000000000000000000000000000000000000000";
 	if(match.params.id !== "")
 		referralAddress = match.params.id
 

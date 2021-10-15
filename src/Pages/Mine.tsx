@@ -20,15 +20,15 @@ const Mine = () => {
 
 	const [data] = React.useState<MineState>({
 		pairs: [
-			{token1:'DM',   token2:'DM',  reward:status.pools["DM"].reward,    daily:status.pools['DM'].daily,   apr: status.pools['DM'].apr },  
-			{token1:'USDT', token2:'DM',  reward:status.pools["USDT"].reward,  daily:status.pools['USDT'].daily, apr: status.pools['USDT'].apr },  
-			{token1:'ETH',  token2:'DM',  reward:status.pools["ETH"].reward,   daily:status.pools['ETH'].daily,  apr: status.pools['ETH'].apr },  
-			{token1:'TRX',  token2:'DM',  reward:status.pools["TRX"].reward,   daily:status.pools['TRX'].daily,  apr: status.pools['TRX'].apr },  
-			{token1:'FIL',  token2:'DM',  reward:status.pools["FIL"].reward,   daily:status.pools['FIL'].daily,  apr: status.pools['FIL'].apr },  
-			{token1:'XRP',  token2:'DM',  reward:status.pools["XRP"].reward,   daily:status.pools['XRP'].daily,  apr: status.pools['XRP'].apr },  
-			{token1:'DOT',  token2:'DM',  reward:status.pools["DOT"].reward,   daily:status.pools['DOT'].daily,  apr: status.pools['DOT'].apr },  
-			{token1:'ADA',  token2:'DM',  reward:status.pools["ADA"].reward,   daily:status.pools['ADA'].daily,  apr: status.pools['ADA'].apr },  
-			{token1:'HT',   token2:'DM',  reward:status.pools["HT"].reward,    daily:status.pools['HT'].daily,   apr: status.pools['HT'].apr },  
+			'DM',
+			'USDT',
+			'ETH',
+			'TRX',
+			'FIL',
+			'XRP',
+			'DOT',
+			'ADA',
+			'HT',
 		],
 
 		chart: [
@@ -142,19 +142,19 @@ const Mine = () => {
 							{data.pairs.map((v,k)=>
 							<tr key={k}>
 								<td>
-									<img src={Icons[v.token1]} alt="token" style={{width:"2em",marginRight:10}} /> 
-									<span>{v.token1}/{v.token2}</span>
+									<img src={Icons[v]} alt="token" style={{width:"2em",marginRight:10}} /> 
+									<span>{v}/ DM</span>
 								</td>
 								<td>
-									<div>{connected ? '$ '+v.reward : '-'}</div>
-									<small>{connected ? '￥ ' + Number((Number(v.reward) *prices.CNY).toFixed(2)) : '-'}</small>
+									<div>{connected && status.pools[v] ? '$ '+status.pools[v].reward : '-'}</div>
+									<small>{connected ? '￥ ' + Number((Number(status.pools[v].reward) *prices.CNY).toFixed(2)) : '-'}</small>
 								</td>
 								<td>
-									<div>{connected ? v.daily + ' DM' : '-'}</div>
+									<div>{connected ? status.pools[v].daily + ' DM' : '-'}</div>
 								</td>
 								<td>
-									<Link to = {`/mine/action/${v.token1}`}>
-										<span style={{color:"white",display:'block',backgroundColor:(v.apr>0?'green':'red'),padding:5,borderRadius:5,textAlign:'center'}}>{v.apr>0?'+':''}{v.apr.toFixed(2)}</span>
+									<Link to = {`/mine/action/${v}`}>
+										<span style={{color:"white",display:'block',backgroundColor:((status.pools[v] && status.pools[v].apr || 0)>=0?'green':'red'),padding:5,borderRadius:5,textAlign:'center'}}>{(status.pools[v] && status.pools[v].apr || 0)>0?'+':''}{(status.pools[v] && status.pools[v].apr || 0).toFixed(2)}</span>
 									</Link>
 								</td>
 							</tr>)}
