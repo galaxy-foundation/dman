@@ -6,7 +6,7 @@ import imgBG03 from '../assets/swap-bg-03.webp';
 import imgIC01 from '../assets/swap-ic-01.webp';
 import {ethers} from "ethers"
 import {useWallet} from 'use-wallet';
-import {DMTokenContract} from "../contracts";
+import {DMTokenContract} from "../config";
 
 import {useAppContext} from '../context';
 import Skeleton, {SkeletonTheme} from 'react-loading-skeleton';
@@ -53,7 +53,7 @@ const Presale = (props) => {
 		try {
 			if (token1Status.amount<status.limit1 * PRICE) return tips("最少 "+(status.limit1 * PRICE)+" u")
 			if (token1Status.amount>status.limit2 * PRICE) return tips("最大 "+(status.limit2 * PRICE)+" u")
-			if (connected) return tips("请连接Metamask钱包")
+			if (!connected) return tips("请连接Metamask钱包")
 			if (loading) return tips("已进行中")
 			setLoading(true)
 			const provider = new ethers.providers.Web3Provider(wallet.ethereum);
@@ -111,42 +111,41 @@ const Presale = (props) => {
 		}
 	} */
 	const unlock = async ()=>{
+		if (!connected) return tips("请连接Metamask钱包")
+		setLoading(true);
 		try {
-			if(connected) {
-				setLoading(true);
-				const provider = new ethers.providers.Web3Provider(wallet.ethereum);
-				const signer =await provider.getSigner();
-				const sigendDMTokenContract = DMTokenContract.connect(signer);
-				
-				var tx = await sigendDMTokenContract.unlock();
-				if(tx){
-					await tx.wait();
-					await checkBalance(wallet.account);
-				}
-				setLoading(false);
+			const provider = new ethers.providers.Web3Provider(wallet.ethereum);
+			const signer =await provider.getSigner();
+			const sigendDMTokenContract = DMTokenContract.connect(signer);
+			
+			var tx = await sigendDMTokenContract.unlock();
+			if(tx){
+				await tx.wait();
+				await checkBalance(wallet.account);
 			}
 		} catch (err:any) {
 			errHandler(err)
 		}
+		setLoading(false);
 	}
 	const claimReward = async ()=>{
+		if (!connected) return tips("请连接Metamask钱包")
+		setLoading(true);
 		try {
-			if(connected) {
-				setLoading(true);
-				const provider = new ethers.providers.Web3Provider(wallet.ethereum);
-				const signer =await provider.getSigner();
-				const sigendDMTokenContract = DMTokenContract.connect(signer);
-				
-				var tx = await sigendDMTokenContract.claimReward();
-				if(tx){
-					await tx.wait();
-					await checkBalance(wallet.account);
-				}
-				setLoading(false);
+			const provider = new ethers.providers.Web3Provider(wallet.ethereum);
+			const signer =await provider.getSigner();
+			const sigendDMTokenContract = DMTokenContract.connect(signer);
+			
+			var tx = await sigendDMTokenContract.claimReward();
+			if(tx){
+				await tx.wait();
+				await checkBalance(wallet.account);
 			}
+			setLoading(false);
 		} catch (err:any) {
 			errHandler(err)
 		}
+		setLoading(false);
 	}
 	
 	return <Layout className="swap">
@@ -198,7 +197,7 @@ const Presale = (props) => {
 					<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, padding:10, display:'flex', flexDirection:'column'}}>
 						<div style={{flexGrow:1}}>
 							<h3>解仓</h3>
-							<div>{connected ? NF(status.reward, 2) + ' DM' : '-' }</div>
+							<div>{connected ? NF(status.reward, 2) + ' USDT' : '-' }</div>
 						</div>
 						<div className="text-center mt-3">
 							<button disabled={!connected || status.reward===0} className="btn btn-success px-5 round" onClick = {claimReward}>Claim Reward</button>

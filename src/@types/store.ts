@@ -12,21 +12,20 @@ export type Data =  {
 	page: string,
 	address: string
 }
-export type Pair =  {
+/* export type Pair =  {
 	token1:string,
 	token2:string,
-	price:number,
-	priceCN:number,
+	reward:string,
 	daily:number,
 	apr:number
-}
+} */
 
 export type ChartData =  {
 	time:string,
 	y:number
 }
 export type MineState =  {
-	pairs: Array<Pair>,
+	pairs: Array<string>,
 	chart: Array<ChartData>,
 
 }

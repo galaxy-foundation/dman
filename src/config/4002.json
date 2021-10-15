@@ -8447,6 +8447,7 @@
             }
         ]
     },
+    
     "HTStaking": {
         "address": "0x19c2a3B500f14472bAe45bc190cF1CC5d4Bb59E3",
         "abi": [

@@ -14,7 +14,7 @@ import imgICExchange from '../assets/swap-ic-exchange.webp';
 import {ethers} from "ethers"
 import {tips, NF, fromValue, toValue, tokenData, errHandler} from '../util';
 import {useWallet} from 'use-wallet';
-import {DMTokenContract,USDTContract,ExchangeRouter} from "../contracts";
+import {DMTokenContract,USDTContract,ExchangeRouter} from "../config";
 
 import Skeleton, {SkeletonTheme} from 'react-loading-skeleton';
 import {useAppContext} from '../context';
@@ -26,7 +26,7 @@ const styledNum = (data:Number)=>{
 const Swap = () => {
 	const wallet = useWallet();
 	const connected = wallet.status==="connected"
-	const [status,poolBalance,{checkBalance}] = useAppContext();
+	const [status,poolBalance,,{checkBalance}] = useAppContext();
 
 	const [token1,setToken1] = useState({
 		token:"DM",
@@ -102,7 +102,7 @@ const Swap = () => {
 		try {
 			if (token1.amount<=0) return tips("最少 10 u")
 			if (token2.amount<=0) return tips("最少 10 u")
-			if (wallet.status!=="connected") return tips("请连接M tamask钱包")
+			if (wallet.status!=="connected") return tips("请连接Metamask钱包")
 			if (loading) return tips("已进行中")
 			setLoading(true)
 			const provider = new ethers.providers.Web3Provider(wallet.ethereum);

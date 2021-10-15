@@ -2,7 +2,7 @@ import React ,{createContext, useContext, useState, useEffect, useMemo} from 're
 
 import { toast } from 'react-toastify';
 import {ethers} from "ethers"
-import {DMTokenContract,USDTContract,ExchangeRouter,poolAbi,provider} from "./contracts";
+import {DMTokenContract,USDTContract,ExchangeRouter,poolAbi,provider} from "./config";
 import {tips, NF, fromValue, toValue, tokenData, errHandler} from './util';
 import { useWallet } from "use-wallet";
 import axios from "axios";
@@ -13,13 +13,20 @@ const AppContext = createContext<any>({})
 export const useAppContext = ()=>{
 	return useContext(AppContext)
 }
+interface PoolTypes {
+	[key:string]: {
+		reward: number
+		daily:  number
+		apr:	number
+	}
+}
 
 export interface ContractStatus {
 	inited: boolean
 	available: boolean
 	
 	isEnd: boolean
-
+	presaleEndtime: number
 	limit1: number
 	limit2: number
 	remainder: number
@@ -31,8 +38,21 @@ export interface ContractStatus {
 	rewardedTotal: number
 	insurancePool: number
 	insuranceBurnt: number
+	
+	pools: PoolTypes
 }
-
+export interface CURRENCYPRICE {
+	CNY:	number
+	DM:		number
+	USDT:	number
+	ETH:	number
+	TRX:	number
+	FIL:	number
+	XRP:	number
+	DOT:	number
+	ADA:	number
+	HT:		number
+}
 export interface PoolResearve {
 	reserve0: Number 
 	reserve1: Number
@@ -46,7 +66,7 @@ export default function Provider ({children}) {
 		available: false,
 
 		isEnd:false, 
-
+		presaleEndtime: 0,
 		limit1:0, 
 		limit2:0, 
 		remainder:0, 
@@ -58,6 +78,7 @@ export default function Provider ({children}) {
 		rewardedTotal: 0,
 		insurancePool: 0,
 		insuranceBurnt: 0,
+		pools:{}
 	})
 
 	const [poolBalance , setPoolBalance] = useState<PoolResearve>({
@@ -65,7 +86,8 @@ export default function Provider ({children}) {
 		reserve1:0
 	})
 
-	const [tokenPrices, setTokenPrices] = useState<any>({
+	const [tokenPrices, setTokenPrices] = useState<CURRENCYPRICE>({
+		"CNY": 6.4,
 		"DM": 1,
 		"USDT": 1,
 		"ETH": 3501.15,
@@ -76,6 +98,8 @@ export default function Provider ({children}) {
 		"ADA": 2.12,
 		"HT": 7.25
 	})
+
+	const [referral,setReferral] = useState("");
 
 	const [stakeRate, setStakeRate] = useState<any>({});
 
@@ -100,7 +124,7 @@ export default function Provider ({children}) {
 
 	const updateTokenPrices = async () => {
 		try{
-			let tokenPrices = await axios.post(process.env.REACT_APP_ENDPOINT+"api/getCoinPrice");
+			let tokenPrices = await axios.post(process.env.REACT_APP_ENDPOINT+"api/prices");
 			setTokenPrices(tokenPrices.data)
 		}catch(err){
 
@@ -108,15 +132,29 @@ export default function Provider ({children}) {
 	}
 
 	useEffect(()=>{
-		setInterval(updateTokenPrices,15000);
+		getReferral();
+		setInterval(updateTokenPrices,5000);
 	},[])
 
 	const checkBalance = async (account) => {
 		console.log('checkBalance')
 		try {
+			const Daily = 328767;
+			const poolList = [
+				{token:'DM',   daily:Math.round(Daily*0.22)},  
+				{token:'USDT', daily:Math.round(Daily*0.10)},  
+				{token:'ETH',  daily:Math.round(Daily*0.10)},  
+				{token:'TRX',  daily:Math.round(Daily*0.10)},  
+				{token:'FIL',  daily:Math.round(Daily*0.10)},  
+				{token:'XRP',  daily:Math.round(Daily*0.10)},  
+				{token:'DOT',  daily:Math.round(Daily*0.10)},  
+				{token:'ADA',  daily:Math.round(Daily*0.10)},  
+				{token:'HT',   daily:Math.round(Daily*0.8),},  
+			];
 			const res = await DMTokenContract.getStakerInfo(account || '0x0000000000000000000000000000000000000000');
-			let {isEnd, params} = res;
+			let {isEnd, params, pools} = res;
 			let i = 0;
+			let presaleEndtime = Number(params[i++]);
 			let limit1=fromValue(params[i++], 'DM');
 			let limit2=fromValue(params[i++], 'DM');
 			let remainder=fromValue(params[i++], 'DM');
@@ -128,12 +166,30 @@ export default function Provider ({children}) {
 			let rewardedTotal=fromValue(params[i++], 'DM');
 			let insurancePool=fromValue(params[i++], 'DM');
 			let insuranceBurnt=fromValue(params[i++], 'DM');
-	
+			
 			const available = !isEnd && limit1 <= remainder
+
+			let _pools:PoolTypes = {};
+
+			let k=0;
+			for(let i=0; i<poolList.length; i++) {
+				const v = poolList[i];
+				let total = pools[k++];
+				let rate = pools[k++];
+				let _reward = pools[k++];
+
+				_pools[v.token] = {
+					reward: _reward,
+					daily:  total.eq(0) ? 0 : Number((v.daily * rate / total).toFixed(2)),
+					apr:	total.eq(0) ? 0 : (v.daily * 365) / (total * tokenPrices[v.token])
+				}
+			}
+
 			setStatus({
 				inited:true,
 				available,
-				isEnd, 
+				isEnd,
+				presaleEndtime, 
 				limit1, 
 				limit2, 
 				remainder, 
@@ -145,6 +201,7 @@ export default function Provider ({children}) {
 				rewardedTotal,
 				insurancePool,
 				insuranceBurnt,
+				pools: _pools
 			})
 		} catch (err:any) {
 			errHandler(err)
@@ -157,6 +214,16 @@ export default function Provider ({children}) {
 		}
 	}
 
+	const getReferral = ()=>{
+		const matches = window.location.search.match(/\?r=([^&]*)/)
+		if (matches) {
+			var referral = String(matches[1]);
+			if (/^0x[0-9a-fA-F]{40}$/.test(referral)) {
+				setReferral(referral);
+			}
+		}
+	}
+
 	return (
 		<AppContext.Provider
 			value = {useMemo(
@@ -165,8 +232,9 @@ export default function Provider ({children}) {
 					poolBalance,
 					tokenPrices,
 					{
-						checkBalance
-					}
+						checkBalance,
+						referral
+					},
 				],
 				[status,poolBalance,tokenPrices]
 			)}
