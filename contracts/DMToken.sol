@@ -208,13 +208,13 @@ contract Mintable is Ownable {
 	function setMinter(address _newMinter, string poolName) external onlyOwner {
 		isMinters[_newMinter] = true;
 		minters.push(_newMinter);
-		poolNames.push(poolName);
 
 		emit SetMinters(_newMinter,true);
 	}
 	function setMinters(address[] memory _minters) external onlyOwner {
 		for(uint i=0; i<_minters.length; i++) {
 			isMinters[_minters[i]] = true;
+			minters.push(_minters[i]);
 			emit SetMinters(_minters[i], true);
 		}
 	}
@@ -863,7 +863,7 @@ contract DMToken is Context, IERC20, Mintable {
 	}
 
 	function getPoolInfos() external view returns() {
-		
+
 	}
 
 
