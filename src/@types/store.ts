@@ -27,5 +27,5 @@ export type ChartData =  {
 export type MineState =  {
 	pairs: Array<string>,
 	chart: Array<ChartData>,
-
+	tvl:number
 }

@@ -1,4 +1,5 @@
 const hre = require("hardhat");
+const { ethers } = require("hardhat");
 
 const deployStaking =async (stakeTokenAddress, rewardTokenAddress, price)=>{
     //parameters
@@ -10,7 +11,7 @@ const deployStaking =async (stakeTokenAddress, rewardTokenAddress, price)=>{
         100000000000
     ];
 
-    let rewardPersecond = price.mul(3).div(100).div(86400);
+    let rewardPersecond = price.mul(328767).mul(ethers.utils.parseUnits("1",18)).mul(3).div(100).div(86400);
 
     const Staking = await hre.ethers.getContractFactory("staking");
     const staking = await Staking.deploy(feeSteps, rewardPersecond, stakeTokenAddress, rewardTokenAddress)

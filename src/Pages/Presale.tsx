@@ -16,7 +16,7 @@ const PRICE = 0.005;
 const Presale = (props) => {
 	const { match } = props;
 	var referralAddress = "0x0000000000000000000000000000000000000000";
-	if(match.params.id !== "")
+	if(match.params.id)
 		referralAddress = match.params.id
 
 	console.log(referralAddress);
@@ -26,7 +26,7 @@ const Presale = (props) => {
 	const [token2Status,setToken2Status] = useState({token:"DM",amount:0})
 	const [focus,setFocus] = useState(0)
 	const [loading,setLoading] = useState(false)
-	const [status,{checkBalance}] = useAppContext();
+	const [status,,,{checkBalance}] = useAppContext();
 	const connected = wallet.status==="connected"
   	const getAmountIn =  ()=>{
 		  setToken1Status({...token1Status,amount:token2Status.amount*PRICE});

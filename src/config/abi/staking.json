@@ -264,12 +264,17 @@
             },
             {
                 "internalType": "uint256",
-                "name": "_rate",
+                "name": "_staking",
                 "type": "uint256"
             },
             {
                 "internalType": "uint256",
-                "name": "_reward",
+                "name": "_rewardable",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_rewards",
                 "type": "uint256"
             }
         ],
@@ -416,6 +421,11 @@
                 "internalType": "uint256",
                 "name": "stake",
                 "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "rewards",
+                "type": "uint256"
             }
         ],
         "payable": false,
@@ -499,14 +509,8 @@
     },
     {
         "constant": false,
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "withdraw",
+        "inputs": [],
+        "name": "unstaking",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",

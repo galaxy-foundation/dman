@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import { Link } from "react-router-dom"
 import Layout from '../components/Layout'
 import Icons from '../components/Icons'
@@ -12,13 +12,15 @@ import {MineState} from '../@types/store'
 import {useAppContext} from '../context'
 import {AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer} from 'recharts'
 import Skeleton, {SkeletonTheme} from 'react-loading-skeleton'
+import { errHandler ,fromValue} from '../util';
 
 const Mine = () => {
 	const wallet = useWallet();
 	const [status,,prices] = useAppContext();
+
 	/* const Daily = 328767; */
 
-	const [data] = React.useState<MineState>({
+	const [data,setData] = React.useState<MineState>({
 		pairs: [
 			'DM',
 			'USDT',
@@ -30,7 +32,6 @@ const Mine = () => {
 			'ADA',
 			'HT',
 		],
-
 		chart: [
 			{time:'17:00', y:100},
 			{time:'18:00', y:200},
@@ -38,10 +39,24 @@ const Mine = () => {
 			{time:'20:00', y:300},
 			{time:'21:00', y:250},
 			{time:'22:00', y:500}
-		]
+		],
+		tvl :0
 	});
 	const connected = wallet.status==="connected"
 
+	/* ------------- mineStatus ------------*/
+	useEffect(() =>{
+		try {
+			let tvl = 0;
+			data.pairs.map((v,k) => {
+				tvl += fromValue(status.pools[v].total,v)*prices[v];
+			})
+			setData({...data,tvl:tvl});
+		}catch(err){
+			errHandler(err)
+		}
+
+	},[status,prices])
 	/* useEffect(()=>{
 		console.log("prices",prices);
 	},[]) */
@@ -192,7 +207,7 @@ const Mine = () => {
 					<h2 className="mt-3">流动性总锁仓</h2>
 					<div className="mt-3" style={{display:'flex',justifyContent:'center'}}>
 						<div className="h2" style={{marginBottom:0,padding:10,color:'#cc0404',border:'1px solid #cc0404'}}>
-							$1,100,400
+							${Number((data.tvl).toFixed(2))}
 						</div>
 					</div>
 				</div>

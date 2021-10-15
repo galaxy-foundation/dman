@@ -140,6 +140,7 @@ contract staking is Ownable{
 		rewardRate = _rewardRate;
 		rewardTokenAddress = _rewardTokenAddress;
 		stakeTokenAddress = _stakeTokenAddress;
+		lastUpdateTime = block.timestamp;
 	}
 	/* ----------------- total counts ----------------- */
 

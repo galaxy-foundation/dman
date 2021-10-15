@@ -18,6 +18,7 @@ interface PoolTypes {
 		reward: number
 		daily:  number
 		apr:	number
+		total : any
 	}
 }
 
@@ -101,8 +102,6 @@ export default function Provider ({children}) {
 
 	const [referral,setReferral] = useState("");
 
-	const [stakeRate, setStakeRate] = useState<any>({});
-
 	React.useEffect(()=>{
 		checkBalance(wallet.account);
 		getPoolBalance();
@@ -124,7 +123,7 @@ export default function Provider ({children}) {
 
 	const updateTokenPrices = async () => {
 		try{
-			let tokenPrices = await axios.post(process.env.REACT_APP_ENDPOINT+"api/prices");
+			let tokenPrices:any = await axios.post(process.env.REACT_APP_ENDPOINT+"api/getCoinPrice");
 			setTokenPrices(tokenPrices.data)
 		}catch(err){
 
@@ -179,9 +178,10 @@ export default function Provider ({children}) {
 				let _reward = pools[k++];
 
 				_pools[v.token] = {
-					reward: _reward,
+					reward: Number(ethers.utils.formatUnits(_reward,18)),
 					daily:  total.eq(0) ? 0 : Number((v.daily * rate / total).toFixed(2)),
-					apr:	total.eq(0) ? 0 : (v.daily * 365) / (total * tokenPrices[v.token])
+					apr:	total.eq(0) ? 0 : (v.daily * 365) / (total * tokenPrices[v.token]),
+					total :total
 				}
 			}
 

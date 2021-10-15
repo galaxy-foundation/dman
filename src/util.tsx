@@ -28,7 +28,29 @@ export const tokenData = {
 		contract:DMTokenContract,
 		address:DMTokenContract.address,
 		decimals:18
-	}
+	},
+	ETH :{
+		decimals:18
+	},
+	TRX :{
+		decimals:18
+	},
+	FIL :{
+		decimals:18
+	},
+	XRP :{
+		decimals:18
+	},
+	DOT :{
+		decimals:18
+	},
+	ADA :{
+		decimals:18
+	},
+	HT :{
+		decimals:18
+	},
+
 }
 
 export const toValue = (val, token) => ethers.utils.parseUnits((val).toString(),tokenData[token].decimals)

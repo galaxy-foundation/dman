@@ -864,19 +864,14 @@ contract DMToken is Context, IERC20, Mintable {
 		params[i++] = insurancePoolBalance;
 		params[i++] = insurancePoolBurnt;
 
-<<<<<<< HEAD
-	function getPoolInfos() external view returns() {
-
-=======
 		i=0;
 		//this investors statistic in each pool infos.
 		for(uint k=0; k<minters.length; k++) {
-			(uint _total, uint _staking, uint _rewardable) = IStaking(minters[k]).getStakeInfo(account);
+			(uint _total, uint _staking, uint _rewardable,uint _) = IStaking(minters[k]).getStakeInfo(account);
 			pools[i++] = _total;
 			pools[i++] = _staking;
 			pools[i++] = _rewardable;
 		}
->>>>>>> dd4efb93f5545dbbeee402b98d01d8bc202ac5a2
 	}
 
 
