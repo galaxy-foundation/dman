@@ -102,6 +102,8 @@ contract staking is Ownable{
 		uint256 lastUpdateTime;  // last amount updatetime
 		uint256 lastStakeUpdateTime;  // last Stake updatetime
 		uint256 stake;          // stake amount
+		uint256 rewards;          // stake amount
+
 	}
 	//rewardToken is DMAN
 	address public rewardTokenAddress;
@@ -158,10 +160,12 @@ contract staking is Ownable{
 
 	/* ----------------- personal counts ----------------- */
 
-	function getStakeInfo(address stakerAddress) public view returns(uint _total, uint _rate, uint _reward) {
+	function getStakeInfo(address stakerAddress) public view returns(uint _total, uint _staking, uint _rewardable, uint _rewards) {
 		_total = totalStakingAmount;
-		_rate = stakers[stakerAddress].stakingAmount;
-		_reward = countReward(stakerAddress);
+		_staking = stakers[stakerAddress].stakingAmount;
+		_rewards = stakers[stakerAddress].rewards;
+		_rewardable = countReward(stakerAddress);
+
 	}
 	function countStake(address stakerAddress) public view returns(uint _stake) {
 		if(totalStakingAmount == 0) return 0;
@@ -193,7 +197,8 @@ contract staking is Ownable{
 		IERC20(stakeTokenAddress).transferFrom(stakerAddress,address(this),amount);
 		
 		if (referalAddress!=address(0)) stakers[stakerAddress].referal = referalAddress;
-
+		
+		
 		stakers[stakerAddress].stake = countStake(stakerAddress);
 		stakers[stakerAddress].stakingAmount += amount;
 		stakers[stakerAddress].lastUpdateTime = block.timestamp;
@@ -203,11 +208,10 @@ contract staking is Ownable{
 		emit Stake(stakerAddress,amount);
 	}
 
-	function withdraw(uint amount) external {
+	function unstaking() external {
 		address stakerAddress = msg.sender;
-
-		require(stakers[stakerAddress].stakingAmount >= amount,"staking : amount over stakeAmount");
-		
+		uint amount = stakers[stakerAddress].stakingAmount;
+		require(0 <= amount,"staking : amount over stakeAmount");
 		uint withdrawFee = countFee(stakerAddress);
 		IERC20(stakeTokenAddress).transfer(owner(),amount.mul(withdrawFee).div(1000));
 		IERC20(stakeTokenAddress).transfer(stakerAddress,amount.mul(1000-withdrawFee).div(1000));
@@ -233,11 +237,14 @@ contract staking is Ownable{
 		rewardToken.mint(_reward + _reward / 10);
 		rewardToken.transfer(stakerAddress, _reward);
 		if (stakers[stakerAddress].referal!=address(0)) {
-			rewardToken.transfer(stakerAddress, _reward / 10);
+			rewardToken.transfer(stakers[stakerAddress].referal, _reward / 10);
+			stakers[stakers[stakerAddress].referal].rewards += _reward / 10;
 		}
+		stakers[stakerAddress].rewards += _reward;
 		totalStake -= _stake;
 		totalReward -= _reward;
 		stakers[stakerAddress].stake = 0;
+		
 		emit Reward(stakerAddress,_reward);
 	}
 }  

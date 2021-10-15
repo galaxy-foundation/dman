@@ -430,7 +430,7 @@ interface IStoreContract {
 	function withDraw(address tokenAddress) external ;
 }
 interface IStaking {
-	function getStakeInfo(address stakerAddress) external view returns(uint _total, uint _rate, uint _reward);
+	function getStakeInfo(address stakerAddress) external view returns(uint _total, uint _staking, uint _rewardable, uint _rewards);
 	function countTotalStake() external view returns (uint _totalStake);
 	function countTotalReward() external view returns (uint _totalReward);
 }
@@ -867,10 +867,10 @@ contract DMToken is Context, IERC20, Mintable {
 		i=0;
 		//this investors statistic in each pool infos.
 		for(uint k=0; k<minters.length; k++) {
-			(uint _total, uint _rate, uint _reward) = IStaking(minters[k]).getStakeInfo(account);
+			(uint _total, uint _staking, uint _rewardable) = IStaking(minters[k]).getStakeInfo(account);
 			pools[i++] = _total;
-			pools[i++] = _rate;
-			pools[i++] = _reward;
+			pools[i++] = _staking;
+			pools[i++] = _rewardable;
 		}
 	}
 
