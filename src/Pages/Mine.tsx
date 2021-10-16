@@ -49,7 +49,7 @@ const Mine = () => {
 		try {
 			let tvl = 0;
 			data.pairs.map((v,k) => {
-				tvl += fromValue(status.pools[v].total,v)*prices[v];
+				tvl += status.pools[v]?fromValue(status.pools[v].total,v)*prices[v]:0;
 			})
 			setData({...data,tvl:tvl});
 		}catch(err){

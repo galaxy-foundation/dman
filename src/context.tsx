@@ -103,7 +103,8 @@ export default function Provider ({children}) {
 	const [referral,setReferral] = useState("");
 
 	React.useEffect(()=>{
-		checkBalance(wallet.account);
+		if(wallet.account)
+			checkBalance(wallet.account);
 		getPoolBalance();
 	},[wallet.status])
 
@@ -136,7 +137,7 @@ export default function Provider ({children}) {
 	},[])
 
 	const checkBalance = async (account) => {
-		console.log('checkBalance')
+		console.log('checkBalance',account)
 		try {
 			const Daily = 328767;
 			const poolList = [
@@ -177,6 +178,7 @@ export default function Provider ({children}) {
 				let rate = pools[k++];
 				let _reward = pools[k++];
 
+					console.log("total",total, Number((v.daily * rate / total).toFixed(2)));
 				_pools[v.token] = {
 					reward: Number(ethers.utils.formatUnits(_reward,18)),
 					daily:  total.eq(0) ? 0 : Number((v.daily * rate / total).toFixed(2)),
@@ -202,7 +204,8 @@ export default function Provider ({children}) {
 				insurancePool,
 				insuranceBurnt,
 				pools: _pools
-			})
+			});
+			console.log('checked Balance',_pools);
 		} catch (err:any) {
 			errHandler(err)
 		}

@@ -58,7 +58,7 @@ const Daily = 328767;
 const MineAct = (props) => {
 	const wallet = useWallet();
 	const connected = wallet.status==="connected"
-	const [status,,tokenPrices,{referral}] = useAppContext();
+	const [status,,tokenPrices,{referral,checkBalance}] = useAppContext();
 	//routing
 	let history = useHistory();
 	const {id} = props.match.params;
@@ -139,13 +139,13 @@ const MineAct = (props) => {
 		if(connected&&ready){
 			setStakedStatus();
 		}
-	},[signedStakingContracts])
+	},[signedStakingContracts,ready])
 
 	const setPoolStatus = () => {
-		console.log(tokenPrices[id])
+		console.log(tokenPrices[id],status.pools[id],status.pools)
 		if(!status.pools[id]) return;
 		let total = fromValue(status.pools[id].total,id);
-		let interest = tokenPrices[id]?Daily*36500/total/tokenPrices[id]:0;
+		let interest = tokenPrices[id]&&total!==0?Daily*36500/(total*tokenPrices[id]):0;
 		let multiplier = interest/100;
 		setStatus({...mintStatus, interest:interest, total:total, multiplier:multiplier});
 	}
@@ -198,6 +198,7 @@ const MineAct = (props) => {
 			if(tx!=null){
 				await tx.wait();
 				setStakedStatus();
+				checkBalance(wallet.account);
 			}
 		} catch (err) {
 			errHandler(err)
@@ -214,6 +215,7 @@ const MineAct = (props) => {
 			if(tx!=null) {
 				await tx.wait();
 				setStakedStatus();
+				checkBalance(wallet.account);
 			}
 		} catch (err) {
 			errHandler(err)
