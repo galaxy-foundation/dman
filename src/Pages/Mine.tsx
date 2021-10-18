@@ -182,7 +182,7 @@ const Mine = () => {
 									</td>
 									<td width='25%'>
 										<Link to = {`/mine/action/${v}`}>
-											<span style={{color:"white",display:'block',backgroundColor:((status.pools[v] && status.pools[v].apr || 0)>=0?'green':'red'),padding:5,borderRadius:5,textAlign:'center'}}>{(status.pools[v] && status.pools[v].apr || 0)>0?'+':''}{(status.pools[v] && status.pools[v].apr || 0).toFixed(2)}</span>
+											<span style={{color:"white",display:'block',backgroundColor:((status.pools[v] && status.pools[v].apr || 0)>=0?'green':'red'),padding:5,borderRadius:5,textAlign:'center'}}>{(status.pools[v] && status.pools[v].apr || 0)>0?'+':''}{(status.pools[v] && status.pools[v].apr || 0).toFixed(2)}%</span>
 										</Link>
 									</td>
 								</tr>
