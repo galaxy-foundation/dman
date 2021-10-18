@@ -16,7 +16,7 @@ import { errHandler ,fromValue} from '../util';
 
 const Mine = () => {
 	const wallet = useWallet();
-	const [status,prices] = useAppContext();
+	const [status,prices, {logs}] = useAppContext();
 
 	/* const Daily = 328767; */
 
@@ -32,16 +32,24 @@ const Mine = () => {
 			'ADA',
 			'HT',
 		],
-		chart: [
-			{time:'17:00', y:100},
-			{time:'18:00', y:200},
-			{time:'19:00', y:150}, 
-			{time:'20:00', y:300},
-			{time:'21:00', y:250},
-			{time:'22:00', y:500}
-		],
 		tvl :0
 	});
+	
+	const charts:Array<{x:string, y:number}> = [
+		/* {time:'17:00', y:100},
+		{time:'18:00', y:200},
+		{time:'19:00', y:150}, 
+		{time:'20:00', y:300},
+		{time:'21:00', y:250},
+		{time:'22:00', y:500} */
+	];
+	
+	for(let v of logs) {
+		const date = new Date(v.time * 1000);
+		const h = date.getHours()
+		charts.push({x:(h>9?'':'0') + h +':00', y:v.tvl})
+	}
+
 	const connected = wallet.status==="connected"
 
 	/* ------------- mineStatus ------------*/
@@ -55,13 +63,12 @@ const Mine = () => {
 		}catch(err){
 			errHandler(err)
 		}
-
-	},[status,prices])
+	}, [status,prices])
 	/* useEffect(()=>{
 		console.log("prices",prices);
 	},[]) */
 
-	const chart = {
+	/* const chart = {
 		min: -1000,
 		max: 0
 	};
@@ -75,7 +82,7 @@ const Mine = () => {
 		} else if (chart.min>v.y) {
 			chart.min = v.y;
 		}
-	}
+	} */
 	
 	return <Layout className="mine">
 		<div style={{position:'relative'}}>
@@ -241,11 +248,16 @@ const Mine = () => {
 				<p style={{textAlign:'right'}}>过去24小时</p>
 				<div style={{ width: '100%', height: 300 }}>
 					<ResponsiveContainer>
-						<AreaChart data={data.chart} style={{width:'100%'}} margin={{top: 0,right: 10,left: -20,bottom: 0}}>
+						<AreaChart data={charts} style={{width:'100%'}} margin={{top: 0,right: 10,left: -20,bottom: 0}}>
 							<Area type="monotone" dataKey="y" stroke="#097853" fill="#20273a" />
 							<CartesianGrid stroke="#ccc" vertical={false} />
-							<XAxis dataKey="time"  />
-							<YAxis />
+							<XAxis dataKey="x" />
+							<YAxis tickFormatter={(value,index)=>{
+								if (value>1e9) return Math.round(value/1e9) + 'B$';
+								if (value>1e6) return Math.round(value/1e6) + 'M$';
+								if (value>1e3) return Math.round(value/1e3) + 'K$';
+								return value
+							}} />
 						</AreaChart>
 					</ResponsiveContainer>
 				</div>

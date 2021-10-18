@@ -103,6 +103,7 @@ export default function Provider ({children}) {
 		"ADA": 2.12,
 		"HT": 7.25
 	})
+	const [logs, setLogs] = useState<Array<{time:number, tvl:number}>>([]);
 
 	const [referral,setReferral] = useState("");
 
@@ -130,8 +131,10 @@ export default function Provider ({children}) {
 
 	const updateTokenPrices = async () => {
 		try{
-			let tokenPrices:any = await axios.post(process.env.REACT_APP_ENDPOINT+"api/prices");
-			setTokenPrices(tokenPrices.data)
+			const tokenPrices:any = await axios.post(process.env.REACT_APP_ENDPOINT+"api/logs");
+			const {logs, prices} = tokenPrices.data
+			setTokenPrices(prices);
+			setLogs(logs);
 		}catch(err){
 
 		}
@@ -246,8 +249,10 @@ export default function Provider ({children}) {
 					tokenPrices,
 					{
 						checkBalance,
-						referral
+						referral,
+						logs
 					},
+					
 				],
 				[status,tokenPrices]
 			)}

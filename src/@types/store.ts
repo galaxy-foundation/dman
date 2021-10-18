@@ -20,12 +20,12 @@ export type Data =  {
 	apr:number
 } */
 
-export type ChartData =  {
+/* export type ChartData =  {
 	time:string,
 	y:number
-}
+} */
 export type MineState =  {
 	pairs: Array<string>,
-	chart: Array<ChartData>,
+	/* chart: Array<ChartData>, */
 	tvl:number
 }
