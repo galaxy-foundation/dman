@@ -398,14 +398,14 @@
                 "type": "bool"
             },
             {
-                "internalType": "uint256[12]",
+                "internalType": "uint256[14]",
                 "name": "params",
-                "type": "uint256[12]"
+                "type": "uint256[14]"
             },
             {
-                "internalType": "uint256[27]",
+                "internalType": "uint256[36]",
                 "name": "pools",
-                "type": "uint256[27]"
+                "type": "uint256[36]"
             }
         ],
         "stateMutability": "view",
@@ -909,13 +909,6 @@
             }
         ],
         "name": "setReferralRate",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "startPresale",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

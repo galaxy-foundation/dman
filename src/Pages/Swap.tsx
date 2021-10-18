@@ -26,7 +26,7 @@ const styledNum = (data:Number)=>{
 const Swap = () => {
 	const wallet = useWallet();
 	const connected = wallet.status==="connected"
-	const [status,poolBalance,,{checkBalance}] = useAppContext();
+	const [status,,{checkBalance}] = useAppContext();
 
 	const [token1,setToken1] = useState({
 		token:"DM",
@@ -42,27 +42,27 @@ const Swap = () => {
 	const [loading,setLoading] = useState(false);
 
   	const getAmountIn = async ()=>{
-		if (token2.amount === 0&&poolBalance.reserve0 === 0&&poolBalance.reserve1 === 0) return;
+		if (token2.amount === 0&&status.reserve0 === 0&&status.reserve1 === 0) return;
 		if(token1.token === "USDT"){
-			let numerator = poolBalance.reserve0 * token2.amount;
-			let denominator = (poolBalance.reserve1 - token2.amount)*0.997;
+			let numerator = status.reserve0 * token2.amount;
+			let denominator = (status.reserve1 - token2.amount)*0.997;
 			var amountIn =   (numerator /denominator) + 1;
 			setToken1({...token1,amount:amountIn});
 		}
 		else {
-			let numerator = poolBalance.reserve1 * token2.amount;
-			let denominator = (poolBalance.reserve0 - token2.amount)*0.997;
+			let numerator = status.reserve1 * token2.amount;
+			let denominator = (status.reserve0 - token2.amount)*0.997;
 			var amountIn =   (numerator /denominator) + 1;
 			setToken1({...token1,amount:amountIn});
 		}
     }
 
 	const getAmountOut = async ()=>{
-		if (token1.amount === 0&&poolBalance.reserve0 === 0&&poolBalance.reserve1 === 0) return;
+		if (token1.amount === 0&&status.reserve0 === 0&&status.reserve1 === 0) return;
 		if(token1.token === "USDT"){
 			let amountWithFee = token1.amount*997;
-			let numerator = amountWithFee*(poolBalance.reserve1);
-  		    let denominator = poolBalance.reserve0*1000+amountWithFee;
+			let numerator = amountWithFee*(status.reserve1);
+  		    let denominator = status.reserve0*1000+amountWithFee;
 			var amountOut =   numerator /denominator;
 			
 			setToken2({...token2,amount:styledNum(amountOut*0.85)});
@@ -70,8 +70,8 @@ const Swap = () => {
 		else {
 			
 			let amountWithFee = token1.amount*997;
-			let numerator = amountWithFee*(poolBalance.reserve0);
-  		    let denominator = poolBalance.reserve1*1000+amountWithFee;
+			let numerator = amountWithFee*(status.reserve0);
+  		    let denominator = status.reserve1*1000+amountWithFee;
 			var amountOut =   numerator /denominator;
 			
 			setToken2({...token2,amount:styledNum(amountOut)});

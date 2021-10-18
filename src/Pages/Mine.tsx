@@ -16,7 +16,7 @@ import { errHandler ,fromValue} from '../util';
 
 const Mine = () => {
 	const wallet = useWallet();
-	const [status,,prices] = useAppContext();
+	const [status,prices] = useAppContext();
 
 	/* const Daily = 328767; */
 
@@ -49,7 +49,7 @@ const Mine = () => {
 		try {
 			let tvl = 0;
 			data.pairs.map((v,k) => {
-				tvl += status.pools[v]?fromValue(status.pools[v].total,v)*prices[v]:0;
+				tvl += status.pools[v]?status.pools[v].total*prices[v]:0;
 			})
 			setData({...data,tvl:tvl});
 		}catch(err){
@@ -109,124 +109,148 @@ const Mine = () => {
 				</div>
 			</div>
 		</div>
-		<div className="mt-2" style={{display:'flex',justifyContent:'space-between'}}>
-			<div style={{display:'flex',alignItems:'center'}}>
-				<span className="spin" style={{color:'red'}}>交易对/TVL</span>
-				<div style={{display:'flex',flexDirection:'column'}}>
-					<img src={imgSpin} alt="spin" style={{width:12,height:6,marginBottom:1}} />
-					<img src={imgSpin} alt="spin" style={{width:12,height:6,marginTop:1,transform: 'rotate(180deg)'}} />
-				</div>
-			</div>
-			<div style={{display:'flex',alignItems:'center'}}>
-				<span className="spin">个人收益</span>
-				<div style={{display:'flex',flexDirection:'column'}}>
-					<img src={imgSpin} alt="spin" style={{width:12,height:6,marginBottom:1}} />
-					<img src={imgSpin} alt="spin" style={{width:12,height:6,marginTop:1,transform: 'rotate(180deg)'}} />
-				</div>
-			</div>
-			<div style={{display:'flex',alignItems:'center'}}>
-				<span className="spin">日产量</span>
-				<div style={{display:'flex',flexDirection:'column'}}>
-					<img src={imgSpin} alt="spin" style={{width:12,height:6,marginBottom:1}} />
-					<img src={imgSpin} alt="spin" style={{width:12,height:6,marginTop:1,transform: 'rotate(180deg)'}} />
-				</div>
-			</div>
-			<div style={{display:'flex',alignItems:'center'}}>
-				<span className="spin">APR</span>
-				<div style={{display:'flex',flexDirection:'column'}}>
-					<img src={imgSpin} alt="spin" style={{width:12,height:6,marginBottom:1}} />
-					<img src={imgSpin} alt="spin" style={{width:12,height:6,marginTop:1,transform: 'rotate(180deg)'}} />
-				</div>
-			</div>
-		</div>
-		{!status.inited ? (
-			<SkeletonTheme color="#3a455f" highlightColor="#45516e">
-			<div className="mt-2" style={{display:'flex',backgroundColor:'#2e3548', borderBottomLeftRadius: 5, borderBottomRightRadius: 5, padding: 10}}>
-				<table style={{width:'100%'}} cellPadding="5">
+		<>
+			<div className="mt-2">
+				<table width="100%">
 					<tbody>
-						{data.pairs.map((v,k)=><Skeleton key={k} height={50} />)}
+						<tr>
+							<td>
+								<div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+									<span className="spin" style={{color:'red'}}>交易对</span>
+									<div style={{display:'flex',flexDirection:'column'}}>
+										<img src={imgSpin} alt="spin" style={{width:12,height:6,marginBottom:1}} />
+										<img src={imgSpin} alt="spin" style={{width:12,height:6,marginTop:1,transform: 'rotate(180deg)'}} />
+									</div>
+								</div>
+							</td>
+							<td width='24%'>
+								<div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+									<span className="spin">个人收益</span>
+									<div style={{display:'flex',flexDirection:'column'}}>
+										<img src={imgSpin} alt="spin" style={{width:12,height:6,marginBottom:1}} />
+										<img src={imgSpin} alt="spin" style={{width:12,height:6,marginTop:1,transform: 'rotate(180deg)'}} />
+									</div>
+								</div>
+							</td>
+							<td width='20%'>
+								<div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+									<span className="spin">日产量</span>
+									<div style={{display:'flex',flexDirection:'column'}}>
+										<img src={imgSpin} alt="spin" style={{width:12,height:6,marginBottom:1}} />
+										<img src={imgSpin} alt="spin" style={{width:12,height:6,marginTop:1,transform: 'rotate(180deg)'}} />
+									</div>
+								</div>
+							</td>
+							<td width='25%'>
+								<div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+									<span className="spin">APR</span>
+									<div style={{display:'flex',flexDirection:'column'}}>
+										<img src={imgSpin} alt="spin" style={{width:12,height:6,marginBottom:1}} />
+										<img src={imgSpin} alt="spin" style={{width:12,height:6,marginTop:1,transform: 'rotate(180deg)'}} />
+									</div>
+								</div>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 			</div>
-			</SkeletonTheme>
-		) : (
-			<>
-				<div className="mt-2" style={{display:'flex',backgroundColor:'#2e3548', borderBottomLeftRadius: 5, borderBottomRightRadius: 5, padding: 10}}>
-					<table style={{width:'100%'}} cellPadding="5">
+			<div className="mt-2" style={{backgroundColor:'#2e3548', borderBottomLeftRadius: 5, borderBottomRightRadius: 5, padding: 10}}>
+				
+				<SkeletonTheme color="#3a455f" highlightColor="#45516e">
+					<table style={{width:'100%'}}>
 						<tbody>
-							{data.pairs.map((v,k)=>
-							<tr key={k}>
-								<td>
-									<img src={Icons[v]} alt="token" style={{width:"2em",marginRight:10}} /> 
-									<span>{v}/ DM</span>
-								</td>
-								<td>
-									<div>{connected && status.pools[v] ? '$ '+status.pools[v].reward : '-'}</div>
-									<small>{connected ? '￥ ' + Number((Number(status.pools[v].reward) *prices.CNY).toFixed(2)) : '-'}</small>
-								</td>
-								<td>
-									<div>{connected ? status.pools[v].daily + ' DM' : '-'}</div>
-								</td>
-								<td>
-									<Link to = {`/mine/action/${v}`}>
-										<span style={{color:"white",display:'block',backgroundColor:((status.pools[v] && status.pools[v].apr || 0)>=0?'green':'red'),padding:5,borderRadius:5,textAlign:'center'}}>{(status.pools[v] && status.pools[v].apr || 0)>0?'+':''}{(status.pools[v] && status.pools[v].apr || 0).toFixed(2)}</span>
-									</Link>
-								</td>
-							</tr>)}
+						{data.pairs.map((v,k)=>(
+							status.inited ? (
+								<tr key={k}>
+									<td>
+										<img src={Icons[v]} alt="token" style={{width:"1.5em",marginRight:10}} /> 
+										<span>{v}/ DM</span>
+									</td>
+									<td width='20%'>
+										<div>{connected && status.pools[v] ? '$ '+Math.round(status.pools[v].reward) : '-'}</div>
+										<small>{connected ? '￥ ' + Math.round(Number(status.pools[v].reward) *prices.CNY) : '-'}</small>
+									</td>
+									<td width='20%'>
+										<div>{connected ? Math.round(status.pools[v].daily) + ' DM' : '-'}</div>
+									</td>
+									<td width='25%'>
+										<Link to = {`/mine/action/${v}`}>
+											<span style={{color:"white",display:'block',backgroundColor:((status.pools[v] && status.pools[v].apr || 0)>=0?'green':'red'),padding:5,borderRadius:5,textAlign:'center'}}>{(status.pools[v] && status.pools[v].apr || 0)>0?'+':''}{(status.pools[v] && status.pools[v].apr || 0).toFixed(2)}</span>
+										</Link>
+									</td>
+								</tr>
+							) : (
+								<tr key={k}>
+									<td>
+										<img src={Icons[v]} alt="token" style={{width:"1.5em",marginRight:10}} /> 
+										<span>{v}/ DM</span>
+									</td>
+									<td width='20%'>
+										<Skeleton />
+										<Skeleton />
+									</td>
+									<td width='20%'>
+										<Skeleton />
+									</td>
+									<td width='25%'>
+										<Skeleton />
+									</td>
+								</tr>
+							)))}
 						</tbody>
 					</table>
-				</div>
-				{/* <div className="mt-3" style={{backgroundColor:'#2e3548', borderRadius: 5, padding:20}}>
-					<div style={{display:'flex',justifyContent:'space-between'}}>
-						<div className="text-center">
-							<h3>选区总量</h3>
-							<div>1800万枚</div>
-						</div>
-						<div className="text-center">
-							<h3>区块高度</h3>
-							<div>36144</div>
-						</div>
-						<div className="text-center">
-							<h3>已挖数量</h3>
-							<div>1万枚</div>
-						</div>
+				</SkeletonTheme>
+			</div>
+			{/* <div className="mt-3" style={{backgroundColor:'#2e3548', borderRadius: 5, padding:20}}>
+				<div style={{display:'flex',justifyContent:'space-between'}}>
+					<div className="text-center">
+						<h3>选区总量</h3>
+						<div>1800万枚</div>
 					</div>
-					<div style={{display:'flex',justifyContent:'space-between', marginTop:20}}>
-						<div className="text-center">
-							<h3>出块时间</h3>
-							<div>3秒</div>
-						</div>
-						<div className="text-center">
-							<h3>活跃矿工</h3>
-							<div>12</div>
-						</div>
+					<div className="text-center">
+						<h3>区块高度</h3>
+						<div>36144</div>
 					</div>
-				</div> */}
-				<div className="mt-4 text-center">
-					<h1><span style={{color:'#cc0404'}}>DM</span><span style={{color:'#14d1cb'}}>Staking</span></h1>
-					<h2 className="mt-3">流动性总锁仓</h2>
-					<div className="mt-3" style={{display:'flex',justifyContent:'center'}}>
-						<div className="h2" style={{marginBottom:0,padding:10,color:'#cc0404',border:'1px solid #cc0404'}}>
-							${Number((data.tvl).toFixed(2))}
-						</div>
+					<div className="text-center">
+						<h3>已挖数量</h3>
+						<div>1万枚</div>
 					</div>
 				</div>
-				<div className="mt-3">
-					<h4>全网实时算力</h4>
-					<p style={{textAlign:'right'}}>过去24小时</p>
-					<div style={{ width: '100%', height: 300 }}>
-						<ResponsiveContainer>
-							<AreaChart data={data.chart} style={{width:'100%'}} margin={{top: 0,right: 10,left: -20,bottom: 0}}>
-								<Area type="monotone" dataKey="y" stroke="#097853" fill="#20273a" />
-								<CartesianGrid stroke="#ccc" vertical={false} />
-								<XAxis dataKey="time"  />
-								<YAxis />
-							</AreaChart>
-						</ResponsiveContainer>
+				<div style={{display:'flex',justifyContent:'space-between', marginTop:20}}>
+					<div className="text-center">
+						<h3>出块时间</h3>
+						<div>3秒</div>
+					</div>
+					<div className="text-center">
+						<h3>活跃矿工</h3>
+						<div>12</div>
 					</div>
 				</div>
-			</>
-		)}
+			</div> */}
+			<div className="mt-4 text-center">
+				<h1><span style={{color:'#cc0404'}}>DM</span><span style={{color:'#14d1cb'}}>Staking</span></h1>
+				<h2 className="mt-3">流动性总锁仓</h2>
+				<div className="mt-3" style={{display:'flex',justifyContent:'center'}}>
+					<div className="h2" style={{marginBottom:0,padding:10,color:'#cc0404',border:'1px solid #cc0404'}}>
+						${Number((data.tvl).toFixed(2))}
+					</div>
+				</div>
+			</div>
+			<div className="mt-3">
+				<h4>全网实时算力</h4>
+				<p style={{textAlign:'right'}}>过去24小时</p>
+				<div style={{ width: '100%', height: 300 }}>
+					<ResponsiveContainer>
+						<AreaChart data={data.chart} style={{width:'100%'}} margin={{top: 0,right: 10,left: -20,bottom: 0}}>
+							<Area type="monotone" dataKey="y" stroke="#097853" fill="#20273a" />
+							<CartesianGrid stroke="#ccc" vertical={false} />
+							<XAxis dataKey="time"  />
+							<YAxis />
+						</AreaChart>
+					</ResponsiveContainer>
+				</div>
+			</div>
+		</>
 	</Layout>;
 };
 

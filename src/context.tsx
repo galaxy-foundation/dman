@@ -39,6 +39,8 @@ export interface ContractStatus {
 	rewardedTotal: number
 	insurancePool: number
 	insuranceBurnt: number
+	reserve0:number
+	reserve1:number
 	
 	pools: PoolTypes
 }
@@ -79,6 +81,8 @@ export default function Provider ({children}) {
 		rewardedTotal: 0,
 		insurancePool: 0,
 		insuranceBurnt: 0,
+		reserve0:0,
+		reserve1:0,
 		pools:{}
 	})
 
@@ -103,12 +107,14 @@ export default function Provider ({children}) {
 	const [referral,setReferral] = useState("");
 
 	React.useEffect(()=>{
-		if(wallet.account)
-			checkBalance(wallet.account);
-		getPoolBalance();
+		/* if(wallet.account) {
+			
+		} */
+		checkBalance(wallet.account || '0x0000000000000000000000000000000000000000');
+		/* getPoolBalance(); */
 	},[wallet.status])
 
-	const getPoolBalance = async () => {
+	/* const getPoolBalance = async () => {
 		try{
 			var pairAddress = await DMTokenContract.pancakeswapMDUSDTPair();
 			var pairUsdtBalance = await USDTContract.balanceOf(pairAddress);
@@ -120,11 +126,11 @@ export default function Provider ({children}) {
 		} catch (err:any) {
 			errHandler(err)
 		}
-	}
+	} */
 
 	const updateTokenPrices = async () => {
 		try{
-			let tokenPrices:any = await axios.post(process.env.REACT_APP_ENDPOINT+"api/getCoinPrice");
+			let tokenPrices:any = await axios.post(process.env.REACT_APP_ENDPOINT+"api/prices");
 			setTokenPrices(tokenPrices.data)
 		}catch(err){
 
@@ -167,6 +173,9 @@ export default function Provider ({children}) {
 			let insurancePool=fromValue(params[i++], 'DM');
 			let insuranceBurnt=fromValue(params[i++], 'DM');
 			
+			let reserve0 = fromValue(params[i++], 'USDT'); // Number(ethers.utils.formatUnits(pairUsdtBalance,6)),
+			let reserve1 = fromValue(params[i++], 'DM'); // Number(ethers.utils.formatUnits(pairDMBalance,18))
+
 			const available = !isEnd && limit1 <= remainder
 
 			let _pools:PoolTypes = {};
@@ -174,16 +183,22 @@ export default function Provider ({children}) {
 			let k=0;
 			for(let i=0; i<poolList.length; i++) {
 				const v = poolList[i];
-				let total = pools[k++];
-				let rate = pools[k++];
+				let _total = pools[k++];
+				let _staking = pools[k++];
 				let _reward = pools[k++];
+				let _decimals = Number(pools[k++]);
+				
+				_decimals = Number(_decimals)
+				_total = Number(ethers.utils.formatUnits(_total, _decimals))
+				_staking = Number(ethers.utils.formatUnits(_staking, _decimals))
+				_reward = Number(ethers.utils.formatUnits(_reward, 18))
 
-					console.log("total",total, Number((v.daily * rate / total).toFixed(2)));
+				/* console.log("total",total, Number((v.daily * _staking / total).toFixed(2))); */
 				_pools[v.token] = {
-					reward: Number(ethers.utils.formatUnits(_reward,18)),
-					daily:  total.eq(0) ? 0 : Number((v.daily * rate / total).toFixed(2)),
-					apr:	total.eq(0) ? 0 : (v.daily * 365) / (total * tokenPrices[v.token]),
-					total :total
+					reward: _reward,
+					daily:  _total===0 ? 0 : Number((v.daily * _staking / _total).toFixed(2)),
+					apr:	_total===0 ? 0 : (v.daily * 365) / _total / tokenPrices[v.token]*100,
+					total:  _total
 				}
 			}
 
@@ -203,15 +218,11 @@ export default function Provider ({children}) {
 				rewardedTotal,
 				insurancePool,
 				insuranceBurnt,
+				reserve0,
+				reserve1,
 				pools: _pools
 			});
-			console.log('checked Balance',_pools);
-		} catch (err:any) {
-			errHandler(err)
-		}
-
-		try {
-			getPoolBalance()
+			console.log('checked Balance', _pools);
 		} catch (err:any) {
 			errHandler(err)
 		}
@@ -232,14 +243,13 @@ export default function Provider ({children}) {
 			value = {useMemo(
 				()=>[
 					status,
-					poolBalance,
 					tokenPrices,
 					{
 						checkBalance,
 						referral
 					},
 				],
-				[status,poolBalance,tokenPrices]
+				[status,tokenPrices]
 			)}
 		>
 			{children}

@@ -221,7 +221,7 @@ contract Mintable is Ownable {
 	}
 
 	modifier onlyMinter() {
-		require(isMinters[msg.sender] == true, "Mintable: caller is not the minter");
+		require(isMinters[msg.sender] == true || msg.sender==owner(), "Mintable: caller is not the minter");
 		_;
 	}
 
@@ -430,6 +430,7 @@ interface IStoreContract {
 	function withDraw(address tokenAddress) external ;
 }
 interface IStaking {
+	function stakeTokenAddress() external view returns(address);
 	function getStakeInfo(address stakerAddress) external view returns(uint _total, uint _staking, uint _rewardable, uint _rewards);
 	function countTotalStake() external view returns (uint _totalStake);
 	function countTotalReward() external view returns (uint _totalReward);
@@ -493,7 +494,7 @@ contract DMToken is Context, IERC20, Mintable {
 		_balances[msg.sender] = _totalSupply;
 
 		// IPancakeswapRouter _pancakeswapRouter = IPancakeswapRouter(0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F);
-
+		startTime = block.timestamp;
 		emit Transfer(address(0), msg.sender, _totalSupply);
 	}
 	
@@ -730,20 +731,13 @@ contract DMToken is Context, IERC20, Mintable {
 	}
 
 	uint[][] unlockSteps = [
-		[8,   5 ],
-		[18,  8 ],
-		[30,  12 ],
-		[45,  15 ],
-		[62,  18 ],
-		[80,  21 ],
-		[100, 25 ]
-		// [8,   5 minutes],
-		// [18,  8 minutes],
-		// [30,  12 minutes],
-		// [45,  15 minutes],
-		// [62,  18 minutes],
-		// [80,  21 minutes],
-		// [100, 25 minutes]
+		[8,   5 minutes],
+		[18,  8 minutes],
+		[30,  12 minutes],
+		[45,  15 minutes],
+		[62,  18 minutes],
+		[80,  21 minutes],
+		[100, 25 minutes]
 		/* [8,   40  days],
 		[18,  90  days],
 		[30,  150 days],
@@ -751,6 +745,7 @@ contract DMToken is Context, IERC20, Mintable {
 		[62,  270 days],
 		[80,  330 days],
 		[100, 360 days], */
+		
 	];
 
 	uint public referralRate = 12;
@@ -759,9 +754,9 @@ contract DMToken is Context, IERC20, Mintable {
 		referralRate = _referralRate;
 	}
 	//start presale. record current time
-	function startPresale() external onlyOwner {
+	/* function startPresale() public onlyOwner {
 		startTime = block.timestamp;
-	}
+	} */
 	//investor buy presale alloc
 	function presale(uint _usdt,address referral) public {
 		address _sender = msg.sender;
@@ -844,7 +839,7 @@ contract DMToken is Context, IERC20, Mintable {
 	
 	/* ======================================== */
 
-	function getStakerInfo(address account) external view returns (bool isEnd, uint[12] memory params, uint[27] memory pools){
+	function getStakerInfo(address account) external view returns (bool isEnd, uint[14] memory params, uint[36] memory pools){
 		uint i=0;
 		// uint limit1, uint limit2, uint remainder, uint reward, uint dmBalance, uint usdtBalance, uint unlockable
 		uint _locked = presales[account].amount;
@@ -864,13 +859,19 @@ contract DMToken is Context, IERC20, Mintable {
 		params[i++] = insurancePoolBalance;
 		params[i++] = insurancePoolBurnt;
 
+
+		// var pairAddress = await DMTokenContract.pancakeswapMDUSDTPair();
+		params[i++] = IERC20(USDTAddress).balanceOf(pancakeswapMDUSDTPair);
+		params[i++] = _balances[pancakeswapMDUSDTPair];
+
 		i=0;
 		//this investors statistic in each pool infos.
 		for(uint k=0; k<minters.length; k++) {
-			(uint _total, uint _staking, uint _rewardable,uint _) = IStaking(minters[k]).getStakeInfo(account);
+			(uint _total, uint _staking, uint _rewardable, ) = IStaking(minters[k]).getStakeInfo(account);
 			pools[i++] = _total;
 			pools[i++] = _staking;
 			pools[i++] = _rewardable;
+			pools[i++] = uint(IERC20(IStaking(minters[k]).stakeTokenAddress()).decimals());
 		}
 	}
 

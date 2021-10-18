@@ -14,6 +14,7 @@ import { errHandler, tips, toValue, fromValue} from '../util';
 
 import {useAppContext} from '../context';
 
+const N = (n) => Number(Number(n).toFixed(4));
 const contracts = {
 	DM:{
 		stakeTokenContract: DMTokenContract,
@@ -58,7 +59,7 @@ const Daily = 328767;
 const MineAct = (props) => {
 	const wallet = useWallet();
 	const connected = wallet.status==="connected"
-	const [status,,tokenPrices,{referral,checkBalance}] = useAppContext();
+	const [status,tokenPrices,{referral,checkBalance}] = useAppContext();
 	//routing
 	let history = useHistory();
 	const {id} = props.match.params;
@@ -144,8 +145,8 @@ const MineAct = (props) => {
 	const setPoolStatus = () => {
 		console.log(tokenPrices[id],status.pools[id],status.pools)
 		if(!status.pools[id]) return;
-		let total = fromValue(status.pools[id].total,id);
-		let interest = tokenPrices[id]&&total!==0?Daily*36500/(total*tokenPrices[id]):0;
+		let total = status.pools[id].total
+		let interest = status.pools[id]?status.pools[id].apr:"0";
 		let multiplier = interest/100;
 		setStatus({...mintStatus, interest:interest, total:total, multiplier:multiplier});
 	}
@@ -153,8 +154,6 @@ const MineAct = (props) => {
 	useEffect(()=>{
 		setPoolStatus();
 	},[status,tokenPrices])
-
-	//actions 
 
 	const handleStaking =async ()=>{
 		try {
@@ -186,6 +185,7 @@ const MineAct = (props) => {
 		if(tx!=null){
 			await tx.wait();
 			setStakedStatus();
+			checkBalance(wallet.account);
 		}
 	}
 
@@ -227,17 +227,17 @@ const MineAct = (props) => {
 		<div style={{display:'flex',padding:20}}>
 			<div style={{width:'50%'}}>
 				<h3>已赚取</h3>
-				<code className="h3">{connected ? mintStatus.rewards : '-'}</code>
+				<code className="h3">{connected ? N(mintStatus.rewards) : '-'}</code>
 			</div>
 			<div style={{width:'50%'}}>
 				<h3>年化利率</h3>
-				<code className="h3">{connected ? mintStatus.interest + '%' : '-'}</code>
+				<code className="h3">{connected ? N(mintStatus.interest) + '%' : '-'}</code>
 			</div>
 		</div>
 		<div className="mt-3" style={{backgroundColor:'#2e3548', borderRadius: 5, padding: '20px 50px'}}>
 			<h3><span className="success">DM</span>可赚取</h3>
 			<div className="mt-4" style={{display:'flex', justifyContent:'space-between'}}>
-				<span className="success">{connected ? mintStatus.rewardable : '-'}</span>
+				<span className="success">{connected ? N(mintStatus.rewardable) : '-'}</span>
 				<button className="h3 btn btn-success round" onClick={handleClaimReward}>收割</button>
 			</div>
 		</div>
@@ -251,7 +251,7 @@ const MineAct = (props) => {
 		<div className="mt-3" style={{backgroundColor:'#2e3548', borderRadius: 5, padding: '20px 50px'}}>
 			<h3><span className="success">{id}</span>Unstaking</h3>
 			<div className="mt-4" style={{display:'flex', justifyContent:'space-between'}}>
-				<span className="success">{connected ? mintStatus.stakedAmount : '-'}</span>
+				<span className="success">{connected ? N(mintStatus.stakedAmount) : '-'}</span>
 			</div>
 			<div className="mt-4">
 				<button className="w-100 h3 btn btn-warning round" onClick={handleUnstaking}>Submit</button>
@@ -260,15 +260,15 @@ const MineAct = (props) => {
 		<div className="mt-3 h3" style={{fontWeight:400}}>
 			<div className="mt-3" style={{display:'flex', justifyContent:'space-between'}}>
 				<span>年化利率</span>
-				<span>{connected ? mintStatus.interest + '%' : '-'}</span>
+				<span>{connected ? N(mintStatus.interest) + '%' : '-'}</span>
 			</div>
 			<div className="mt-3" style={{display:'flex', justifyContent:'space-between'}}>
 				<span>倍数</span>
-				<span>{connected ? mintStatus.multiplier + 'x' : '-'}</span>
+				<span>{connected ? N(mintStatus.multiplier) + 'x' : '-'}</span>
 			</div>
 			<div className="mt-3" style={{display:'flex', justifyContent:'space-between'}}>
 				<span>流动性</span>
-				<span>{connected? mintStatus.total: '-'}</span>
+				<span>{connected? N(mintStatus.total): '-'}</span>
 			</div>
 		</div>
 	</Layout>;

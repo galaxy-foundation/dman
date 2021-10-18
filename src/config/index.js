@@ -13,16 +13,16 @@ const addrs = contracts[chainid];
 const provider = new ethers.providers.JsonRpcProvider(rpc);
 
 const ExchangeRouter =      new ethers.Contract(addrs.router,      abiRouter,  provider);
-const DMTokenContract =     new ethers.Contract(addrs.tokens.DM,   abiDM,      provider);
+const DMTokenContract =     new ethers.Contract(addrs.tokens.DM.address,   abiDM,      provider);
 
-const USDTContract=         new ethers.Contract(addrs.tokens.USDT, abiERC20,   provider);
-const ETHContract =         new ethers.Contract(addrs.tokens.ETH,  abiERC20,   provider);
-const TRXContract =         new ethers.Contract(addrs.tokens.TRX,  abiERC20,   provider);
-const FILContract =         new ethers.Contract(addrs.tokens.FIL,  abiERC20,   provider);
-const XRPContract =         new ethers.Contract(addrs.tokens.XRP,  abiERC20,   provider);
-const DOTContract =         new ethers.Contract(addrs.tokens.DOT,  abiERC20,   provider);
-const ADAContract =         new ethers.Contract(addrs.tokens.ADA,  abiERC20,   provider);
-const HTContract  =         new ethers.Contract(addrs.tokens.HT,   abiERC20,   provider);
+const USDTContract=         new ethers.Contract(addrs.tokens.USDT.address, abiERC20,   provider);
+const ETHContract =         new ethers.Contract(addrs.tokens.ETH.address,  abiERC20,   provider);
+const TRXContract =         new ethers.Contract(addrs.tokens.TRX.address,  abiERC20,   provider);
+const FILContract =         new ethers.Contract(addrs.tokens.FIL.address,  abiERC20,   provider);
+const XRPContract =         new ethers.Contract(addrs.tokens.XRP.address,  abiERC20,   provider);
+const DOTContract =         new ethers.Contract(addrs.tokens.DOT.address,  abiERC20,   provider);
+const ADAContract =         new ethers.Contract(addrs.tokens.ADA.address,  abiERC20,   provider);
+const HTContract  =         new ethers.Contract(addrs.tokens.HT.address,   abiERC20,   provider);
 
 const DMStakingContract  =  new ethers.Contract(addrs.staking.DM,  abiStaking, provider);
 const USDTStakingContract=  new ethers.Contract(addrs.staking.USDT,abiStaking, provider);

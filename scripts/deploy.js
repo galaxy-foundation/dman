@@ -1,159 +1,93 @@
 
 const fs = require('fs');
 const colors = require('colors');
+const {DeployTest} = require ("./1_TokenDeploy");
 const {deployDMToken} = require ("./1_TokenDeploy");
 const { deployUSDT } = require('./2_USDTDeploy');
 const { deployStaking } = require('./3_StakingDeploy');
 /* const { deployInsurrancePool } = require('./4_insurranceDeploy'); */
 
 const contracts = require("../src/config/contracts.json");
+
+const abiDeployDM = require("../artifacts/contracts/DeployDM.sol/DeployDM.json");
+const abiDeployOthers = require("../artifacts/contracts/DeployOthers.sol/DeployOthers.json");
+
 const abiDMToken = require("../artifacts/contracts/DMToken.sol/DMToken.json");
 const abiRouter = require("../artifacts/contracts/dexRouter.sol/PancakeswapRouter.json");
-/* const abiERC20 = require("../artifacts/contracts/DMToken.sol/IERC20.json"); */
+const abiERC20 = require("../artifacts/contracts/DMToken.sol/IERC20.json");
 const abiStaking = require("../artifacts/contracts/staking.sol/staking.json");
 const abiPair = require("../artifacts/contracts/dexfactory.sol/IPancakeswapPair.json");
 
 const {ethers} = require("ethers");
 const hre = require("hardhat");
 
-const tokens = [
-	"DM",
-	"USDT",
-	"ETH",
-	"TRX",
-	"FIL",
-	"XRP",
-	"DOT",
-	"ADA",
-	"HT",
+
+const tokenList = [
+	'DM',
+	'USDT',
+	'ETH',
+	'TRX',
+	'FIL',
+	'XRP',
+	'DOT',
+	'ADA',
+	'HT',
 ]
-const tokenPrices = [
-	ethers.BigNumber.from("1000000000000"),
-	ethers.BigNumber.from("1000000000000000000000000"),
-	ethers.BigNumber.from("3000000000000000"),
-	ethers.BigNumber.from("108000000000000000000000"),
-	ethers.BigNumber.from("77820000000000"),
-	ethers.BigNumber.from("1070000000000"),
-	ethers.BigNumber.from("35150000000000"),
-	ethers.BigNumber.from("2410000000000"),
-	ethers.BigNumber.from("14260000000000")
-]
+
 async function main() {
-	let addrs = {router:null, tokens:{}, staking: {}};
-	// get network
-	let signer = await hre.ethers.getSigner();
+	const signer = await hre.ethers.getSigner();
+
+	const router = '0x8e12fD09f7A761AABaD0C8E0e574d797FE27b8A6'
+	const account = signer.address // '0xC5df89579D7A2f85b8a4b1a6395083da394Bba92'
+	const balance =  1e8
+
+	const result = {router, tokens:{}, staking: {}};
+	const network = await signer.provider._networkPromise;
+	const chainId = network.chainId;
+	console.log('Starting by '.blue, signer.address.yellow);
+	console.log('Preparing...'.blue, "Step 1");
+	const dmDeploy = await hre.ethers.getContractFactory("DeployDM");
+	const deployDM = await dmDeploy.deploy();
+	/* await deployDM.deployed(); */
+	console.log('Preparing...'.blue, "Step 2");
+	const othersDeploy = await hre.ethers.getContractFactory("DeployOthers");
+	const deployOthers = await othersDeploy.deploy();
+	/* await deployOthers.deployed(); */
+
+	console.log('Deploying DM contract...'.blue);
+	const dm = new ethers.Contract(deployDM.address, abiDeployDM.abi, signer);
 	
-	let network = await signer.provider._networkPromise;
-	let chainId = network.chainId;
-
-	/* -------------- exchange --------------- */
-
-	//let addrs.router
-
-	console.log("starting with signer ", signer.address.yellow);
-	if(chainId === 4002){
-		addrs.router = "0x8e12fD09f7A761AABaD0C8E0e574d797FE27b8A6";
-	} else {
-		addrs.router = process.env.ROUTER;
-	}
+	await dm.deplyDM(deployOthers.address, result.router, account, balance);
+	const {_dm, _usdt} = await dm.getTokens();
+	console.log("DM"   + (" ".repeat(10-2)), _dm.green);
+	console.log("USDT" + (" ".repeat(10-4)), _usdt.green);
 	
-	/* -------------- USDT --------------- */
-	if(chainId === 4002){
-		addrs.tokens.USDT= await deployUSDT(addrs.router);
-		console.log("Fake USDT Deployed at ", addrs.tokens.USDT.yellow);
-	} else {
-		addrs.tokens.USDT = process.env["USDT"];
-	}
-	/* -------------- DM --------------- */
-
-	let dmToken = await deployDMToken(addrs.tokens.USDT, addrs.router);
-	addrs.tokens.DM = dmToken.address;
-	console.log('DM deployed at ', addrs.tokens.DM.yellow);
+	console.log('Deploying tokens & staking contracts...'.blue);
+	const others = new ethers.Contract(deployOthers.address, abiDeployOthers.abi, signer);
+	await others.deplyTokens1(_dm, _usdt, account, balance);
+	await others.deplyTokens2(_dm, _usdt, account, balance);
+	const tokens = await others.getTokens();
+	tokens.map((v,k)=>{
+		console.log(tokenList[k] + (" ".repeat(10 - tokenList[k].length)), v.token.green);
+		result.tokens[tokenList[k]]={address:v.token, decimals:v.decimals}
+	})
+	const stakings = await others.getStakings();
+	stakings.map((v,k)=>{
+		console.log(tokenList[k]+' / DM'  + (" ".repeat(5 - tokenList[k].length)), v.green);
+		result.staking[tokenList[k]]=v
+	})
 	
-	/* -------------- mining tokens --------------- */
-
-	/* const stakeTokens = {}; */
-	/* stakeTokens[tokens[0]] = {address:addrs.DM, abi:DMToken.abi}; */
-	if(chainId === 4002){
-		// testnet
-		/* stakeTokens[tokens[1]] = {address:addrs.tokens.USDT, abi:IERC20.abi}; */
-		for(let i = 2; i< tokens.length; i++){
-			let tokenAddress = (await deployUSDT(addrs.router));
-			addrs.tokens[tokens[i]] = tokenAddress;
-			console.log('Fake '+tokens[i] + " deployed at ", tokenAddress.yellow);
-			/* stakeTokens[tokens[i]] = {address:tokenAddress, abi:IERC20.abi}; */
-		}
-	} else {
-		//mainnet
-		for(let i = 1; i<tokens.length; i++){
-			addrs.tokens[tokens[i]] = process.env[tokens[i]];
-			/* stakeTokens[tokens[i]] = {address:tokenAddress, abi:IERC20.abi}; */
-		}
-	}
-	/* -------------- add liquidity -----------------*/
-
-	console.log('providing liquidity...');
-	var tx = await dmToken.approve(addrs.router, ethers.utils.parseUnits("100000", 18));
-	await tx.wait();
-	var exchangeContract = new ethers.Contract(addrs.router, abiRouter.abi, signer);
-	await exchangeContract.addLiquidity(dmToken.address, addrs.tokens[tokens[1]], ethers.utils.parseUnits("100000",18), ethers.utils.parseUnits("1000",6),"0","0", signer.address, "1111111111111111111111111");
-
-	/* -------------- staking contract -----------------*/
-	
-/* 	const stakingContractsList = [
-		"DMStaking",
-		"USDTStaking",
-		"ETHStaking",
-		"TRXStaking",
-		"FILStaking",
-		"XRPStaking",
-		"DOTStaking",
-		"ADAStaking",
-		"HTStaking"
-	]; */
-
-
-
-	/* ------------ stake pool -------------- */
-
-	/* var stakingContracts = {}; */
-	var statkingArray = []
-	for(var i = 0; i < tokens.length; i++){
-		var stakingAddress = await deployStaking(addrs.tokens[tokens[i]], addrs.tokens.DM, tokenPrices[i]); 
-		addrs.staking[tokens[i]] = stakingAddress;
-		console.log('Staking '+tokens[i]+' deployed at ', stakingAddress.yellow);
-		statkingArray.push(stakingAddress);
-		/* stakingContracts[tokens[i]] = {address:stakingContractAddress, abi:Staking.abi}; */
-		/*  */
-		// await dmToken.setMinter(stakingContractAddress);
-		
-	}
-	console.log('setting minters up...');
-	await dmToken.setMinters(statkingArray);
-	
-	/* ------------ objects -------------- */
-
-	/* var ExchangePool = {abi : Pool.abi}
-	var exchangeRouter = {address:addrs.router, abi:ExchangeRouter.abi}
-	var contractObject = {ExchangeRouter:exchangeRouter,ExchangePool}; */
-
-	/* contractObject = {...contractObject, ...stakeTokens, ...stakingContracts} */
-
-	
-	console.log('starting presale...');
-	tx = await dmToken.startPresale();
-	await tx.wait();
-	console.log('writing abis and addresses...');
-	
+	console.log('writing abis and addresses...'.blue);
+	/* -------------- writing... -----------------*/
 	fs.writeFileSync(`./src/config/abi/router.json`,  JSON.stringify(abiRouter.abi, null, 4));
 	fs.writeFileSync(`./src/config/abi/dmtoken.json`, JSON.stringify(abiDMToken.abi, null, 4));
 	fs.writeFileSync(`./src/config/abi/staking.json`, JSON.stringify(abiStaking.abi, null, 4));
 	fs.writeFileSync(`./src/config/abi/pair.json`,	  JSON.stringify(abiPair.abi, null, 4));
-	fs.writeFileSync(`./src/config/contracts.json`,   JSON.stringify({...contracts, [chainId]:addrs}, null, 4));
+	fs.writeFileSync(`./src/config/contracts.json`,   JSON.stringify({...contracts, [chainId]:result}, null, 4));
+	console.log('complete'.green);
 }
 
 main().then(() => {
-	console.log('complete'.green);
 }).catch((error) => {
 	console.error(error);
 	process.exit(1);
