@@ -252,10 +252,12 @@ const Mine = () => {
 							<Area type="monotone" dataKey="y" stroke="#097853" fill="#20273a" />
 							<CartesianGrid stroke="#ccc" vertical={false} />
 							<XAxis dataKey="x" />
-							<YAxis tickFormatter={(value,index)=>{
+							<YAxis fontSize={10} tickFormatter={(value,index)=>{
 								if (value>1e9) return Math.round(value/1e9) + 'B$';
 								if (value>1e6) return Math.round(value/1e6) + 'M$';
+								if (value>1e5) return Math.round(value/1e5)/10 + 'M$';
 								if (value>1e3) return Math.round(value/1e3) + 'K$';
+								if (value>1e2) return Math.round(value/1e2)/10 + 'K$';
 								return value
 							}} />
 						</AreaChart>

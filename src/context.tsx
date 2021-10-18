@@ -136,7 +136,7 @@ export default function Provider ({children}) {
 			setTokenPrices(prices);
 			setLogs(logs);
 		}catch(err){
-
+			console.log(err)
 		}
 	}
 
