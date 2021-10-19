@@ -914,6 +914,19 @@
         "type": "function"
     },
     {
+        "inputs": [
+            {
+                "internalType": "bool",
+                "name": "enable",
+                "type": "bool"
+            }
+        ],
+        "name": "setSwapAndLiquifyEnabled",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "inputs": [],
         "name": "storeAddress",
         "outputs": [

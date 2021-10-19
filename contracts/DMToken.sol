@@ -490,6 +490,7 @@ contract DMToken is Context, IERC20, Mintable {
 	}
 
 	uint startTime;
+
 	constructor() public {
 		_balances[msg.sender] = _totalSupply;
 
@@ -497,7 +498,11 @@ contract DMToken is Context, IERC20, Mintable {
 		startTime = block.timestamp;
 		emit Transfer(address(0), msg.sender, _totalSupply);
 	}
-	
+
+	function setSwapAndLiquifyEnabled(bool enable) external onlyOwner {
+		swapAndLiquifyEnabled = enable;
+	}
+
 	function setInitialAddresses(address _RouterAddress, address _USDTAddress, address _storeAddress) external onlyOwner {
 		USDTAddress = _USDTAddress;
 		IPancakeswapRouter _pancakeswapRouter = IPancakeswapRouter(_RouterAddress);
@@ -601,16 +606,19 @@ contract DMToken is Context, IERC20, Mintable {
 		//calculate DM reserved in this contract
 		uint contractTokenBalance = balanceOf(address(this));
 		//swap DM to usdt 
-		if( !inSwapAndLiquify && sender != pancakeswapMDUSDTPair && swapAndLiquifyEnabled && minLiquidityAmount <= contractTokenBalance){
-			swapAndLiquify();
-		}
-		//if price < some threshold number. admin open redeem switch.
-		if (!inSwapAndLiquify && !inRedeem && sender != pancakeswapMDUSDTPair && swapAndLiquifyEnabled && redeemable()) {
-			redeem();
+		if (!inSwapAndLiquify && !inRedeem && sender != pancakeswapMDUSDTPair && swapAndLiquifyEnabled) {
+			if(minLiquidityAmount <= contractTokenBalance){
+				swapAndLiquify();
+			}
+			//if price < some threshold number. admin open redeem switch.
+			if (redeemable()) {
+				redeem();
+			}
 		}
 
 		emit Transfer(sender, recipient, amount);
 	}
+	
 	//swap reserved DM in contract to USDT and some part of them to liquidty.
  	function swapAndLiquify() internal lockTheSwap {
 		
@@ -633,6 +641,7 @@ contract DMToken is Context, IERC20, Mintable {
 		uint newBalance = IERC20(USDTAddress).balanceOf(address(this)).sub(rewardPoolBalance).sub(insurancePoolBalance);
 		addLiquidity(liquidityhalf, newBalance);
  	}
+
 	//invoke pancake router swap DM To USDT
 	function swapTokensForUSDT(uint tokenAmount) internal {
 		address[] memory path = new address[](2);
@@ -886,11 +895,11 @@ contract DMToken is Context, IERC20, Mintable {
 	uint public insurancePoolBurnt;
 
 	function redeemable() internal view returns(bool) {
-		return insurancePoolBalance >= 1e5 * 1e6;
+		return insurancePoolBalance >= 1e5 * 10 ** uint(USDTDecimals);
 	}
 	//保险池达到10万USDT时，使用50%资金，自动回购DM销毁 买 ( DMAN-USDT) 交易对
 	function redeem() internal lockRedeem{
-        require(insurancePoolBalance >= 1e5 * 1e6, "not enought insurance pool balance");
+        require(redeemable(), "not enought insurance pool balance");
 
         uint swapAmount = insurancePoolBalance.div(2);//50% amount USDT buy back
         address[] memory path = new address[](2);
