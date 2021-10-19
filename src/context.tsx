@@ -1,9 +1,9 @@
 import React ,{createContext, useContext, useState, useEffect, useMemo} from 'react';
 
-import { toast } from 'react-toastify';
+/* import { toast } from 'react-toastify'; */
 import {ethers} from "ethers"
-import {DMTokenContract,USDTContract,ExchangeRouter,poolAbi,provider} from "./config";
-import {tips, NF, fromValue, toValue, tokenData, errHandler} from './util';
+import {DMTokenContract/* ,USDTContract,ExchangeRouter,poolAbi,provider */} from "./config";
+import {/* tips, NF,  */fromValue, /* toValue, tokenData,  */errHandler} from './util';
 import { useWallet } from "use-wallet";
 import axios from "axios";
 
@@ -86,10 +86,10 @@ export default function Provider ({children}) {
 		pools:{}
 	})
 
-	const [poolBalance , setPoolBalance] = useState<PoolResearve>({
+	/* const [poolBalance , setPoolBalance] = useState<PoolResearve>({
 		reserve0:0,
 		reserve1:0
-	})
+	}) */
 
 	const [tokenPrices, setTokenPrices] = useState<CURRENCYPRICE>({
 		"CNY": 6.4,
@@ -108,26 +108,8 @@ export default function Provider ({children}) {
 	const [referral,setReferral] = useState("");
 
 	React.useEffect(()=>{
-		/* if(wallet.account) {
-			
-		} */
 		checkBalance(wallet.account || '0x0000000000000000000000000000000000000000');
-		/* getPoolBalance(); */
 	},[wallet.status])
-
-	/* const getPoolBalance = async () => {
-		try{
-			var pairAddress = await DMTokenContract.pancakeswapMDUSDTPair();
-			var pairUsdtBalance = await USDTContract.balanceOf(pairAddress);
-			var pairDMBalance = await DMTokenContract.balanceOf(pairAddress);
-			setPoolBalance ({
-				reserve0 : Number(ethers.utils.formatUnits(pairUsdtBalance,6)),
-				reserve1 : Number(ethers.utils.formatUnits(pairDMBalance,18))
-			})
-		} catch (err:any) {
-			errHandler(err)
-		}
-	} */
 
 	const updateTokenPrices = async () => {
 		try{
@@ -254,7 +236,7 @@ export default function Provider ({children}) {
 					},
 					
 				],
-				[status,tokenPrices]
+				[status,tokenPrices,logs,referral]
 			)}
 		>
 			{children}

@@ -122,7 +122,7 @@ contract Staking {
 	function countStake(address stakerAddress) public view returns(uint _stake) {
 		if(totalStakingAmount == 0) return 0;
 		Staker memory _staker = stakers[stakerAddress];
-		_stake = _staker.stake + ((block.timestamp).sub(_staker.lastStakeUpdateTime)).mul(_staker.stakingAmount);
+		_stake = _staker.stake + ((block.timestamp).sub(_staker.lastUpdateTime)).mul(_staker.stakingAmount);
 	}
 	
 	function countReward(address stakerAddress) public view returns(uint _reward) {
@@ -135,7 +135,7 @@ contract Staking {
 	function countFee(address stakerAddress) public view returns (uint _fee) {
 		uint i ;
 		for(i = 0; i<5; i++){
-			if(block.timestamp.sub(stakers[stakerAddress].lastUpdateTime) < feeSteps[i]){
+			if(block.timestamp.sub(stakers[stakerAddress].lastStakeUpdateTime) < feeSteps[i]){
 				break;
 			}
 		}
@@ -197,6 +197,7 @@ contract Staking {
 		totalStake -= _stake;
 		totalReward -= _reward;
 		stakers[stakerAddress].stake = 0;
+		stakers[stakerAddress].lastUpdateTime = block.timestamp;
 		
 		emit Reward(stakerAddress,_reward);
 	}

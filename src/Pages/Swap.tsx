@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React from 'react';
 /* import { useSelector} from 'react-redux'; */
 
 import Layout from '../components/Layout';
@@ -12,9 +12,9 @@ import imgIC01 from '../assets/swap-ic-01.webp';
 import imgIC02 from '../assets/swap-ic-02.webp';
 import imgICExchange from '../assets/swap-ic-exchange.webp';
 import {ethers} from "ethers"
-import {tips, NF, fromValue, toValue, tokenData, errHandler} from '../util';
+import {tips, NF, /* fromValue, toValue,  */tokenData, errHandler} from '../util';
 import {useWallet} from 'use-wallet';
-import {DMTokenContract,USDTContract,ExchangeRouter} from "../config";
+import {/* DMTokenContract,USDTContract, */ExchangeRouter} from "../config";
 
 import Skeleton, {SkeletonTheme} from 'react-loading-skeleton';
 import {useAppContext} from '../context';
@@ -28,32 +28,30 @@ const Swap = () => {
 	const connected = wallet.status==="connected"
 	const [status,,{checkBalance}] = useAppContext();
 
-	const [token1,setToken1] = useState({
+	const [token1,setToken1] = React.useState({
 		token:"DM",
 		amount:0,
 	})
 	
-	const [token2,setToken2] = useState({
+	const [token2,setToken2] = React.useState({
 		token:"USDT",
 		amount:0,
 	})
 
-	const [focus,setFocus] = useState(0)
-	const [loading,setLoading] = useState(false);
+	const [focus,setFocus] = React.useState(0)
+	const [loading,setLoading] = React.useState(false);
 
   	const getAmountIn = async ()=>{
 		if (token2.amount === 0&&status.reserve0 === 0&&status.reserve1 === 0) return;
 		if(token1.token === "USDT"){
 			let numerator = status.reserve0 * token2.amount;
 			let denominator = (status.reserve1 - token2.amount)*0.997;
-			var amountIn =   (numerator /denominator) + 1;
-			setToken1({...token1,amount:amountIn});
+			setToken1({...token1,amount:(numerator /denominator) + 1});
 		}
 		else {
 			let numerator = status.reserve1 * token2.amount;
 			let denominator = (status.reserve0 - token2.amount)*0.997;
-			var amountIn =   (numerator /denominator) + 1;
-			setToken1({...token1,amount:amountIn});
+			setToken1({...token1,amount:(numerator /denominator) + 1});
 		}
     }
 
@@ -63,7 +61,7 @@ const Swap = () => {
 			let amountWithFee = token1.amount*997;
 			let numerator = amountWithFee*(status.reserve1);
   		    let denominator = status.reserve0*1000+amountWithFee;
-			var amountOut =   numerator /denominator;
+			let amountOut =   numerator /denominator;
 			
 			setToken2({...token2,amount:styledNum(amountOut*0.85)});
 		}
@@ -72,19 +70,19 @@ const Swap = () => {
 			let amountWithFee = token1.amount*997;
 			let numerator = amountWithFee*(status.reserve0);
   		    let denominator = status.reserve1*1000+amountWithFee;
-			var amountOut =   numerator /denominator;
+			let amountOut =   numerator /denominator;
 			
 			setToken2({...token2,amount:styledNum(amountOut)});
 		}
     }
 
-	useEffect(()=>{
+	React.useEffect(()=>{
 		if(focus === 0){
 			getAmountOut();
 		}
 	},[token1.amount])
 
-	useEffect(()=>{
+	React.useEffect(()=>{
 		if(focus === 1){
 			getAmountIn();
 		}
@@ -97,7 +95,7 @@ const Swap = () => {
 	}
 
 	const handleSwap = async ()=>{
-		var amountInBalance = token1.token == "DM" ? status.dmBalance :status.usdtBalance ;
+		var amountInBalance = token1.token === "DM" ? status.dmBalance :status.usdtBalance ;
 		if(amountInBalance < token1.amount ) return tips("余额不足");
 		try {
 			if (token1.amount<=0) return tips("最少 10 u")

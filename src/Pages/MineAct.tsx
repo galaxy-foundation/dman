@@ -10,7 +10,7 @@ import {
     ETHContract,TRXContract,FILContract,XRPContract,DOTContract,ADAContract,HTContract,
     DMStakingContract,USDTStakingContract,ETHStakingContract,TRXStakingContract,FILStakingContract,XRPStakingContract,DOTStakingContract,ADAStakingContract,HTStakingContract
 } from "../config"
-import { errHandler, tips, toValue, fromValue} from '../util';
+import { errHandler, tips, /* toValue, */ fromValue} from '../util';
 
 import {useAppContext} from '../context';
 
@@ -54,7 +54,7 @@ const contracts = {
 	},
 }
 
-const Daily = 328767;
+/* const Daily = 328767; */
 
 const MineAct = (props) => {
 	const wallet = useWallet();
@@ -123,7 +123,7 @@ const MineAct = (props) => {
 	const setStakedStatus =async ()=>{
 		try{
 			const  res =await signedStakingContracts.getStakeInfo(wallet.account);
-			const {_total, _staking, _rewards, _rewardable} = res;
+			const {/* _total,  */_staking, _rewards, _rewardable} = res;
 			if (tokenPrices[id]) {
 				setStatus({...mintStatus, stakedAmount:fromValue(_staking,id), rewards:fromValue(_rewards,"DM"), rewardable:fromValue(_rewardable,"DM")});
 				

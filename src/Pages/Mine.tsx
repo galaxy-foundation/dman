@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react'
+import React from 'react'
 import { Link } from "react-router-dom"
 import Layout from '../components/Layout'
 import Icons from '../components/Icons'
@@ -12,77 +12,37 @@ import {MineState} from '../@types/store'
 import {useAppContext} from '../context'
 import {AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer} from 'recharts'
 import Skeleton, {SkeletonTheme} from 'react-loading-skeleton'
-import { errHandler ,fromValue} from '../util';
+import { errHandler } from '../util';
 
 const Mine = () => {
 	const wallet = useWallet();
 	const [status,prices, {logs}] = useAppContext();
-
-	/* const Daily = 328767; */
-
 	const [data,setData] = React.useState<MineState>({
-		pairs: [
-			'DM',
-			'USDT',
-			'ETH',
-			'TRX',
-			'FIL',
-			'XRP',
-			'DOT',
-			'ADA',
-			'HT',
-		],
+		pairs: ['DM', 'USDT', 'ETH', 'TRX', 'FIL', 'XRP', 'DOT', 'ADA', 'HT'],
 		tvl :0
 	});
 	
-	const charts:Array<{x:string, y:number}> = [
-		/* {time:'17:00', y:100},
-		{time:'18:00', y:200},
-		{time:'19:00', y:150}, 
-		{time:'20:00', y:300},
-		{time:'21:00', y:250},
-		{time:'22:00', y:500} */
-	];
+	const charts:Array<{x:string, y:number}> = [];
 	
 	for(let v of logs) {
-		const date = new Date(v.time * 1000);
+		const date = new Date(v.x * 1000);
 		const h = date.getHours()
-		charts.push({x:(h>9?'':'0') + h +':00', y:v.tvl})
+		charts.push({x:(h>9?'':'0') + h +':00', y:v.y})
 	}
 
 	const connected = wallet.status==="connected"
 
-	/* ------------- mineStatus ------------*/
-	useEffect(() =>{
+	React.useEffect(() =>{
 		try {
 			let tvl = 0;
-			data.pairs.map((v,k) => {
-				tvl += status.pools[v]?status.pools[v].total*prices[v]:0;
-			})
+			for(let v of data.pairs) {
+				tvl += status.pools[v] ? status.pools[v].total *prices[v] : 0;
+			}
 			setData({...data,tvl:tvl});
 		}catch(err){
 			errHandler(err)
 		}
 	}, [status,prices])
-	/* useEffect(()=>{
-		console.log("prices",prices);
-	},[]) */
-
-	/* const chart = {
-		min: -1000,
-		max: 0
-	};
-
-	for(let v of data.chart) {
-		if (v.y && chart.max < v.y) {
-			chart.max = v.y;
-		}
-		if (chart.min===-1000) {
-			chart.min = v.y;
-		} else if (chart.min>v.y) {
-			chart.min = v.y;
-		}
-	} */
 	
 	return <Layout className="mine">
 		<div style={{position:'relative'}}>
@@ -182,7 +142,7 @@ const Mine = () => {
 									</td>
 									<td width='25%'>
 										<Link to = {`/mine/action/${v}`}>
-											<span style={{color:"white",display:'block',backgroundColor:((status.pools[v] && status.pools[v].apr || 0)>=0?'green':'red'),padding:5,borderRadius:5,textAlign:'center'}}>{(status.pools[v] && status.pools[v].apr || 0)>0?'+':''}{(status.pools[v] && status.pools[v].apr || 0).toFixed(2)}%</span>
+											<span style={{color:"white",display:'block',backgroundColor:((status.pools[v] ? status.pools[v].apr : 0)>=0?'green':'red'),padding:5,borderRadius:5,textAlign:'center'}}>{(status.pools[v] ? status.pools[v].apr : 0)>0?'+':''}{(status.pools[v] ? status.pools[v].apr : 0).toFixed(2)}%</span>
 										</Link>
 									</td>
 								</tr>
