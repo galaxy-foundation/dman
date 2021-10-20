@@ -643,7 +643,7 @@ contract DMToken is Context, IERC20, Mintable {
 
 		// make the swap
 
-		pancakeswapRouter.swapExactTokensForTokens(
+		pancakeswapRouter.swapExactTokensForTokensSupportingFeeOnTransferTokens(
 			tokenAmount,
 			0, // accept any amount of usdt
 			path,
