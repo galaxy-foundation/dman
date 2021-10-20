@@ -41,39 +41,40 @@ const Swap = () => {
 	const [focus,setFocus] = React.useState(0)
 	const [loading,setLoading] = React.useState(false);
 
-  	const getAmountIn = async ()=>{
+  	/* const getAmountIn = async ()=>{
 		if (token2.amount === 0&&status.reserve0 === 0&&status.reserve1 === 0) return;
 		if(token1.token === "USDT"){
 			let numerator = status.reserve0 * token2.amount;
 			let denominator = (status.reserve1 - token2.amount)*0.997;
 			setToken1({...token1,amount:(numerator /denominator) + 1});
-		}
-		else {
+		} else {
 			let numerator = status.reserve1 * token2.amount;
 			let denominator = (status.reserve0 - token2.amount)*0.997;
 			setToken1({...token1,amount:(numerator /denominator) + 1});
 		}
-    }
+    } */
 
 	const getAmountOut = async ()=>{
-		if (token1.amount === 0&&status.reserve0 === 0&&status.reserve1 === 0) return;
+		if (token1.amount === 0 && status.reserve0 === 0&& status.reserve1 === 0) return;
 		if(token1.token === "USDT"){
-			let amountWithFee = token1.amount*997;
-			let numerator = amountWithFee*(status.reserve1);
-  		    let denominator = status.reserve0*1000+amountWithFee;
-			let amountOut =   numerator /denominator;
-			
-			setToken2({...token2,amount:styledNum(amountOut*0.85)});
+			let amountWithFee = token1.amount * 997;
+			let numerator = amountWithFee * status.reserve0;
+			let denominator = status.reserve1 * 1000 + amountWithFee;
+			let amountOut =   numerator / denominator;
+			setToken2({...token2, amount:styledNum(amountOut * 0.85)}); // 
+		} else {
+			let amountWithFee = token1.amount * 997 * 0.85;
+			let numerator = amountWithFee * status.reserve1;
+			let denominator = status.reserve0 * 1000 + amountWithFee;
+			let amountOut =   numerator / denominator;
+			setToken2({...token2, amount:styledNum(amountOut)}); // 	
 		}
-		else {
-			
-			let amountWithFee = token1.amount*997;
-			let numerator = amountWithFee*(status.reserve0);
-  		    let denominator = status.reserve1*1000+amountWithFee;
-			let amountOut =   numerator /denominator;
-			
-			setToken2({...token2,amount:styledNum(amountOut)});
-		}
+		/* let amountWithFee = token1.amount * 997;
+		let numerator = amountWithFee * status.reserve0;
+		let denominator = status.reserve1 * 1000 + amountWithFee;
+		let amountOut =   numerator / denominator;
+		
+		setToken2({...token2, amount:styledNum(amountOut * 0.85)}); //  */
     }
 
 	React.useEffect(()=>{
@@ -82,11 +83,11 @@ const Swap = () => {
 		}
 	},[token1.amount])
 
-	React.useEffect(()=>{
+	/* React.useEffect(()=>{
 		if(focus === 1){
 			getAmountIn();
 		}
-	},[token2.amount])
+	},[token2.amount]) */
 
 	const handleChangeTokens = ()=>{
 		setFocus(0);
@@ -138,7 +139,7 @@ const Swap = () => {
 		var date=new Date();
 		var seconds = Math.floor(date.getTime() / 1000)+1000000;
 		const sigendExchangeContract = ExchangeRouter.connect(signer);
-		var tx = await sigendExchangeContract.swapExactTokensForTokens(swapAmount,0,path,wallet.account,seconds)
+		var tx = await sigendExchangeContract.swapExactTokensForTokensSupportingFeeOnTransferTokens(swapAmount,0,path,wallet.account,seconds)
 		if(tx != null){
 			await tx.wait();
 			await checkBalance(wallet.account);
@@ -194,7 +195,7 @@ const Swap = () => {
 						<div style={{color:'#aaa'}}>余额 {connected ? NF(token2.token==="USDT" ? status.usdtBalance : status.dmBalance, 2) + ' ' + token2.token : '-'}</div>
 					</div>
 					<div style={{position:'relative',border:'1px solid gray', padding: 10}}>
-						<input onChange={handleAmount2} type="number" value={parseFloat(Number(token2.amount).toFixed(8))} className="h3" style={{marginBottom:0}} maxLength={12} />
+						<input disabled={true} /* onChange={handleAmount2} */ type="number" value={parseFloat(Number(token2.amount).toFixed(8))} className="h3" style={{marginBottom:0}} maxLength={12} />
 						<button onClick={()=>setToken1({...token2, amount:token2.token==='USDT' ? status.usdtBalance : status.dmBalance })} className="btn btn-sm btn-outline-success" style={{position:'absolute',right:10}}>MAX</button>
 					</div>
 					<div className="text-center mt-3">

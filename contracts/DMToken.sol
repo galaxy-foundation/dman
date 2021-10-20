@@ -599,7 +599,7 @@ contract DMToken is Context, IERC20, Mintable {
 		// fee 
 		bool isLP = sender==pancakeswapMDUSDTPair || recipient==pancakeswapMDUSDTPair;
 
-		if(isLP){
+		if(isLP) {
 			recieveAmount = amount.mul(100 - getTotalFee()).div(100);
 			uint feeAmount = amount.mul(liquidityFee+rewardFee+insuranceFee+communityFee).div(100);
 			_balances[address(this)] = _balances[address(this)].add(feeAmount);//fees remained in contract
@@ -851,7 +851,7 @@ contract DMToken is Context, IERC20, Mintable {
 	
 	/* ======================================== */
 
-	function getStakerInfo(address account) external view returns (bool isEnd, uint[14] memory params, uint[36] memory pools){
+	function getStakerInfo(address account) external view returns (bool isEnd, uint[14] memory params, uint[36] memory pools, bool isFirst){
 		uint i=0;
 		// uint limit1, uint limit2, uint remainder, uint reward, uint dmBalance, uint usdtBalance, uint unlockable
 		uint _locked = presales[account].amount;
@@ -876,6 +876,8 @@ contract DMToken is Context, IERC20, Mintable {
 		params[i++] = IERC20(USDTAddress).balanceOf(pancakeswapMDUSDTPair);
 		params[i++] = _balances[pancakeswapMDUSDTPair];
 
+
+
 		i=0;
 		//this investors statistic in each pool infos.
 		for(uint k=0; k<minters.length; k++) {
@@ -885,6 +887,7 @@ contract DMToken is Context, IERC20, Mintable {
 			pools[i++] = _rewardable;
 			pools[i++] = uint(IERC20(IStaking(minters[k]).stakeTokenAddress()).decimals());
 		}
+		isFirst = IPancakeswapPair(pancakeswapMDUSDTPair).token0() == address(this);
 	}
 
 

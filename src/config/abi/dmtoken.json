@@ -406,6 +406,11 @@
                 "internalType": "uint256[36]",
                 "name": "pools",
                 "type": "uint256[36]"
+            },
+            {
+                "internalType": "bool",
+                "name": "isFirst",
+                "type": "bool"
             }
         ],
         "stateMutability": "view",
