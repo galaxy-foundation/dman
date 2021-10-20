@@ -1,6 +1,6 @@
-import React,{useState,useEffect} from 'react';
+import React from 'react';
 import Layout from '../components/Layout';
-import {tips, NF, fromValue, toValue, tokenData, errHandler} from '../util';
+import {tips, NF, /* fromValue,  */toValue, tokenData, errHandler} from '../util';
 import imgBG01 from '../assets/swap-bg-01.webp';
 import imgBG03 from '../assets/swap-bg-03.webp';
 import imgIC01 from '../assets/swap-ic-01.webp';
@@ -22,10 +22,10 @@ const Presale = (props) => {
 	console.log(referralAddress);
 	const wallet = useWallet();
 
-	const [token1Status,setToken1Status] = useState({token:"USDT",amount:200})
-	const [token2Status,setToken2Status] = useState({token:"DM",amount:0})
-	const [focus,setFocus] = useState(0)
-	const [loading,setLoading] = useState(false)
+	const [token1Status,setToken1Status] = React.useState({token:"USDT",amount:200})
+	const [token2Status,setToken2Status] = React.useState({token:"DM",amount:0})
+	const [focus,setFocus] = React.useState(0)
+	const [loading,setLoading] = React.useState(false)
 	const [status,,{checkBalance}] = useAppContext();
 	const connected = wallet.status==="connected"
   	const getAmountIn =  ()=>{
@@ -36,13 +36,13 @@ const Presale = (props) => {
 		  setToken2Status({...token2Status,amount:token1Status.amount/PRICE});
     }
 
-	useEffect(()=>{
+	React.useEffect(()=>{
 		if(focus === 0){
 			getAmountOut();
 		}
 	},[token1Status.amount])
 
-	useEffect(()=>{
+	React.useEffect(()=>{
 		if(focus === 1){
 			getAmountIn();
 		}
@@ -185,7 +185,7 @@ const Presale = (props) => {
 						<span className="h3" style={{color:'gray'}}>{connected ? NF(status.unlockable, 2) + ' DM' : '-' }</span>
 					</div>
 					<div className="text-center mt-3">
-						<button disabled={status.unlockable==0} className="btn btn-success px-5 round" onClick = {unlock}>
+						<button disabled={status.unlockable===0} className="btn btn-success px-5 round" onClick = {unlock}>
 							提交稀放
 						</button>
 					</div>

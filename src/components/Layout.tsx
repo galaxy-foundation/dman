@@ -32,19 +32,19 @@ const Layout = (props:any) => {
     
 	const wallet = useWallet();
     const L = useSelector((state:DataState) => state.data.L);
-    const [status, setStatus] = React.useState({
+    /* const [status, setStatus] = React.useState({
         address:'',
         connecting: false
-    });     
+    });      */
     var styledAddress =wallet.account? wallet.account.slice(0,4)+".."+wallet.account.slice(-4):"";
     
 	const dispatch = useDispatch();
-    React.useEffect(() => {
+    /* React.useEffect(() => {
         const { connector } = window
         if (connector && connector.connected && connector.address) {
             setStatus({ connecting: false, address: connector.address })
         }
-    }, [])
+    }, []) */
 
     function changeLang(lang:string){
         dispatch(dataSlice.actions.update({lang}));

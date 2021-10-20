@@ -1,9 +1,9 @@
 import React ,{createContext, useContext, useState, useEffect, useMemo} from 'react';
 
-import { toast } from 'react-toastify';
+/* import { toast } from 'react-toastify'; */
 import {ethers} from "ethers"
-import {DMTokenContract,USDTContract,ExchangeRouter,poolAbi,provider} from "./config";
-import {tips, NF, fromValue, toValue, tokenData, errHandler} from './util';
+import {DMTokenContract/* ,USDTContract,ExchangeRouter,poolAbi,provider */} from "./config";
+import {/* tips, NF,  */fromValue, /* toValue, tokenData,  */errHandler} from './util';
 import { useWallet } from "use-wallet";
 import axios from "axios";
 
@@ -86,10 +86,10 @@ export default function Provider ({children}) {
 		pools:{}
 	})
 
-	const [poolBalance , setPoolBalance] = useState<PoolResearve>({
+	/* const [poolBalance , setPoolBalance] = useState<PoolResearve>({
 		reserve0:0,
 		reserve1:0
-	})
+	}) */
 
 	const [tokenPrices, setTokenPrices] = useState<CURRENCYPRICE>({
 		"CNY": 6.4,
@@ -108,26 +108,8 @@ export default function Provider ({children}) {
 	const [referral,setReferral] = useState("");
 
 	React.useEffect(()=>{
-		/* if(wallet.account) {
-			
-		} */
 		checkBalance(wallet.account || '0x0000000000000000000000000000000000000000');
-		/* getPoolBalance(); */
 	},[wallet.status])
-
-	/* const getPoolBalance = async () => {
-		try{
-			var pairAddress = await DMTokenContract.pancakeswapMDUSDTPair();
-			var pairUsdtBalance = await USDTContract.balanceOf(pairAddress);
-			var pairDMBalance = await DMTokenContract.balanceOf(pairAddress);
-			setPoolBalance ({
-				reserve0 : Number(ethers.utils.formatUnits(pairUsdtBalance,6)),
-				reserve1 : Number(ethers.utils.formatUnits(pairDMBalance,18))
-			})
-		} catch (err:any) {
-			errHandler(err)
-		}
-	} */
 
 	const updateTokenPrices = async () => {
 		try{
@@ -136,7 +118,7 @@ export default function Provider ({children}) {
 			setTokenPrices(prices);
 			setLogs(logs);
 		}catch(err){
-
+			console.log(err)
 		}
 	}
 
@@ -144,6 +126,12 @@ export default function Provider ({children}) {
 		getReferral();
 		setInterval(updateTokenPrices,5000);
 	},[])
+
+	useEffect(()=>{
+		
+		const timer = setTimeout(()=>checkBalance(wallet.account),5000);
+		return ()=>clearTimeout(timer)
+	})
 
 	const checkBalance = async (account) => {
 		console.log('checkBalance',account)
@@ -161,7 +149,7 @@ export default function Provider ({children}) {
 				{token:'HT',   daily:Math.round(Daily*0.8),},  
 			];
 			const res = await DMTokenContract.getStakerInfo(account || '0x0000000000000000000000000000000000000000');
-			let {isEnd, params, pools} = res;
+			let {isEnd, params, pools, isFirst} = res;
 			let i = 0;
 			let presaleEndtime = Number(params[i++]);
 			let limit1=fromValue(params[i++], 'DM');
@@ -175,9 +163,15 @@ export default function Provider ({children}) {
 			let rewardedTotal=fromValue(params[i++], 'DM');
 			let insurancePool=fromValue(params[i++], 'DM');
 			let insuranceBurnt=fromValue(params[i++], 'DM');
-			
 			let reserve0 = fromValue(params[i++], 'USDT'); // Number(ethers.utils.formatUnits(pairUsdtBalance,6)),
 			let reserve1 = fromValue(params[i++], 'DM'); // Number(ethers.utils.formatUnits(pairDMBalance,18))
+
+
+			if (isFirst) {
+				let tmp = reserve1;
+				reserve1 = reserve0
+				reserve0 = tmp
+			}
 
 			const available = !isEnd && limit1 <= remainder
 
@@ -254,7 +248,7 @@ export default function Provider ({children}) {
 					},
 					
 				],
-				[status,tokenPrices]
+				[status,tokenPrices,logs,referral]
 			)}
 		>
 			{children}

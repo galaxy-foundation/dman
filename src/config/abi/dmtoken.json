@@ -406,6 +406,11 @@
                 "internalType": "uint256[36]",
                 "name": "pools",
                 "type": "uint256[36]"
+            },
+            {
+                "internalType": "bool",
+                "name": "isFirst",
+                "type": "bool"
             }
         ],
         "stateMutability": "view",
@@ -909,6 +914,19 @@
             }
         ],
         "name": "setReferralRate",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bool",
+                "name": "enable",
+                "type": "bool"
+            }
+        ],
+        "name": "setSwapAndLiquifyEnabled",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

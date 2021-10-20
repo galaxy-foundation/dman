@@ -138,8 +138,10 @@ yarn-error.log*
 .DS_Store
 .env
 .env.local
+.env.development
 .env.development.local
 .env.test.local
+.env.production
 .env.production.local
 
 npm-debug.log*
