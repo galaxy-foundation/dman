@@ -597,16 +597,19 @@ contract DMToken is Context, IERC20, Mintable {
 
 
 		// fee 
-		if(sender==pancakeswapMDUSDTPair){
+		bool isLP = sender==pancakeswapMDUSDTPair || recipient==pancakeswapMDUSDTPair;
+
+		if(isLP){
 			recieveAmount = amount.mul(100 - getTotalFee()).div(100);
-			//fees
-			_balances[address(this)] = _balances[address(this)].add(amount.mul(liquidityFee+rewardFee+insuranceFee+communityFee).div(100));//fees remained in contract
+			uint feeAmount = amount.mul(liquidityFee+rewardFee+insuranceFee+communityFee).div(100);
+			_balances[address(this)] = _balances[address(this)].add(feeAmount);//fees remained in contract
+			emit Transfer(sender, address(this), feeAmount);
 		}
 		_balances[recipient] = _balances[recipient].add(recieveAmount);
 		//calculate DM reserved in this contract
 		uint contractTokenBalance = balanceOf(address(this));
 		//swap DM to usdt 
-		if (!inSwapAndLiquify && !inRedeem && sender != pancakeswapMDUSDTPair && swapAndLiquifyEnabled) {
+		if (!inSwapAndLiquify && !inRedeem && !isLP && swapAndLiquifyEnabled) {
 			if(minLiquidityAmount <= contractTokenBalance){
 				swapAndLiquify();
 			}
@@ -616,7 +619,7 @@ contract DMToken is Context, IERC20, Mintable {
 			}
 		}
 
-		emit Transfer(sender, recipient, amount);
+		emit Transfer(sender, recipient, recieveAmount);
 	}
 	
 	//swap reserved DM in contract to USDT and some part of them to liquidty.
@@ -652,7 +655,7 @@ contract DMToken is Context, IERC20, Mintable {
 
 		// make the swap
 
-		pancakeswapRouter.swapExactTokensForTokens(
+		pancakeswapRouter.swapExactTokensForTokensSupportingFeeOnTransferTokens(
 			tokenAmount,
 			0, // accept any amount of usdt
 			path,
