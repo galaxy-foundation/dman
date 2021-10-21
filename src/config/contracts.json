@@ -3,52 +3,52 @@
         "router": "0x8e12fD09f7A761AABaD0C8E0e574d797FE27b8A6",
         "tokens": {
             "DM": {
-                "address": "0x486Cb4492168c4018869e721e922b9c5E2eB44aa",
+                "address": "0x305302243975EFc717D0Ad87b3f427D58899F7c2",
                 "decimals": 18
             },
             "USDT": {
-                "address": "0x1DcD4c0837d25Ff2BE307456FeB5102a679eE87E",
+                "address": "0x6BdD041CBBdec61E4C8adED531021DCaEc1af64D",
                 "decimals": 6
             },
             "ETH": {
-                "address": "0x2939e13c2aD570EFA76345D3e709fD06b2E0f662",
+                "address": "0x3f283bE4aA5385d9afF0e22E0e8f4B6d72B11032",
                 "decimals": 18
             },
             "TRX": {
-                "address": "0x4A25aCC5A758848Fe9E247c4D03F0FD1b83c4f0F",
+                "address": "0xBD9322c6b7C57FD3651d2451fdC6cBB03f54ca09",
                 "decimals": 18
             },
             "FIL": {
-                "address": "0x57Cb52d378E37568469541D5934835BA5a19e10f",
+                "address": "0x54FE0C9FcFc05Ee97c3A20bbfB5ba6057a0303a1",
                 "decimals": 18
             },
             "XRP": {
-                "address": "0x3F0C43bb067B6A76076bBF34571B5493bE1Ab52C",
+                "address": "0xF3f8aA1a01a5232422A28e9a07d7F50ce49CC743",
                 "decimals": 18
             },
             "DOT": {
-                "address": "0xD17eA9BAd2c0a2e54a361d1F8b4c2243a50a059E",
+                "address": "0xBd3D427f9251C26cD5CeB682A980f6cBFC0c73ba",
                 "decimals": 18
             },
             "ADA": {
-                "address": "0x8ACaf46Ac5b46A5619583248bd247fBf2866D0e3",
+                "address": "0x2854447fcF319D0B33bdEdaf8Af17AB907438088",
                 "decimals": 18
             },
             "HT": {
-                "address": "0x394cf25CD6d792FcdDD7E50d4831e637E616BfAE",
+                "address": "0xc6dD1E1055B6316b7EE0f2b8991C3D01a56a3965",
                 "decimals": 18
             }
         },
         "staking": {
-            "DM": "0x4f42c0cc62D3418E1D5E705f5e26413B0F969aAD",
-            "USDT": "0xFF3005757B5ebBbC5BA816d0A24025974fCFc471",
-            "ETH": "0x4f987fa65f5627f4950E8728c2D49A354AC91422",
-            "TRX": "0x00c6503e7E757d0a50A821a677256cDf592faB54",
-            "FIL": "0x0318CE37e2F282b938F8877855aa6ad9788570A6",
-            "XRP": "0x86599683DB1B4f32050F8624Ef23452e893F85e8",
-            "DOT": "0x8df63dCf279d5bA02cBDd27bE70A5ab82f745798",
-            "ADA": "0xe02E932AFe520953Ec38ed479277D4832805c010",
-            "HT": "0x4744222fbEE875D8170073b978B8C82e0c4A7c82"
+            "DM": "0x70F2FF4EAeDd7ae359137D58574b860B19b7e541",
+            "USDT": "0xd9cd4a6bEE7f28e8d5A661B70C8A853FEbD36714",
+            "ETH": "0xb06987A3fad3e232c2419e75a4d9ffbfe9174e70",
+            "TRX": "0x927A9d0D4a86ABb87C50eB188B0Aa359c7B0c41C",
+            "FIL": "0x252cc5a0513B502d79153e8606eC2EF4B5079C11",
+            "XRP": "0xf3e63F472C5548d189acF94C5E5148D8E6324744",
+            "DOT": "0x5248059F57a43D5be788e397E6d75d0417A3A446",
+            "ADA": "0xD7C626C9fAEba94f77C496f0c425043eD4A67D18",
+            "HT": "0x0CBBd7ACFC6F489B343bC32aB21cF287d465D08b"
         }
     }
 }
