@@ -120,8 +120,8 @@ contract Staking {
 
 	}
 	function countStake(address stakerAddress) public view returns(uint _stake) {
-		if(totalStakingAmount == 0) return 0;
 		Staker memory _staker = stakers[stakerAddress];
+		if(totalStakingAmount == 0 && _staker.stake == 0 ) return 0;
 		_stake = _staker.stake + ((block.timestamp).sub(_staker.lastUpdateTime)).mul(_staker.stakingAmount);
 	}
 	
@@ -145,14 +145,14 @@ contract Staking {
 	/* ----------------- actions ----------------- */
 
 	function stake(uint amount, address referalAddress) external {
+		
 		address stakerAddress = msg.sender;
 		IERC20_2(stakeTokenAddress).transferFrom(stakerAddress,address(this),amount);
 		
 		if (referalAddress!=address(0)) stakers[stakerAddress].referal = referalAddress;
 		
-		
 		stakers[stakerAddress].stake = countStake(stakerAddress);
-		stakers[stakerAddress].stakingAmount += amount;
+		stakers[stakerAddress].stakingAmount = amount;
 		stakers[stakerAddress].lastUpdateTime = block.timestamp;
 		stakers[stakerAddress].lastStakeUpdateTime = block.timestamp;
 		
@@ -180,7 +180,6 @@ contract Staking {
 	function claimRewards() external {
 		address stakerAddress = msg.sender;
 
-		updateTotalStake();
 		uint _stake = countStake(stakerAddress);
 		uint _reward = countReward(stakerAddress);
 
@@ -199,6 +198,7 @@ contract Staking {
 		stakers[stakerAddress].stake = 0;
 		stakers[stakerAddress].lastUpdateTime = block.timestamp;
 		
+		updateTotalStake();
 		emit Reward(stakerAddress,_reward);
 	}
 	

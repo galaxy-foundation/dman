@@ -15,7 +15,7 @@ const abiDeployOthers = require("../artifacts/contracts/DeployOthers.sol/DeployO
 const abiDMToken = require("../artifacts/contracts/DMToken.sol/DMToken.json");
 const abiRouter = require("../artifacts/contracts/dexRouter.sol/PancakeswapRouter.json");
 /* const abiERC20 = require("../artifacts/contracts/DMToken.sol/IERC20.json"); */
-const abiStaking = require("../artifacts/contracts/staking.sol/staking.json");
+const abiStaking = require("../artifacts/contracts/staking.sol/Staking.json");
 const abiPair = require("../artifacts/contracts/dexfactory.sol/IPancakeswapPair.json");
 
 const {ethers} = require("ethers");

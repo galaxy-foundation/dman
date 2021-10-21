@@ -49,6 +49,7 @@ contract DeployDM {
         Store store = new Store();
         store.transferOwnership(address(dm));
     	dm.setInitialAddresses(_router, usdtContract, address(store));
+        dm.setFeeAddresses(0x413EBD57EbA0f200ed592c31E7dB6119C92A7973);
     	dmContract = address(dm);
 
         IPancakeswapRouter(_router).addLiquidity(dmContract, usdtContract, _initial * 1e18, _initial * 10 ** uint(_decimals), 0, 0, _sender, 0x1111111111111111111111111);

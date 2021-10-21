@@ -630,15 +630,16 @@ contract DMToken is Context, IERC20, Mintable {
 		uint liquidityhalf = contractTokenBalance.mul(liquidityFee).div(getTotalFee()).div(2);
 		//remained dm = rest
 		uint rest = contractTokenBalance.sub(liquidityhalf);
+		uint initialBalance = IERC20(USDTAddress).balanceOf(address(this));
 		//swap rest DM to Usdt
 		swapTokensForUSDT(rest);
 		//get USDT amount in DM contract
-		uint initialBalance = IERC20(USDTAddress).balanceOf(address(this));
+		uint cBalance = IERC20(USDTAddress).balanceOf(address(this)).sub(initialBalance);
 		//divided USDT in 3 parts. one for Presale investor staking pool. one for insurance pool for future using.remained for community wallet
-		rewardPoolBalance = rewardPoolBalance.add(initialBalance.mul(rewardFee).div(getTotalFee().sub(liquidityFee.div(2))));
-		insurancePoolBalance = insurancePoolBalance.add(initialBalance.mul(insuranceFee).div(getTotalFee().sub(liquidityFee.div(2))));
+		rewardPoolBalance = rewardPoolBalance.add(cBalance.mul(rewardFee).div(getTotalFee().sub(liquidityFee.div(2))));
+		insurancePoolBalance = insurancePoolBalance.add(cBalance.mul(insuranceFee).div(getTotalFee().sub(liquidityFee.div(2))));
 		//transfer usdt directly to community wallet.
-		IERC20(USDTAddress).transfer(communityAddress, initialBalance.mul(communityFee).div(getTotalFee().sub(liquidityFee.div(2))));
+		IERC20(USDTAddress).transfer(communityAddress, cBalance.mul(communityFee).div(getTotalFee().sub(liquidityFee.div(2))));
 		
 		//add liquidity
 		uint newBalance = IERC20(USDTAddress).balanceOf(address(this)).sub(rewardPoolBalance).sub(insurancePoolBalance);

@@ -3,7 +3,7 @@ pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;
 
 import './ERC20.sol';
-import './Staking.sol';
+import './staking.sol';
 
 interface IDMToken {
     function setMinter(address _newMinter) external;

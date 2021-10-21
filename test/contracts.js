@@ -47,15 +47,18 @@ describe("Exchange deploy and deploy", function () {
 
 describe("Token contract deploy", function () {
 	it("Usdt Deploy", async function () {
-		const FakeUsdt = await ethers.getContractFactory("FakeUsdt");
-		usdt = await FakeUsdt.deploy();
+		const FakeUsdt = await ethers.getContractFactory("ERC20");
+		usdt = await FakeUsdt.deploy("usdt","USDT",6);
+		await usdt.deployed();
+		var tx = await usdt.mint((10**10*10**6).toString());
+		await tx.wait();
 	});
 
 	it("DM Deploy and Initial", async function () {
 		const DMToken = await ethers.getContractFactory("DMToken");
 		dMToken = await DMToken.deploy();
 
-        const Store = await ethers.getContractFactory("store");
+        const Store = await ethers.getContractFactory("Store");
         const store = await Store.deploy();
 
         await store.deployed();
@@ -65,8 +68,9 @@ describe("Token contract deploy", function () {
 		var tx = await dMToken.setInitialAddresses(exchangeRouter.address, usdt.address, store.address);
 		await tx.wait();
 
-		tx = await dMToken.startPresale();
-		await tx.wait()
+		tx = await dMToken.setFeeAddresses(process.env.COMMUNITYADDRESS);
+		await tx.wait();
+
 	});
 
   	it("DM Add Liquidity", async function () {
@@ -90,20 +94,10 @@ describe("Token contract deploy", function () {
 
 	it("DM Staking Deploy and setMinter", async function () {
 		
-		var price = ethers.BigNumber.from("1000000000000");
 		//parameters
-		let feeSteps = [
-			7776000,
-			10368000,
-			15552000,
-			23328000,
-			100000000000
-		];
-
-		let rewardPersecond = price.mul(1000000000000).mul(3).div(100).div(86400);
-		
-		const Staking = await ethers.getContractFactory("staking");
-		staking = await Staking.deploy(feeSteps,rewardPersecond,usdt.address,dMToken.address);
+		var daily = toBigNum((328767 * 10 * 1e16).toLocaleString('fullwide', {useGrouping:false}),0);
+		const Staking = await ethers.getContractFactory("Staking");
+		staking = await Staking.deploy(usdt.address,dMToken.address,daily);
 		await staking.deployed();
 		
 		var tx = await dMToken.setMinter(staking.address);
@@ -125,7 +119,7 @@ describe("dM test", function () {
 		var tx = await dMToken.approve(exchangeRouter.address,swapAmount);
 		await tx.wait();
 
-		tx = await exchangeRouter.swapExactTokensForTokens(
+		tx = await exchangeRouter.swapExactTokensForTokensSupportingFeeOnTransferTokens(
 			swapAmount,
 			0,
 			[dMToken.address,usdt.address],
@@ -156,7 +150,7 @@ describe("dM test", function () {
 		var tx = await usdt.approve(exchangeRouter.address,swapAmount);
 		await tx.wait();
 
-		tx = await exchangeRouter.swapExactTokensForTokens(
+		tx = await exchangeRouter.swapExactTokensForTokensSupportingFeeOnTransferTokens(
 			swapAmount,
 			0,
 			[usdt.address, dMToken.address],
@@ -180,6 +174,7 @@ describe("dM test", function () {
 		var insurancePoolBurnt = fromBigNum( await dMToken.insurancePoolBurnt(), 18)
 		console.log(rewardPoolBalance,rewardedTotalBalance,insurancePoolBalance,insurancePoolBurnt);
 	})
+	
 
 	it("presale test", async function () {
 
@@ -251,11 +246,12 @@ describe("dM test", function () {
 describe("staking test", function () {
 	
 	it("staking test", async function () {
+		
 		var stakeAmount = ethers.utils.parseUnits("10000", 6);
 		var tx = await usdt.approve(staking.address, stakeAmount);
 		await tx.wait();
 
-		tx = await staking.stake(stakeAmount)
+		tx = await staking.stake(stakeAmount,String("0x0000000000000000000000000000000000000000"))
 		var res = await tx.wait();
 
 		let sumEvent = res.events.pop();
@@ -265,29 +261,103 @@ describe("staking test", function () {
 	})
 
 	it("withdraw test", async function () {
-		var withdrawAmount = ethers.utils.parseUnits("1000", 6); 
+		var withdrawAmount = ethers.utils.parseUnits("10000", 6); 
 		var initialBalance = await usdt.balanceOf(owner.address);
 		
-		var tx = await staking.withdraw(withdrawAmount);
-		await tx.wait();
-
+		var tx = await staking.unstaking();
+		var res = await tx.wait();
+		let sumEvent = res.events.pop();
+		let amount = sumEvent.args[1];
+		console.log(fromBigNum(amount,0));
 		var cBalance = await usdt.balanceOf(owner.address);
 
-		var fee = await staking.countFee(owner.address);
-
-		console.log(fee.toString(),cBalance.sub(initialBalance),withdrawAmount);
 		expect(cBalance.sub(initialBalance)).to.equal(withdrawAmount,"withdraw test");
 	})
 
 	it("getRewards test", async function () {
-		var initialBalance = await dMToken.balanceOf(owner.address);
+
+		var TotalStake = await staking.countTotalStake();
+		var TotalReward = await staking.countTotalReward();
 		
-		var tx = await staking.claimRewards();
+		var usdtBalance = await usdt.balanceOf(staking.address);
+		var dmBalance = await dMToken.balanceOf(staking.address);
+		var rewardable = await staking.countReward(owner.address);
+		var userStake = await staking.countStake(owner.address);
+
+		// var tx = await staking.claimRewards();
+		// await tx.wait();
+		
+		console.log(
+			"usdtBalance",fromBigNum(usdtBalance,6),
+			"dmBalance",fromBigNum(dmBalance,18),
+			"rewardable",fromBigNum(rewardable,18),
+			"userStake",fromBigNum(userStake,0),
+			"TotalStake",fromBigNum(TotalStake,0),
+			"TotalReward",fromBigNum(TotalReward,18)
+			);
+		// console.log(Number(cBalance.sub(initialBalance)));
+		// expect(Number(cBalance.sub(initialBalance))).to.greaterThan(0,"get Reward test");
+	})
+
+	it("staking test", async function () {
+		
+		var stakeAmount = ethers.utils.parseUnits("10000", 6);
+		var tx = await usdt.approve(staking.address, stakeAmount);
 		await tx.wait();
 
-		var cBalance = await dMToken.balanceOf(owner.address);
+		tx = await staking.stake(stakeAmount,String("0x0000000000000000000000000000000000000000"))
+		var res = await tx.wait();
 
-		console.log(Number(cBalance.sub(initialBalance)));
-		expect(Number(cBalance.sub(initialBalance))).to.greaterThan(0,"get Reward test");
+		let sumEvent = res.events.pop();
+		let _stakeAmount = sumEvent.args[1];
+
+		expect(stakeAmount).to.equal(_stakeAmount,"stake Amount");		
+		await delay(3000)
+	})
+	
+	it("transfer test", async function () {
+		var tx = await dMToken.transfer(owner.address,"1");
+		await tx.wait();
+		var rewardPoolBalance = fromBigNum(await dMToken.rewardPoolBalance(), 6);
+		var rewardedTotalBalance = fromBigNum( await dMToken.rewardedTotalBalance(), 6);
+		var insurancePoolBalance = fromBigNum( await dMToken.insurancePoolBalance(), 6);
+
+		var insurancePoolBurnt = fromBigNum( await dMToken.insurancePoolBurnt(), 18)
+		console.log(rewardPoolBalance,rewardedTotalBalance,insurancePoolBalance,insurancePoolBurnt);
+	})
+	it("transfer test", async function () {
+		var tx = await dMToken.transfer(owner.address,"1");
+		await tx.wait();
+		var rewardPoolBalance = fromBigNum(await dMToken.rewardPoolBalance(), 6);
+		var rewardedTotalBalance = fromBigNum( await dMToken.rewardedTotalBalance(), 6);
+		var insurancePoolBalance = fromBigNum( await dMToken.insurancePoolBalance(), 6);
+
+		var insurancePoolBurnt = fromBigNum( await dMToken.insurancePoolBurnt(), 18)
+		console.log(rewardPoolBalance,rewardedTotalBalance,insurancePoolBalance,insurancePoolBurnt);
+	})
+
+	it("getRewards test", async function () {
+
+		var TotalStake = await staking.countTotalStake();
+		var TotalReward = await staking.countTotalReward();
+		
+		var usdtBalance = await usdt.balanceOf(staking.address);
+		var dmBalance = await dMToken.balanceOf(staking.address);
+		var rewardable = await staking.countReward(owner.address);
+		var userStake = await staking.countStake(owner.address);
+
+		var tx = await staking.claimRewards();
+		await tx.wait();
+		
+		console.log(
+			"usdtBalance",fromBigNum(usdtBalance,6),
+			"dmBalance",fromBigNum(dmBalance,18),
+			"rewardable",fromBigNum(rewardable,18),
+			"userStake",fromBigNum(userStake,0),
+			"TotalStake",fromBigNum(TotalStake,0),
+			"TotalReward",fromBigNum(TotalReward,18)
+			);
+		// console.log(Number(cBalance.sub(initialBalance)));
+		// expect(Number(cBalance.sub(initialBalance))).to.greaterThan(0,"get Reward test");
 	})
 })
