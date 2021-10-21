@@ -166,7 +166,6 @@ const Swap = () => {
 		}
 	}
 
-	/* const L = useSelector(state => state.contract.L); */
 	return <Layout className="swap">
 		<div style={{position:'relative'}}>
 			<div>

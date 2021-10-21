@@ -152,7 +152,7 @@ contract Staking {
 		if (referalAddress!=address(0)) stakers[stakerAddress].referal = referalAddress;
 		
 		stakers[stakerAddress].stake = countStake(stakerAddress);
-		stakers[stakerAddress].stakingAmount = amount;
+		stakers[stakerAddress].stakingAmount += amount;
 		stakers[stakerAddress].lastUpdateTime = block.timestamp;
 		stakers[stakerAddress].lastStakeUpdateTime = block.timestamp;
 		
@@ -169,7 +169,7 @@ contract Staking {
 		IERC20_2(stakeTokenAddress).transfer(stakerAddress,amount.mul(1000-withdrawFee).div(1000));
 
 		stakers[stakerAddress].stake = countStake(stakerAddress);
-		stakers[stakerAddress].stakingAmount -= amount;
+		stakers[stakerAddress].stakingAmount = 0;
 		stakers[stakerAddress].lastUpdateTime = block.timestamp;
 		stakers[stakerAddress].lastStakeUpdateTime = block.timestamp;
 
