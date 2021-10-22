@@ -217,11 +217,11 @@ const Swap = () => {
 					<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, padding: 20, display:'flex', flexDirection:'column'}}>
 						<div style={{flexGrow:1}}>
 							<h3>权益池</h3>
-							<code>{Math.round((status.rewardPool + status.rewardedTotal)/10000)}万枚</code>
+							<code>{Math.round(status.rewardPool + status.rewardedTotal)}枚</code>
 						</div>
 						<div style={{display:'flex',justifyContent:'space-between'}}>
-							<span>剩余币量：{Math.round(status.rewardPool/10000)}万枚</span>
-							<span>总分红币量：{Math.round(status.rewardedTotal/10000)}万枚</span>
+							<span>剩余币量：{Math.round(status.rewardPool)}枚</span>
+							<span>总分红币量：{Math.round(status.rewardedTotal)}枚</span>
 						</div>
 					</div>
 				</div>
@@ -232,10 +232,10 @@ const Swap = () => {
 					<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, padding: 20, display:'flex', flexDirection:'column'}}>
 						<div style={{flexGrow:1}}>
 							<h3>保险池</h3>
-							<code>{Math.round(status.insurancePool/10000)}万枚</code>
+							<code>{Math.round(status.insurancePool)}枚</code>
 						</div>
 						<div style={{display:'flex',justifyContent:'end'}}>
-							销毁 {Math.round(status.insuranceBurnt/10000)}万枚
+							销毁 {Math.round(status.insuranceBurnt)}枚
 						</div>
 					</div>
 				</div>

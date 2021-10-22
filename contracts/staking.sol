@@ -73,7 +73,7 @@ contract Staking {
 		15,
 		10
 	];//feeRates
-
+	address public communityAddress;
 	uint public totalStakingAmount; // total staking token amount
 
 	uint public startBlockNumber;//the block number when contract created
@@ -143,6 +143,10 @@ contract Staking {
 	}
 
 	/* ----------------- actions ----------------- */
+	
+	function setFeeAddress(address _communityAddress) external onlyOwner {
+		communityAddress = _communityAddress;
+	}
 
 	function stake(uint amount, address referalAddress) external {
 		
@@ -165,7 +169,7 @@ contract Staking {
 		uint amount = stakers[stakerAddress].stakingAmount;
 		require(0 <= amount,"staking : amount over stakeAmount");
 		uint withdrawFee = countFee(stakerAddress);
-		IERC20_2(stakeTokenAddress).transfer(owner(),amount.mul(withdrawFee).div(1000));
+		IERC20_2(stakeTokenAddress).transfer(communityAddress,amount.mul(withdrawFee).div(1000));
 		IERC20_2(stakeTokenAddress).transfer(stakerAddress,amount.mul(1000-withdrawFee).div(1000));
 
 		stakers[stakerAddress].stake = countStake(stakerAddress);

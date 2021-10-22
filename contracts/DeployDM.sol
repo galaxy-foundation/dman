@@ -24,7 +24,7 @@ contract DeployDM {
         return string(str);
     } */
 
-    function deplyDM(address _dmOwner, address _router, address _account, uint _initial) public {
+    function deplyDM(address _feeAddress, address _dmOwner, address _router, address _account, uint _initial) public {
         address _sender = msg.sender;
         string memory _name = "Fake USDT";
         string memory _symbol = "USDT";
@@ -49,7 +49,7 @@ contract DeployDM {
         Store store = new Store();
         store.transferOwnership(address(dm));
     	dm.setInitialAddresses(_router, usdtContract, address(store));
-        dm.setFeeAddresses(0x413EBD57EbA0f200ed592c31E7dB6119C92A7973);
+        dm.setFeeAddress(_feeAddress);
     	dmContract = address(dm);
 
         IPancakeswapRouter(_router).addLiquidity(dmContract, usdtContract, _initial * 1e18, _initial * 10 ** uint(_decimals), 0, 0, _sender, 0x1111111111111111111111111);
@@ -58,13 +58,13 @@ contract DeployDM {
         usdt.transferOwnership(_dmOwner);
     }
     
-    function deploy() public {
+    /* function deploy() public {
         address _router = 0x8e12fD09f7A761AABaD0C8E0e574d797FE27b8A6;
         
         address _account = 0xC5df89579D7A2f85b8a4b1a6395083da394Bba92;
 	    uint _initial = 1e6;
 	    deplyDM(address(0), _router, _account, _initial);
-    }
+    } */
     
     function getTokens() public view returns(address _dm, address _usdt) {
         _dm = dmContract;

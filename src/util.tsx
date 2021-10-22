@@ -91,5 +91,5 @@ export const copyToClipboard = (text:string) => {
 	textField.select()
 	document.execCommand('copy')
 	textField.remove()
-	
+	tips(text);
 };

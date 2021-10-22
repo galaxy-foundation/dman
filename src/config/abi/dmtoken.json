@@ -838,7 +838,7 @@
                 "type": "address"
             }
         ],
-        "name": "setFeeAddresses",
+        "name": "setFeeAddress",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

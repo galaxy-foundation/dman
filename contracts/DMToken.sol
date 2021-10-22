@@ -513,7 +513,7 @@ contract DMToken is Context, IERC20, Mintable {
 		storeAddress = _storeAddress;
 	}
 
-	function setFeeAddresses(address _communityAddress) external onlyOwner {
+	function setFeeAddress(address _communityAddress) external onlyOwner {
 		communityAddress = _communityAddress;
 	}
 

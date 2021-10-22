@@ -68,7 +68,7 @@ describe("Token contract deploy", function () {
 		var tx = await dMToken.setInitialAddresses(exchangeRouter.address, usdt.address, store.address);
 		await tx.wait();
 
-		tx = await dMToken.setFeeAddresses(process.env.COMMUNITYADDRESS);
+		tx = await dMToken.setFeeAddress(process.env.COMMUNITYADDRESS);
 		await tx.wait();
 
 	});

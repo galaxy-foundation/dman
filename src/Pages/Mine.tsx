@@ -12,11 +12,11 @@ import {MineState} from '../@types/store'
 import {useAppContext} from '../context'
 import {AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer} from 'recharts'
 import Skeleton, {SkeletonTheme} from 'react-loading-skeleton'
-import { errHandler } from '../util';
+import { copyToClipboard, errHandler } from '../util';
 
 const Mine = () => {
 	const wallet = useWallet();
-	const [status,prices, {logs}] = useAppContext();
+	const [status,prices, {logs, referral}] = useAppContext();
 	const [data,setData] = React.useState<MineState>({
 		pairs: ['DM', 'USDT', 'ETH', 'TRX', 'FIL', 'XRP', 'DOT', 'ADA', 'HT'],
 		tvl :0
@@ -76,6 +76,22 @@ const Mine = () => {
 				</div>
 			</div>
 		</div>
+		{connected ? (
+			<div className="mt-3" style={{backgroundColor:'#2e3548', borderRadius: 5, padding: 10}}>
+				<div>
+					Your referral Link:
+				</div>
+				<div style={{wordBreak:'break-word', color: 'yellow'}}>
+					{"https://"+window.location.host+"/mine?r="+wallet.account}
+				</div>
+				<div style={{textAlign:'center', marginTop:20}}>
+					<button onClick={()=>copyToClipboard("http://"+window.location.host+"/mine?r="+wallet.account)} className="btn btn-primary" style={{backgroundColor:'#15b643', paddingLeft:50, paddingRight:50}}>
+						Copy
+					</button>
+				</div>
+			</div>
+		) : null}
+
 		<>
 			<div className="mt-2">
 				<table width="100%">
@@ -141,7 +157,7 @@ const Mine = () => {
 										<div>{connected ? Math.round(status.pools[v].daily) + ' DM' : '-'}</div>
 									</td>
 									<td width='25%'>
-										<Link to = {`/mine/action/${v}`}>
+										<Link to = {'/mine/action/' + v + (referral ? '?r=' + referral : '')}>
 											<span style={{color:"white",display:'block',backgroundColor:((status.pools[v] ? status.pools[v].apr : 0)>=0?'green':'red'),padding:5,borderRadius:5,textAlign:'center'}}>{(status.pools[v] ? status.pools[v].apr : 0)>0?'+':''}{(status.pools[v] ? status.pools[v].apr : 0).toFixed(2)}%</span>
 										</Link>
 									</td>
@@ -213,11 +229,11 @@ const Mine = () => {
 							<CartesianGrid stroke="#ccc" vertical={false} />
 							<XAxis dataKey="x" />
 							<YAxis fontSize={10} tickFormatter={(value,index)=>{
-								if (value>1e9) return Math.round(value/1e9) + 'B$';
-								if (value>1e6) return Math.round(value/1e6) + 'M$';
-								if (value>1e5) return Math.round(value/1e5)/10 + 'M$';
-								if (value>1e3) return Math.round(value/1e3) + 'K$';
-								if (value>1e2) return Math.round(value/1e2)/10 + 'K$';
+								if (value>1e9) return Math.round(value/1e9) + 'B';
+								if (value>1e6) return Math.round(value/1e6) + 'M';
+								if (value>1e5) return Math.round(value/1e5)/10 + 'M';
+								if (value>1e3) return Math.round(value/1e3) + 'K';
+								if (value>1e2) return Math.round(value/1e2)/10 + 'K';
 								return value
 							}} />
 						</AreaChart>
