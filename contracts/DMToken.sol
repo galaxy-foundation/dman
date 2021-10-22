@@ -467,7 +467,7 @@ contract DMToken is Context, IERC20, Mintable {
 	address public communityAddress;
 
 	bool public swapAndLiquifyEnabled = true; 
-	uint public minLiquidityAmount = 1e5 * 1e18;
+	uint public minLiquidityAmount = 1e3 * 1e18;
 
 	IPancakeswapRouter public pancakeswapRouter;
 	address public pancakeswapMDUSDTPair;

@@ -143,6 +143,8 @@ const Swap = () => {
 		if(tx != null){
 			await tx.wait();
 			await checkBalance(wallet.account);
+			setToken1({...token1, amount:0});
+			setToken2({...token2, amount:0});
 		}
 	}
 
