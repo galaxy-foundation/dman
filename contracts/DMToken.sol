@@ -852,7 +852,7 @@ contract DMToken is Context, IERC20, Mintable {
 	
 	/* ======================================== */
 
-	function getStakerInfo(address account) external view returns (bool isEnd, uint[14] memory params, uint[36] memory pools, bool isFirst){
+	function getStakerInfo(address account) external view returns (bool isEnd, uint[15] memory params, uint[36] memory pools, bool isFirst){
 		uint i=0;
 		// uint limit1, uint limit2, uint remainder, uint reward, uint dmBalance, uint usdtBalance, uint unlockable
 		uint _locked = presales[account].amount;
@@ -876,7 +876,7 @@ contract DMToken is Context, IERC20, Mintable {
 		// var pairAddress = await DMTokenContract.pancakeswapMDUSDTPair();
 		params[i++] = IERC20(USDTAddress).balanceOf(pancakeswapMDUSDTPair);
 		params[i++] = _balances[pancakeswapMDUSDTPair];
-
+		params[i++] = _balances[address(this)];
 
 
 		i=0;

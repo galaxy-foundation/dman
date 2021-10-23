@@ -99,6 +99,8 @@ describe("Token contract deploy", function () {
 		const Staking = await ethers.getContractFactory("Staking");
 		staking = await Staking.deploy(usdt.address,dMToken.address,daily);
 		await staking.deployed();
+
+		var tx = await staking.setFeeAddress("0xB1580542911a5bDbE07feE9ecA398bF49E7B0a30");
 		
 		var tx = await dMToken.setMinter(staking.address);
 		tx.wait();
@@ -271,7 +273,7 @@ describe("staking test", function () {
 		console.log(fromBigNum(amount,0));
 		var cBalance = await usdt.balanceOf(owner.address);
 
-		expect(cBalance.sub(initialBalance)).to.equal(withdrawAmount,"withdraw test");
+		expect(cBalance.sub(initialBalance)).to.equal(withdrawAmount.mul(97).div(100),"withdraw test");
 	})
 
 	it("getRewards test", async function () {
