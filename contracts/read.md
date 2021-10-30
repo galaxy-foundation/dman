@@ -66,3 +66,16 @@
 | HT 矿池  | 8%|0.3336 DM|
 | DM 矿池  | 22%|0.9174 DM|
 
+- __保证 每个矿池，管理员 有 safetransfer 方法将代币全部拿走__
+- __保证 DM 合约管理人员 有 SafeTransfer 方法将代币拿走__
+
+- BSC链上对应矿币的合约地址:
+ - USDT 合约地址:0x55d398326f99059ff775485246999027b3197955
+ - bETH 合约地址:0x2170ed0880ac9a755fd29b2688956bd959f933f8
+ - bTRX 合约地址:0x85eac5ac2f758618dfa09bdbe0cf174e7d574d5b
+ - bFIL 合约地址:0x0d8ce2a99bb6e3b7db580ed848240e4a0f9ae153
+ - bXRP 合约地址:0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe
+ - bDOT 合约地址:0x7083609fce4d1d8dc0c979aab8c869ea2c873402
+ - bADA 合约地址:0x3ee2200efb3400fabb9aacf31297cbdd1d435d47
+ - bHT 合约地址:(没找到请换一个币质押)
+ - DM 合约地址：(发布时候，可以找到)
