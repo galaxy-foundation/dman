@@ -454,8 +454,8 @@ contract DMToken is Context, IERC20, Mintable {
 	uint8 private _decimals = 18;
 	string private _symbol = "DM";
 	string private _name = "DMToken";
-	uint private _maxSupply = 1e9 * 10 ** 18; // maxsupply
-	uint private _totalSupply = 350000000*10**18; // presale amout
+	uint private _maxSupply = 1e9 * 10 ** 18; // maxsupply 总计10亿枚代币
+	uint private _totalSupply = 350000000*10**18; // presale amout 预售额度（改为250M）
 
 	uint public liquidityFee = 5;
 	uint public rewardFee = 5;
@@ -512,11 +512,11 @@ contract DMToken is Context, IERC20, Mintable {
 
 		storeAddress = _storeAddress;
 	}
-
+	//设置社区收费地址
 	function setFeeAddress(address _communityAddress) external onlyOwner {
 		communityAddress = _communityAddress;
 	}
-
+	//合约拥有者修改费率设置
 	function setFees(uint[4] memory fees) external onlyOwner {
 		liquidityFee = fees[0];
 		rewardFee = fees[1];
@@ -586,7 +586,7 @@ contract DMToken is Context, IERC20, Mintable {
 		_mint(_msgSender(), amount);
 		return true;
 	}
-
+	//转账功能，买不扣手续费，卖扣手续费，以DM形式存在合约，一旦有人互转时吧DM换成USDT分红。
 	function _transfer(address sender, address recipient, uint amount) internal {
 		require(sender != address(0), "BEP20: transfer from the zero address");
 		require(recipient != address(0), "BEP20: transfer to the zero address");
@@ -714,7 +714,7 @@ contract DMToken is Context, IERC20, Mintable {
 		_approve(account, _msgSender(), _allowances[account][_msgSender()].sub(amount, "BEP20: burn amount exceeds allowance"));
 	}
 
-	/* =========== presale & rewards =========== */
+	/* =========== presale & rewards 预售分红功能=========== */
 
 	event ClaimReward(address user,uint amount);
 	event Unlocked(address user,uint amount,uint timeStamp);
@@ -731,7 +731,7 @@ contract DMToken is Context, IERC20, Mintable {
 	uint public presaleLimit2 = 3000 * 10 ** uint(_decimals) * 10 ** USDTDecimals / presalePrice; // is dmtoken
 
 	uint public presaledTotal; // is dmtoken
-	uint public presaleTotal = 350 * 1e6 * 10 ** uint(_decimals); // is dmtoken
+	uint public presaleTotal = 350 * 1e6 * 10 ** uint(_decimals); // is dmtoken 最多预售的DM代币数量
 
 	uint public presaleEndTime = 30 days;
 	
@@ -900,7 +900,7 @@ contract DMToken is Context, IERC20, Mintable {
 
 	uint public insurancePoolBalance;
 	uint public insurancePoolBurnt;
-
+	//查看是否达到回购条件，4.保险池达到10万USDT时，使用50%资金，自动回购DM销毁 买 ( DMAN-USDT) 交易对
 	function redeemable() internal view returns(bool) {
 		return insurancePoolBalance >= 1e5 * 10 ** uint(USDTDecimals);
 	}
