@@ -732,7 +732,7 @@ contract DMToken is Context, IERC20, Mintable {
 	uint public presaledTotal; // is dmtoken
 	uint public presaleTotal = 250 * 1e6 * 10 ** uint(_decimals); // is dmtoken 最多预售的DM代币数量
 
-	uint public presaleEndTime = 10 minutes; // 30 days
+	uint public presaleEndTime = 20 minutes; // 30 days
 	
 	mapping(address=>Presale) public presales;
 
