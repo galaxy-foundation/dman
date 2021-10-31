@@ -38,7 +38,8 @@ async function main() {
 	const signer = await hre.ethers.getSigner();
 	const stakeFeeAddress = '0x768502E4fFd6b0492f52D996d754398E1164A52F'
 	const communityFeeAddress = '0x396F9cdB598384B889E07398B784AF49E0639B7F'
-	const router = '0xED6Dd43eDA37589cA4418b954cbbD6728ac3bdd2'
+	const router = '0x3bb13600339417da0C6e987e4e75cf4aF8eFDc56' // icicb
+	// const router = '0xED6Dd43eDA37589cA4418b954cbbD6728ac3bdd2' // icicbtest
 	const account = signer.address // '0xC5df89579D7A2f85b8a4b1a6395083da394Bba92'
 	const balance =  1e8
 

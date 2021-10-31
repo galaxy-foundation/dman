@@ -352,6 +352,19 @@
     },
     {
         "inputs": [],
+        "name": "feeAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "getOwner",
         "outputs": [
             {
@@ -833,19 +846,6 @@
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "_communityAddress",
-                "type": "address"
-            }
-        ],
-        "name": "setFeeAddress",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "internalType": "uint256[4]",
                 "name": "fees",
                 "type": "uint256[4]"
@@ -858,6 +858,16 @@
     },
     {
         "inputs": [
+            {
+                "internalType": "address",
+                "name": "_feeAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_communityAddress",
+                "type": "address"
+            },
             {
                 "internalType": "address",
                 "name": "_RouterAddress",

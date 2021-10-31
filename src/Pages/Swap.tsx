@@ -33,12 +33,12 @@ const Swap = () => {
 	const connected = wallet.status==="connected"
 	const [status,,{checkBalance}] = useAppContext();
 
-	const [token1,setToken1] = React.useState({
+	const [token2,setToken2] = React.useState({
 		token:"DM",
 		amount:0,
 	})
 	
-	const [token2,setToken2] = React.useState({
+	const [token1,setToken1] = React.useState({
 		token:"USDT",
 		amount:0,
 	})

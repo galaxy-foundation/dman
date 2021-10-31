@@ -104,19 +104,6 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "communityAddress",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "internalType": "address",
@@ -194,6 +181,19 @@
                 "internalType": "uint256",
                 "name": "_totalStake",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "feeAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -347,7 +347,7 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "_communityAddress",
+                "name": "_feeAddress",
                 "type": "address"
             }
         ],
