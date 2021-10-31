@@ -41,6 +41,7 @@ export interface ContractStatus {
 	insuranceBurnt: number
 	reserve0:number
 	reserve1:number
+	feeCacheAmount:number
 	
 	pools: PoolTypes
 }
@@ -83,6 +84,7 @@ export default function Provider ({children}) {
 		insuranceBurnt: 0,
 		reserve0:0,
 		reserve1:0,
+		feeCacheAmount:0,
 		pools:{}
 	})
 
@@ -155,17 +157,17 @@ export default function Provider ({children}) {
 			let limit1=fromValue(params[i++], 'DM');
 			let limit2=fromValue(params[i++], 'DM');
 			let remainder=fromValue(params[i++], 'DM');
-			let reward=fromValue(params[i++], 'DM');
+			let reward=fromValue(params[i++], 'USDT');
 			let dmBalance=fromValue(params[i++], 'DM');
 			let usdtBalance=fromValue(params[i++], 'USDT');
 			let unlockable=fromValue(params[i++], 'DM');
-			let rewardPool=fromValue(params[i++], 'DM');
-			let rewardedTotal=fromValue(params[i++], 'DM');
-			let insurancePool=fromValue(params[i++], 'DM');
+			let rewardPool=fromValue(params[i++], 'USDT');
+			let rewardedTotal=fromValue(params[i++], 'USDT');
+			let insurancePool=fromValue(params[i++], 'USDT');
 			let insuranceBurnt=fromValue(params[i++], 'DM');
 			let reserve0 = fromValue(params[i++], 'USDT'); // Number(ethers.utils.formatUnits(pairUsdtBalance,6)),
 			let reserve1 = fromValue(params[i++], 'DM'); // Number(ethers.utils.formatUnits(pairDMBalance,18))
-
+			let feeCacheAmount = fromValue(params[i++], 'DM');
 
 			if (isFirst) {
 				let tmp = reserve1;
@@ -217,6 +219,7 @@ export default function Provider ({children}) {
 				insuranceBurnt,
 				reserve0,
 				reserve1,
+				feeCacheAmount,
 				pools: _pools
 			});
 			console.log('checked Balance', _pools);

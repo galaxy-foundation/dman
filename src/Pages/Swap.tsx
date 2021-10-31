@@ -23,6 +23,11 @@ const styledNum = (data:Number)=>{
 	return parseFloat(Number(data).toFixed(8))
 }
 
+const feeRates = {
+	"insurrancePool" : 0.13,
+	"rewardPool":0.33
+}
+
 const Swap = () => {
 	const wallet = useWallet();
 	const connected = wallet.status==="connected"
@@ -53,6 +58,14 @@ const Swap = () => {
 			setToken1({...token1,amount:(numerator /denominator) + 1});
 		}
     } */
+
+	const vGetAmountOut = (amount) =>{
+		let amountWithFee = amount * 997 * 0.85;
+		let numerator = amountWithFee * status.reserve1;
+		let denominator = status.reserve0 * 1000 + amountWithFee;
+		let amountOut =   numerator / denominator;
+		return amountOut;
+	}
 
 	const getAmountOut = async ()=>{
 		if (token1.amount === 0 && status.reserve0 === 0&& status.reserve1 === 0) return;
@@ -219,10 +232,10 @@ const Swap = () => {
 					<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, padding: 20, display:'flex', flexDirection:'column'}}>
 						<div style={{flexGrow:1}}>
 							<h3>权益池</h3>
-							<code>{Math.round(status.rewardPool + status.rewardedTotal)}枚</code>
+							<code>{Math.round(status.rewardPool + status.rewardedTotal + vGetAmountOut(status.feeCacheAmount*feeRates["rewardPool"]))}枚</code>
 						</div>
 						<div style={{display:'flex',justifyContent:'space-between'}}>
-							<span>剩余币量：{Math.round(status.rewardPool)}枚</span>
+							<span>剩余币量：{Math.round(status.rewardPool + vGetAmountOut(status.feeCacheAmount*feeRates["rewardPool"]))}枚</span>
 							<span>总分红币量：{Math.round(status.rewardedTotal)}枚</span>
 						</div>
 					</div>
@@ -234,7 +247,7 @@ const Swap = () => {
 					<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, padding: 20, display:'flex', flexDirection:'column'}}>
 						<div style={{flexGrow:1}}>
 							<h3>保险池</h3>
-							<code>{Math.round(status.insurancePool)}枚</code>
+							<code>{Math.round(status.insurancePool + vGetAmountOut(status.feeCacheAmount*feeRates["insurrancePool"]) )}枚</code>
 						</div>
 						<div style={{display:'flex',justifyContent:'end'}}>
 							销毁 {Math.round(status.insuranceBurnt)}枚
