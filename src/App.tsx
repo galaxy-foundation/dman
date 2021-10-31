@@ -14,9 +14,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import AppContextProvier from './context'
 
 function App() {
+	const chainId = Number(process.env.REACT_APP_CHAIN_ID || 56); 
+	console.log('chainId', chainId)
 	return (
 		<UseWalletProvider
-          chainId={process.env.REACT_APP_CHAIN_ID || 56}   
+          chainId={chainId}   
           connectors={{
             // This is how connectors get configured
             portis: { dAppId: 'my-dapp-id-123-xyz' },
