@@ -74,7 +74,7 @@ const Swap = () => {
 			let numerator = amountWithFee * status.reserve0;
 			let denominator = status.reserve1 * 1000 + amountWithFee;
 			let amountOut =   numerator / denominator;
-			setToken2({...token2, amount:styledNum(amountOut * 0.85)}); // 
+			setToken2({...token2, amount:styledNum(amountOut/*  * 0.85 */)}); // 
 		} else {
 			let amountWithFee = token1.amount * 997 * 0.85;
 			let numerator = amountWithFee * status.reserve1;
