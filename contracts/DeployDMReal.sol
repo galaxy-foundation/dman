@@ -7,9 +7,9 @@ import './Store.sol';
 import './DMToken.sol';
 
 
-contract DeployDM {
+contract DeployDMReal {
     address dmContract;
-    address usdtContract;
+    address usdtContract = 0x55d398326f99059fF775485246999027B3197955;
 
     function deplyDM(address _feeAddress, address _communityAddress, address _dmOwner, address _router, address _account, uint _initial) public {
         address _sender = msg.sender;
@@ -17,35 +17,35 @@ contract DeployDM {
         string memory _symbol = "USDT";
         uint8 _decimals = 18;
         
-        ERC20 usdt = new ERC20(_name, _symbol, _decimals);
+        /* ERC20 usdt = ERC20(usdtContract);
         uint _balance = _initial * 10 ** uint(_decimals);
         usdt.mint(_balance * 2);
         usdt.transfer(_account, _balance);
         usdt.approve(_router, _balance);
 
-        usdtContract = address(usdt);
+        usdtContract = address(usdt); */
 
         
         DMToken dm = new DMToken();
-        _balance = 2 * 1e7 * 1e18;
+        uint _balance = 2 * 1e7 * 1e18;
         dm.mint(_balance);
         dm.transfer(_feeAddress, _balance);
         
 
-        _balance = _initial * 1e18;
+        /* _balance = _initial * 1e18;
         dm.mint(_balance * 2);
         dm.transfer(_account, _balance);
-        dm.approve(_router, _balance);
+        dm.approve(_router, _balance); */
 
         Store store = new Store();
         store.transferOwnership(address(dm));
     	dm.setInitialAddresses(_feeAddress, _communityAddress, _router, usdtContract, address(store));
     	dmContract = address(dm);
 
-        IPancakeswapRouter(_router).addLiquidity(dmContract, usdtContract, _initial * 1e18, _initial * 10 ** uint(_decimals), 0, 0, _sender, 0x1111111111111111111111111);
+        /* IPancakeswapRouter(_router).addLiquidity(dmContract, usdtContract, _initial * 1e18, _initial * 10 ** uint(_decimals), 0, 0, _sender, 0x1111111111111111111111111); */
 
         dm.transferOwnership(_dmOwner);
-        usdt.transferOwnership(_dmOwner);
+        /* usdt.transferOwnership(_dmOwner); */
     }
     
     /* function deploy() public {

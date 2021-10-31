@@ -47,15 +47,16 @@
     "eject": "react-scripts eject",
     "deploy_test": "npx hardhat test",
     "deploy_fantomtest": "npx hardhat run --network fantomtestnet scripts/deploy.js",
-    "deploy_bsctest": "npx hardhat run --network bsctestnet scripts/deploy.js",
+    
     "deploy_ganache": "npx hardhat run --network ganache scripts/deploy.js",
     "deploy_local": "npx hardhat run --network localhost scripts/deploy.js",
-    "deploy": "npx hardhat run --network bsc",
-
     
     "deploy_icicbtest": "npx hardhat run --network icicbtestnet scripts/deploy.js",
-    "deploy_icicb": "npx hardhat run --network icicb scripts/deploy.js"
+    "deploy_icicb": "npx hardhat run --network icicb scripts/deploy.js",
 
+    "deploy_bsctest": "npx hardhat run --network bsctestnet scripts/deploy.js",
+    "deploy_bsc": "npx hardhat run --network bsc scripts/deploy.js",
+    "deploy": "npx hardhat run --network bsc scripts/deploy-production.js"
   },
   "eslintConfig": {
     "extends": [

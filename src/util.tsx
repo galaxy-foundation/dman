@@ -22,7 +22,7 @@ export const tokenData = {
 	USDT : {
 		contract:USDTContract,
 		address:USDTContract.address,
-		decimals:6
+		decimals:18
 	},
 	DM : {
 		contract:DMTokenContract,

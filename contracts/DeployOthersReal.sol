@@ -9,7 +9,7 @@ interface IDMToken {
     function setMinter(address _newMinter) external;
 }
 
-contract DeployOthers {
+contract DeployOthersReal {
     struct Token {
         address token;
         uint8 decimals;
@@ -51,24 +51,23 @@ contract DeployOthers {
     }
     function deplyTokens1(address _feeAddress, address _dm, address _usdt, address _account, uint _initial) public {
         uint daily = 360000;
-        addStakingPool(_feeAddress, 'DM Token',   'ETH', 18, _account, _initial, _dm,        _dm, daily * 22 * 1e18 / 100);
-		addStakingPool(_feeAddress, 'USDT Token', 'USDT',18, _account, _initial, _usdt,      _dm, daily * 10 * 1e18 / 100);
-		addStakingPool(_feeAddress, 'ETH Token',  'ETH', 18, _account, _initial, address(0), _dm, daily * 10 * 1e18 / 100);
-		addStakingPool(_feeAddress, 'TRX Token',  'TRX', 18, _account, _initial, address(0), _dm, daily * 10 * 1e18 / 100);
-		addStakingPool(_feeAddress, 'FIL Token',  'FIL', 18, _account, _initial, address(0), _dm, daily * 10 * 1e18 / 100);
+        addStakingPool(_feeAddress, 'DM Token',   'ETH', 18, _account, _initial, _dm,                                        _dm, daily * 22 * 1e18 / 100);
+		addStakingPool(_feeAddress, 'USDT Token', 'USDT',18, _account, _initial, _usdt,                                      _dm, daily * 10 * 1e18 / 100);
+		addStakingPool(_feeAddress, 'ETH Token',  'ETH', 18, _account, _initial, 0x2170Ed0880ac9A755fd29B2688956BD959F933F8, _dm, daily * 10 * 1e18 / 100);
+		addStakingPool(_feeAddress, 'TRX Token',  'TRX', 18, _account, _initial, 0x85EAC5Ac2F758618dFa09bDbe0cf174e7d574D5B, _dm, daily * 10 * 1e18 / 100);
+		addStakingPool(_feeAddress, 'FIL Token',  'FIL', 18, _account, _initial, 0x0D8Ce2A99Bb6e3B7Db580eD848240e4a0F9aE153, _dm, daily * 10 * 1e18 / 100);
     }
     
     function deplyTokens2(address _feeAddress, address _dm, address _usdt, address _account, uint _initial) public {
-
         uint daily = 360000;
-		addStakingPool(_feeAddress, 'XRP Token',  'XRP', 18, _account, _initial, address(0), _dm, daily * 10 * 1e18 / 100);
-		addStakingPool(_feeAddress, 'DOT Token',  'DOT', 18, _account, _initial, address(0), _dm, daily * 10 * 1e18 / 100);
-		addStakingPool(_feeAddress, 'ADA Token',  'ADA', 18, _account, _initial, address(0), _dm, daily * 10 *  1e18 / 100);
-		addStakingPool(_feeAddress, 'BNB Token',  'BNB', 18, _account, _initial, address(0), _dm, daily * 8 * 1e18 / 100);
+		addStakingPool(_feeAddress, 'XRP Token',  'XRP', 18, _account, _initial, 0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE, _dm, daily * 10 * 1e18 / 100);
+		addStakingPool(_feeAddress, 'DOT Token',  'DOT', 18, _account, _initial, 0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402, _dm, daily * 10 * 1e18 / 100);
+		addStakingPool(_feeAddress, 'ADA Token',  'ADA', 18, _account, _initial, 0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47, _dm, daily * 10 * 1e18 / 100);
+		addStakingPool(_feeAddress, 'BNB Token',  'BNB', 18, _account, _initial, 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c, _dm, daily * 8  * 1e18 / 100);
 
         address _sender = msg.sender;
         ERC20(_dm).transferOwnership(_sender);
-        ERC20(_usdt).transferOwnership(_sender);
+        /* ERC20(_usdt).transferOwnership(_sender); */
     }
     
     /* function deploy1() public {

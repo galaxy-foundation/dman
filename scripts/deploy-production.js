@@ -39,7 +39,7 @@ async function main() {
 	const stakeFeeAddress = '0x768502E4fFd6b0492f52D996d754398E1164A52F'
 	const communityFeeAddress = '0x396F9cdB598384B889E07398B784AF49E0639B7F'
 	const router = '0x10ED43C718714eb63d5aA57B78B54704E256024E' // https://docs.pancakeswap.finance/code/smart-contracts/pancakeswap-exchange/router-v2 
-	const account = signer.address // '0xC5df89579D7A2f85b8a4b1a6395083da394Bba92'
+	const account = signer.address
 	const balance =  1e8
 
 	const result = {router, tokens:{}, staking: {}};
@@ -47,11 +47,11 @@ async function main() {
 	const chainId = network.chainId;
 	console.log('Starting by '.blue, signer.address.yellow);
 	console.log('Preparing...'.blue, "Step 1");
-	const dmDeploy = await hre.ethers.getContractFactory("DeployDM");
+	const dmDeploy = await hre.ethers.getContractFactory("DeployDMReal");
 	const deployDM = await dmDeploy.deploy();
 	/* await deployDM.deployed(); */
 	console.log('Preparing...'.blue, "Step 2");
-	const othersDeploy = await hre.ethers.getContractFactory("DeployOthers");
+	const othersDeploy = await hre.ethers.getContractFactory("DeployOthersReal");
 	const deployOthers = await othersDeploy.deploy();
 	/* await deployOthers.deployed(); */
 

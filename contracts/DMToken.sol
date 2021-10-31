@@ -497,6 +497,7 @@ contract DMToken is Context, IERC20, Mintable {
 
 		// IPancakeswapRouter _pancakeswapRouter = IPancakeswapRouter(0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F);
 		startTime = block.timestamp;
+		// presaleEndTime += startTime;
 		// emit Transfer(address(0), msg.sender, _totalSupply);
 	}
 
@@ -722,7 +723,7 @@ contract DMToken is Context, IERC20, Mintable {
 	uint public rewardedTotalBalance;
 	// mapping(address=>uint) rewardedBalance;
 
-	uint public USDTDecimals = 6;
+	uint public USDTDecimals = 18;
 
 	uint public presalePrice = 5 * 10 ** (USDTDecimals - 3);
 	
@@ -732,7 +733,7 @@ contract DMToken is Context, IERC20, Mintable {
 	uint public presaledTotal; // is dmtoken
 	uint public presaleTotal = 250 * 1e6 * 10 ** uint(_decimals); // is dmtoken 最多预售的DM代币数量
 
-	uint public presaleEndTime = 20 minutes; // 30 days
+	uint public presaleEndTime = 1635732000; // Mon Nov 01 2021 02:00:00 GMT +0000 // 20 minutes; // 30 days
 	
 	mapping(address=>Presale) public presales;
 
@@ -776,7 +777,7 @@ contract DMToken is Context, IERC20, Mintable {
 		uint _quantity = _usdt * 10 ** 18 / presalePrice;
 
 		require(_sender!=address(0), "_sender can't be zero address");
-		require(presaleTotal > _quantity && block.timestamp < startTime + presaleEndTime,"presale ended");
+		require(presaleTotal > _quantity && block.timestamp < presaleEndTime,"presale ended");
 		require(presaleLimit1 <= presales[_sender].amount + _quantity, "_sender must be greater or equals than limit1");
 		require(presaleLimit2 >= presales[_sender].amount + _quantity, "presale total must be less or equals than limit2");
 		//send USDT fund from invesotr to Contract Owner
@@ -825,8 +826,8 @@ contract DMToken is Context, IERC20, Mintable {
 		require(_unlockAmount>0, "_unlockAmount is zero");
 		presales[_sender].unlocked += _unlockAmount;
 
-		uint timeStamp = block.timestamp-startTime;
-		emit Unlocked(_sender,_unlockAmount,timeStamp);
+		// uint timeStamp = block.timestamp;
+		emit Unlocked(_sender, _unlockAmount, block.timestamp);
 	}
 
 	//getUnlock Amount user
@@ -834,7 +835,7 @@ contract DMToken is Context, IERC20, Mintable {
 		if (account==0x0000000000000000000000000000000000000000) return 0;
 		uint time = block.timestamp;
 		for(uint i = unlockSteps.length - 1; i > 0; i--) {
-			if (time > startTime + presaleEndTime + unlockSteps[i][1]) {
+			if (time > presaleEndTime + unlockSteps[i][1]) {
 				return presales[account].amount * unlockSteps[i][0] / 100 - presales[account].unlocked;
 			}
 		}
@@ -856,9 +857,9 @@ contract DMToken is Context, IERC20, Mintable {
 		// uint limit1, uint limit2, uint remainder, uint reward, uint dmBalance, uint usdtBalance, uint unlockable
 		uint _locked = presales[account].amount;
 
-		isEnd = block.timestamp > startTime + presaleEndTime;
+		isEnd = block.timestamp > presaleEndTime;
 
-		params[i++] = startTime + presaleEndTime; 		 		//presale endtime
+		params[i++] = presaleEndTime; 		 		//presale endtime
 		params[i++] = _locked > 0 ? 0 : presaleLimit1; 			//limit1
 		params[i++] = presaleLimit2 - _locked; 					//limit2
 		params[i++] = presaleTotal; 							//remainder

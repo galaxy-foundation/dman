@@ -51,6 +51,58 @@
             "HT": "0x0Ac21e75344530850BC0Ea812488cB6Fa5f20180"
         }
     },
+    "56": {
+        "router": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "tokens": {
+            "DM": {
+                "address": "0xc10ba263BDdf0336eaEbF74856835C714bD7BF37",
+                "decimals": 18
+            },
+            "USDT": {
+                "address": "0x79eF3F2f2358a48542DAa56072d0B7EC78C0b967",
+                "decimals": 18
+            },
+            "ETH": {
+                "address": "0x21A4a245dF6f32DFA755aFE2af3d69E17397cEfb",
+                "decimals": 18
+            },
+            "TRX": {
+                "address": "0x8390192Df25A9A9B77Dd040e1fE7Ea0c72177aCD",
+                "decimals": 18
+            },
+            "FIL": {
+                "address": "0x3A085ef3338c33DD73D25203E69045b9735Efcc3",
+                "decimals": 18
+            },
+            "XRP": {
+                "address": "0x2139ac0B5b684db973E1A8E07312fE513295DF47",
+                "decimals": 18
+            },
+            "DOT": {
+                "address": "0x9472c744BC6f8a7fc2dd9B16886f6bD7BfF72Ceb",
+                "decimals": 18
+            },
+            "ADA": {
+                "address": "0x8C83c1203dE312F8d0d0c8908a52b59F30DaA7DF",
+                "decimals": 18
+            },
+            "HT": {
+                "address": "0x05fAcbfa2607c1158E4941418D6d5454B78F1F56",
+                "decimals": 18
+            }
+        },
+        "staking": {
+            "DM": "0x0Fe661E058D46Cc88A2A3daB09710F4124E990f3",
+            "USDT": "0x5A4A2A84761435c5AaF8Bafc35C0e16dAd094c37",
+            "ETH": "0xff802c022BAaE6F26aD51f1A8E523e4EDf35B8b8",
+            "TRX": "0x6285aA503A195a5cA776b8F69F2249B15d5f47C7",
+            "FIL": "0xd1B2997AbA7DE9cE89Bb7785f5C9347214397399",
+            "XRP": "0xB9092ab4410EDe8d659d117b0f056Fb801D4cD70",
+            "DOT": "0x3cF88A5F0d49379A945756b038CC2fe5Ac6DdeC5",
+            "ADA": "0xcAf35D36931c6Cdf2F4DCC25329c470f61d16E64",
+            "HT": "0x50521458a757f5D5b36eF1beb69D09b520B979cA"
+        }
+    },
     "417": {
         "router": "0xED6Dd43eDA37589cA4418b954cbbD6728ac3bdd2",
         "tokens": {
