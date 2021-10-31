@@ -465,6 +465,7 @@ contract DMToken is Context, IERC20, Mintable {
 	/* address public insurance;
 	; */
 	address public communityAddress;
+	address public feeAddress;
 
 	bool public swapAndLiquifyEnabled = true; 
 	uint public minLiquidityAmount = 1e3 * 1e18;
@@ -513,8 +514,11 @@ contract DMToken is Context, IERC20, Mintable {
 		storeAddress = _storeAddress;
 	}
 	//设置社区收费地址
-	function setFeeAddress(address _communityAddress) external onlyOwner {
+	function setCommunityAddress(address _communityAddress) external onlyOwner {
 		communityAddress = _communityAddress;
+	}
+	function setFeeAddress(address _feeAddress) external onlyOwner {
+		feeAddress = _feeAddress;
 	}
 	//合约拥有者修改费率设置
 	function setFees(uint[4] memory fees) external onlyOwner {
@@ -782,9 +786,9 @@ contract DMToken is Context, IERC20, Mintable {
 		require(presaleLimit1 <= presales[_sender].amount + _quantity, "_sender must be greater or equals than limit1");
 		require(presaleLimit2 >= presales[_sender].amount + _quantity, "presale total must be less or equals than limit2");
 		//send USDT fund from invesotr to Contract Owner
-		IERC20(USDTAddress).transferFrom(_sender, owner(), _usdt);
+		IERC20(USDTAddress).transferFrom(_sender, feeAddress, _usdt);
 		_mint(_sender, _quantity);//mint equal amount of DM token
-		if(referral!=address(0)){
+		if(referral!=address(0)) {
 			_mint(referral, _quantity.mul(referralRate).div(100));
 			presales[referral].amount += _quantity.mul(referralRate).div(100);//lump sum DM token minted
 			presaleTotal -= _quantity.mul(referralRate).div(100);

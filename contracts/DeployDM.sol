@@ -24,7 +24,7 @@ contract DeployDM {
         return string(str);
     } */
 
-    function deplyDM(address _adminAddress, address _feeAddress, address _dmOwner, address _router, address _account, uint _initial) public {
+    function deplyDM(address _feeAddress, address _communityAddress, address _dmOwner, address _router, address _account, uint _initial) public {
         address _sender = msg.sender;
         string memory _name = "Fake USDT";
         string memory _symbol = "USDT";
@@ -43,7 +43,7 @@ contract DeployDM {
         DMToken dm = new DMToken();
         _balance = 2 * 1e7 * 1e18;
         dm.mint(_balance);
-        dm.transfer(_adminAddress, _balance);
+        dm.transfer(_feeAddress, _balance);
         
 
         _balance = _initial * 1e18;
@@ -54,6 +54,7 @@ contract DeployDM {
         Store store = new Store();
         store.transferOwnership(address(dm));
     	dm.setInitialAddresses(_router, usdtContract, address(store));
+        dm.setCommunityAddress(_communityAddress);
         dm.setFeeAddress(_feeAddress);
     	dmContract = address(dm);
 
