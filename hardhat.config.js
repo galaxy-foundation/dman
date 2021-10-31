@@ -27,6 +27,15 @@ module.exports = {
 			url: "http://127.0.0.1:7545",
 			accounts: [process.env.PRIVATEKEY]
 		},
+		
+		icicb :{
+			url: "http://3.143.142.135",
+			accounts: [process.env.PRIVATEKEY]
+		},
+		icicbtestnet :{
+			url: "http://13.58.153.103",
+			accounts: [process.env.PRIVATEKEY]
+		},
 		bsctestnet :{
 			url: "http://185.25.48.34/api/v10/rpc/bsc-test",
 			accounts: [process.env.PRIVATEKEY]

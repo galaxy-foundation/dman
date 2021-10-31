@@ -36,8 +36,9 @@ const tokenList = [
 
 async function main() {
 	const signer = await hre.ethers.getSigner();
-	const feeAddress = '0x413EBD57EbA0f200ed592c31E7dB6119C92A7973'
-	const router = '0x8e12fD09f7A761AABaD0C8E0e574d797FE27b8A6'
+	const stakeFeeAddress = '0x768502E4fFd6b0492f52D996d754398E1164A52F'
+	const communityFeeAddress = '0x396F9cdB598384B889E07398B784AF49E0639B7F'
+	const router = '0xED6Dd43eDA37589cA4418b954cbbD6728ac3bdd2'
 	const account = signer.address // '0xC5df89579D7A2f85b8a4b1a6395083da394Bba92'
 	const balance =  1e8
 
@@ -57,15 +58,15 @@ async function main() {
 	console.log('Deploying DM contract...'.blue);
 	const dm = new ethers.Contract(deployDM.address, abiDeployDM.abi, signer);
 	
-	await dm.deplyDM(feeAddress, deployOthers.address, result.router, account, balance);
+	await dm.deplyDM(communityFeeAddress, deployOthers.address, result.router, account, balance);
 	const {_dm, _usdt} = await dm.getTokens();
 	console.log("DM"   + (" ".repeat(10-2)), _dm.green);
 	console.log("USDT" + (" ".repeat(10-4)), _usdt.green);
 	
 	console.log('Deploying tokens & staking contracts...'.blue);
 	const others = new ethers.Contract(deployOthers.address, abiDeployOthers.abi, signer);
-	await others.deplyTokens1(feeAddress, _dm, _usdt, account, balance);
-	await others.deplyTokens2(feeAddress, _dm, _usdt, account, balance);
+	await others.deplyTokens1(stakeFeeAddress, _dm, _usdt, account, balance);
+	await others.deplyTokens2(stakeFeeAddress, _dm, _usdt, account, balance);
 	const tokens = await others.getTokens();
 	tokens.map((v,k)=>{
 		console.log(tokenList[k] + (" ".repeat(10 - tokenList[k].length)), v.token.green);

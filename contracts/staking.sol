@@ -60,11 +60,11 @@ contract Staking {
 	address public stakeTokenAddress; //specify farming token when contract created
 	
 	uint[5] public feeSteps = [
-		7776000,
-		10368000,
-		15552000,
-		23328000,
-		100000000000
+		30 days,
+		90 days,
+		121 days,
+		180 days,
+		36500 days
 	];//farming interval. 30-90-120-180-270
 	uint[5] public feeRates = [
 		30,
@@ -171,7 +171,6 @@ contract Staking {
 		uint withdrawFee = countFee(stakerAddress);
 		IERC20_2(stakeTokenAddress).transfer(communityAddress,amount.mul(withdrawFee).div(1000));
 		IERC20_2(stakeTokenAddress).transfer(stakerAddress,amount.mul(1000-withdrawFee).div(1000));
-
 		stakers[stakerAddress].stake = countStake(stakerAddress);
 		stakers[stakerAddress].stakingAmount = 0;
 		stakers[stakerAddress].lastUpdateTime = block.timestamp;

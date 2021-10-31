@@ -455,7 +455,7 @@ contract DMToken is Context, IERC20, Mintable {
 	string private _symbol = "DM";
 	string private _name = "DMToken";
 	uint private _maxSupply = 1e9 * 10 ** 18; // maxsupply
-	uint private _totalSupply = 350000000*10**18; // presale amout
+	uint private _totalSupply = 250 * 1e6 * 10 ** 18; // presale amout
 
 	uint public liquidityFee = 5;
 	uint public rewardFee = 5;
@@ -597,7 +597,7 @@ contract DMToken is Context, IERC20, Mintable {
 
 
 		// fee 
-		bool isLP = sender==pancakeswapMDUSDTPair || recipient==pancakeswapMDUSDTPair;
+		bool isLP = /* sender==pancakeswapMDUSDTPair ||  */recipient==pancakeswapMDUSDTPair;
 
 		if(isLP) {
 			recieveAmount = amount.mul(100 - getTotalFee()).div(100);
@@ -733,7 +733,7 @@ contract DMToken is Context, IERC20, Mintable {
 	uint public presaledTotal; // is dmtoken
 	uint public presaleTotal = 350 * 1e6 * 10 ** uint(_decimals); // is dmtoken
 
-	uint public presaleEndTime = 30 days;
+	uint public presaleEndTime = 5 minutes; // 30 days
 	
 	mapping(address=>Presale) public presales;
 
@@ -744,21 +744,21 @@ contract DMToken is Context, IERC20, Mintable {
 	}
 
 	uint[][] unlockSteps = [
-		[8,   5 minutes],
-		[18,  8 minutes],
-		[30,  12 minutes],
-		[45,  15 minutes],
-		[62,  18 minutes],
-		[80,  21 minutes],
-		[100, 25 minutes]
-		/* [8,   40  days],
+		[8,   15 minutes],
+		[18,  18 minutes],
+		[30,  22 minutes],
+		[45,  25 minutes],
+		[62,  28 minutes],
+		[80,  31 minutes],
+		[100, 35 minutes]
+		/* 
+		[8,   40  days],
 		[18,  90  days],
 		[30,  150 days],
 		[45,  210 days],
 		[62,  270 days],
 		[80,  330 days],
 		[100, 360 days], */
-		
 	];
 
 	uint public referralRate = 12;
@@ -835,7 +835,7 @@ contract DMToken is Context, IERC20, Mintable {
 		if (account==0x0000000000000000000000000000000000000000) return 0;
 		uint time = block.timestamp;
 		for(uint i = unlockSteps.length - 1; i > 0; i--) {
-			if (time > startTime + unlockSteps[i][1]) {
+			if (time > startTime + presaleEndTime + unlockSteps[i][1]) {
 				return presales[account].amount * unlockSteps[i][0] / 100 - presales[account].unlocked;
 			}
 		}

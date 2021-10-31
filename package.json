@@ -50,7 +50,12 @@
     "deploy_bsctest": "npx hardhat run --network bsctestnet scripts/deploy.js",
     "deploy_ganache": "npx hardhat run --network ganache scripts/deploy.js",
     "deploy_local": "npx hardhat run --network localhost scripts/deploy.js",
-    "deploy": "npx hardhat run --network bsc"
+    "deploy": "npx hardhat run --network bsc",
+
+    
+    "deploy_icicbtest": "npx hardhat run --network icicbtestnet scripts/deploy.js",
+    "deploy_icicb": "npx hardhat run --network icicb scripts/deploy.js"
+
   },
   "eslintConfig": {
     "extends": [

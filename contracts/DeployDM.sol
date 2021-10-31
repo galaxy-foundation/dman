@@ -24,7 +24,7 @@ contract DeployDM {
         return string(str);
     } */
 
-    function deplyDM(address _feeAddress, address _dmOwner, address _router, address _account, uint _initial) public {
+    function deplyDM(address _feeAddress, address _feeAddress, address _dmOwner, address _router, address _account, uint _initial) public {
         address _sender = msg.sender;
         string memory _name = "Fake USDT";
         string memory _symbol = "USDT";
