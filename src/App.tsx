@@ -16,7 +16,7 @@ import AppContextProvier from './context'
 function App() {
 	return (
 		<UseWalletProvider
-          chainId={4002}   
+          chainId={process.env.REACT_APP_CHAIN_ID || 56}   
           connectors={{
             // This is how connectors get configured
             portis: { dAppId: 'my-dapp-id-123-xyz' },
