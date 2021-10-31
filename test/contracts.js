@@ -64,11 +64,17 @@ describe("Token contract deploy", function () {
         await store.deployed();
 
 		store.transferOwnership(dMToken.address);
-		
+
+		var tx = await dMToken.setMinter(owner.address);
+		await tx.wait()
+
+		var tx = await dMToken.mint(ethers.utils.parseUnits("5000000",18));
+		await tx.wait()
+
 		var tx = await dMToken.setInitialAddresses(exchangeRouter.address, usdt.address, store.address);
 		await tx.wait();
 
-		tx = await dMToken.setFeeAddress(process.env.COMMUNITYADDRESS);
+		tx = await dMToken.setFeeAddress(owner.address);
 		await tx.wait();
 
 	});
@@ -82,7 +88,7 @@ describe("Token contract deploy", function () {
 		tx = await exchangeRouter.addLiquidity(
 			dMToken.address,
 			usdt.address,
-			ethers.utils.parseUnits("5000000",18),
+			ethers.utils.parseUnits("500000",18),
 			ethers.utils.parseUnits("500000",6),
 			0,
 			0,
@@ -143,7 +149,7 @@ describe("dM test", function () {
 
 	it("USDT-DM test", async function () {
 
-		var swapAmount = ethers.utils.parseUnits("50000000",6);
+		var swapAmount = ethers.utils.parseUnits("50000",6);
 		
 		var initUsdtBalance = await usdt.balanceOf(owner.address);
 		var initDMTokenBalance = await dMToken.balanceOf(owner.address);
@@ -175,9 +181,9 @@ describe("dM test", function () {
 
 		var insurancePoolBurnt = fromBigNum( await dMToken.insurancePoolBurnt(), 18)
 		console.log(rewardPoolBalance,rewardedTotalBalance,insurancePoolBalance,insurancePoolBurnt);
-	})
-	
+	});
 
+	
 	it("presale test", async function () {
 
 		var buyAmount = ethers.utils.parseUnits("500",6);

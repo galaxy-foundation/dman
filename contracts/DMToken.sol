@@ -597,9 +597,10 @@ contract DMToken is Context, IERC20, Mintable {
 
 
 		// fee 
-		bool isLP = /* sender==pancakeswapMDUSDTPair ||  */recipient==pancakeswapMDUSDTPair;
+		bool isBuy = sender==pancakeswapMDUSDTPair;
+		bool isSell =  recipient==pancakeswapMDUSDTPair;
 
-		if(isLP) {
+		if(isSell) {
 			recieveAmount = amount.mul(100 - getTotalFee()).div(100);
 			uint feeAmount = amount.mul(liquidityFee+rewardFee+insuranceFee+communityFee).div(100);
 			_balances[address(this)] = _balances[address(this)].add(feeAmount);//fees remained in contract
@@ -609,7 +610,7 @@ contract DMToken is Context, IERC20, Mintable {
 		//calculate DM reserved in this contract
 		uint contractTokenBalance = balanceOf(address(this));
 		//swap DM to usdt 
-		if (!inSwapAndLiquify && !inRedeem && !isLP && swapAndLiquifyEnabled) {
+		if (!inSwapAndLiquify && !inRedeem && !isBuy && !isSell && swapAndLiquifyEnabled) {
 			if(minLiquidityAmount <= contractTokenBalance){
 				swapAndLiquify();
 			}
@@ -744,13 +745,13 @@ contract DMToken is Context, IERC20, Mintable {
 	}
 
 	uint[][] unlockSteps = [
-		[8,   15 minutes],
-		[18,  18 minutes],
-		[30,  22 minutes],
-		[45,  25 minutes],
-		[62,  28 minutes],
-		[80,  31 minutes],
-		[100, 35 minutes]
+		[8,   5 minutes],
+		[18,  7 minutes],
+		[30,  10 minutes],
+		[45,  12 minutes],
+		[62,  15 minutes],
+		[80,  18 minutes],
+		[100, 28 minutes]
 		/* 
 		[8,   40  days],
 		[18,  90  days],
