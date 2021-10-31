@@ -51,7 +51,7 @@ contract DeployOthers {
     }
     function deplyTokens1(address _feeAddress, address _dm, address _usdt, address _account, uint _initial) public {
         uint daily = 360000;
-        addStakingPool(_feeAddress, 'DM Token',   'ETH', 18, _account, _initial, _dm,        _dm, daily * 10 * 1e18 / 100);
+        addStakingPool(_feeAddress, 'DM Token',   'ETH', 18, _account, _initial, _dm,        _dm, daily * 22 * 1e18 / 100);
 		addStakingPool(_feeAddress, 'USDT Token', 'TRX', 6,  _account, _initial, _usdt,      _dm, daily * 10 * 1e18 / 100);
 		addStakingPool(_feeAddress, 'ETH Token',  'ETH', 18, _account, _initial, address(0), _dm, daily * 10 * 1e18 / 100);
 		addStakingPool(_feeAddress, 'TRX Token',  'TRX', 18, _account, _initial, address(0), _dm, daily * 10 * 1e18 / 100);
@@ -63,8 +63,8 @@ contract DeployOthers {
         uint daily = 360000;
 		addStakingPool(_feeAddress, 'XRP Token',  'XRP', 18, _account, _initial, address(0), _dm, daily * 10 * 1e18 / 100);
 		addStakingPool(_feeAddress, 'DOT Token',  'DOT', 18, _account, _initial, address(0), _dm, daily * 10 * 1e18 / 100);
-		addStakingPool(_feeAddress, 'ADA Token',  'ADA', 18, _account, _initial, address(0), _dm, daily * 8 *  1e18 / 100);
-		addStakingPool(_feeAddress, 'HT Token',   'HT',  18, _account, _initial, address(0), _dm, daily * 22 * 1e18 / 100);
+		addStakingPool(_feeAddress, 'ADA Token',  'ADA', 18, _account, _initial, address(0), _dm, daily * 10 *  1e18 / 100);
+		addStakingPool(_feeAddress, 'HT Token',   'HT',  18, _account, _initial, address(0), _dm, daily * 8 * 1e18 / 100);
 
         address _sender = msg.sender;
         ERC20(_dm).transferOwnership(_sender);

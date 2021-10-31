@@ -59,11 +59,18 @@ contract Staking {
 	address public rewardTokenAddress;
 	address public stakeTokenAddress; //specify farming token when contract created
 	
-	uint[5] public feeSteps = [
+	/* uint[5] public feeSteps = [
 		30 days,
 		90 days,
 		121 days,
 		180 days,
+		36500 days
+	];//farming interval. 30-90-120-180-270 */
+	uint[5] public feeSteps = [
+		10 minutes,
+		15 minutes,
+		20 minutes,
+		25 minutes,
 		36500 days
 	];//farming interval. 30-90-120-180-270
 	uint[5] public feeRates = [

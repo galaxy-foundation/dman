@@ -492,11 +492,11 @@ contract DMToken is Context, IERC20, Mintable {
 	uint startTime;
 
 	constructor() public {
-		_balances[msg.sender] = _totalSupply;
+		// _balances[msg.sender] = _totalSupply;
 
 		// IPancakeswapRouter _pancakeswapRouter = IPancakeswapRouter(0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F);
 		startTime = block.timestamp;
-		emit Transfer(address(0), msg.sender, _totalSupply);
+		// emit Transfer(address(0), msg.sender, _totalSupply);
 	}
 
 	function setSwapAndLiquifyEnabled(bool enable) external onlyOwner {
@@ -731,7 +731,7 @@ contract DMToken is Context, IERC20, Mintable {
 	uint public presaleLimit2 = 3000 * 10 ** uint(_decimals) * 10 ** USDTDecimals / presalePrice; // is dmtoken
 
 	uint public presaledTotal; // is dmtoken
-	uint public presaleTotal = 350 * 1e6 * 10 ** uint(_decimals); // is dmtoken 最多预售的DM代币数量
+	uint public presaleTotal = 250 * 1e6 * 10 ** uint(_decimals); // is dmtoken 最多预售的DM代币数量
 
 	uint public presaleEndTime = 5 minutes; // 30 days
 	
