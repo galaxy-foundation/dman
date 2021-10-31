@@ -138,7 +138,7 @@ export default function Provider ({children}) {
 	const checkBalance = async (account) => {
 		console.log('checkBalance',account)
 		try {
-			const Daily = 328767;
+			const Daily = 360000;
 			const poolList = [
 				{token:'DM',   daily:Math.round(Daily*0.22)},  
 				{token:'USDT', daily:Math.round(Daily*0.10)},  
