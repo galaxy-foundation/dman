@@ -504,21 +504,15 @@ contract DMToken is Context, IERC20, Mintable {
 		swapAndLiquifyEnabled = enable;
 	}
 
-	function setInitialAddresses(address _RouterAddress, address _USDTAddress, address _storeAddress) external onlyOwner {
+	function setInitialAddresses(address _feeAddress, address _communityAddress, address _RouterAddress, address _USDTAddress, address _storeAddress) external onlyOwner {
+		feeAddress = _feeAddress;
+		communityAddress = _communityAddress;
 		USDTAddress = _USDTAddress;
 		IPancakeswapRouter _pancakeswapRouter = IPancakeswapRouter(_RouterAddress);
-		
 		pancakeswapRouter = _pancakeswapRouter;
 		pancakeswapMDUSDTPair = IPancakeswapFactory(_pancakeswapRouter.factory()).createPair(address(this), USDTAddress); //MD vs USDT pair
-
 		storeAddress = _storeAddress;
-	}
-	//设置社区收费地址
-	function setCommunityAddress(address _communityAddress) external onlyOwner {
-		communityAddress = _communityAddress;
-	}
-	function setFeeAddress(address _feeAddress) external onlyOwner {
-		feeAddress = _feeAddress;
+		
 	}
 	//合约拥有者修改费率设置
 	function setFees(uint[4] memory fees) external onlyOwner {

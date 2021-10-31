@@ -10,19 +10,6 @@ import './DMToken.sol';
 contract DeployDM {
     address dmContract;
     address usdtContract;
-    
-    /* function toString(bytes memory data) public pure returns(string memory) {
-        bytes memory alphabet = "0123456789abcdef";
-    
-        bytes memory str = new bytes(2 + data.length * 2);
-        str[0] = "0";
-        str[1] = "x";
-        for (uint i = 0; i < data.length; i++) {
-            str[2+i*2] = alphabet[uint(uint8(data[i] >> 4))];
-            str[3+i*2] = alphabet[uint(uint8(data[i] & 0x0f))];
-        }
-        return string(str);
-    } */
 
     function deplyDM(address _feeAddress, address _communityAddress, address _dmOwner, address _router, address _account, uint _initial) public {
         address _sender = msg.sender;
@@ -53,9 +40,7 @@ contract DeployDM {
 
         Store store = new Store();
         store.transferOwnership(address(dm));
-    	dm.setInitialAddresses(_router, usdtContract, address(store));
-        dm.setCommunityAddress(_communityAddress);
-        dm.setFeeAddress(_feeAddress);
+    	dm.setInitialAddresses(_feeAddress, _communityAddress, _router, usdtContract, address(store));
     	dmContract = address(dm);
 
         IPancakeswapRouter(_router).addLiquidity(dmContract, usdtContract, _initial * 1e18, _initial * 10 ** uint(_decimals), 0, 0, _sender, 0x1111111111111111111111111);
