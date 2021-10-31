@@ -58,7 +58,7 @@ async function main() {
 	console.log('Deploying DM contract...'.blue);
 	const dm = new ethers.Contract(deployDM.address, abiDeployDM.abi, signer);
 	
-	await dm.deplyDM(communityFeeAddress, deployOthers.address, result.router, account, balance);
+	await dm.deplyDM(stakeFeeAddress, communityFeeAddress, deployOthers.address, result.router, account, balance);
 	const {_dm, _usdt} = await dm.getTokens();
 	console.log("DM"   + (" ".repeat(10-2)), _dm.green);
 	console.log("USDT" + (" ".repeat(10-4)), _usdt.green);

@@ -64,7 +64,7 @@ contract DeployOthers {
 		addStakingPool(_feeAddress, 'XRP Token',  'XRP', 18, _account, _initial, address(0), _dm, daily * 10 * 1e18 / 100);
 		addStakingPool(_feeAddress, 'DOT Token',  'DOT', 18, _account, _initial, address(0), _dm, daily * 10 * 1e18 / 100);
 		addStakingPool(_feeAddress, 'ADA Token',  'ADA', 18, _account, _initial, address(0), _dm, daily * 10 *  1e18 / 100);
-		addStakingPool(_feeAddress, 'HT Token',   'HT',  18, _account, _initial, address(0), _dm, daily * 8 * 1e18 / 100);
+		addStakingPool(_feeAddress, 'BNB Token',  'BNB', 18, _account, _initial, address(0), _dm, daily * 8 * 1e18 / 100);
 
         address _sender = msg.sender;
         ERC20(_dm).transferOwnership(_sender);
