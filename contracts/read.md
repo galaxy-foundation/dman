@@ -99,7 +99,7 @@ DMan是 __全球__ 最前沿区块链投资者驱动的的去中心化金融社�
 
 # DM Deploy Notes
 ## PRELUDE
-DMan is __globalized__ degne Crypto investor driven Decentralized Social community Token. It has features that fair launch, limited supply,presale amount is 250 million, other 750 millions remained for yiled farming without pre mine intrigues. Dman Community aimed for construct fair win-win longterm blockchain dividends for community members. DMan Token has insurrance mechanics which can protect price from whale dumping, meanwhile its yield farming process is designed by a talent mathmatician who graduated from worlds famous unisversity. and its stakeholders' __USDT share__ pool which can continously generating revenue for DM holders .it is a new paradigms in blockchain world.In the future. Dman will construct their own eccosystem include independent blockchain.social token.meme token.NFT and metaverse.
+DMan is __globalized__ degenerated Crypto investors driven Decentralized Social community Token. It has features that fair launched, limited supply,presale amount is 250 million, other 750 millions DM token remained for Staking farming stimulous. without any pre-mine intrigues or Whale interven. Dman Community aimed for building fairness and win-win longterm blockchain dividends for DM token hodlers. DMan Token has insurrance mechanics which can protect price from bloody dumping, meanwhile its staking farming process is designed by a talent mathmatician who graduated from world's famous unisversity. and its stakeholders' __USDT share__ pool which can continously generating revenue for DM holders is a new paradigms in blockchain world.In the future. Dman will construct their own eccosystem include independent blockchain.social token.meme token.NFT and metaverse.
 ## 1,DM Token Introduction
 - We using DeployDM smart contract deploy DM token contract. __before deplpoying we should ask DM boss for his wallet address and remain 500USDT for PCS initial LP providing__
 - DeployDM.sol automatically deploy 9 staking pool smart contract. however DM token contract depended on DM-USDT LP token. therefore Contract creator should remain USDT in his wallet when deploy smart contract. The initial LP ratio is pegged as presale price 0.005USDT/DM  PANCAKE LP__
@@ -135,7 +135,7 @@ DMan is __globalized__ degne Crypto investor driven Decentralized Social communi
   - insurrance pool :2%  buy back DM for burning
 
 
-## 4,Yield Farming Rules
+## 4,Staking Farming Rules
 
 - Staking 0 fees
 - Unstaking fees as following:
