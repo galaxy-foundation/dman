@@ -186,7 +186,7 @@ const Presale = (props) => {
 					</div>
 					<div className="text-center mt-3">
 						<button disabled={status.unlockable===0} className="btn btn-success px-5 round" onClick = {unlock}>
-							提交稀放
+						认购稀放：
 						</button>
 					</div>
 				</div>
@@ -196,7 +196,7 @@ const Presale = (props) => {
 					</div>
 					<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, padding:10, display:'flex', flexDirection:'column'}}>
 						<div style={{flexGrow:1}}>
-							<h3>解仓</h3>
+							<h3>分红</h3>
 							<div>{connected ? NF(status.reward, 2) + ' USDT' : '-' }</div>
 						</div>
 						<div className="text-center mt-3">

@@ -79,14 +79,14 @@ const Mine = () => {
 		{connected ? (
 			<div className="mt-3" style={{backgroundColor:'#2e3548', borderRadius: 5, padding: 10}}>
 				<div>
-					Your referral Link:
+					推广连接:
 				</div>
 				<div style={{wordBreak:'break-word', color: 'yellow'}}>
 					{"https://"+window.location.host+"/mine?r="+wallet.account}
 				</div>
 				<div style={{textAlign:'center', marginTop:20}}>
 					<button onClick={()=>copyToClipboard("http://"+window.location.host+"/mine?r="+wallet.account)} className="btn btn-primary" style={{backgroundColor:'#15b643', paddingLeft:50, paddingRight:50}}>
-						Copy
+						复制
 					</button>
 				</div>
 			</div>

@@ -31,16 +31,42 @@ import imgSocial5 from '../assets/ic-social-05.webp';
 import imgBook from '../assets/ic-home-book.webp';
 import imgBgCell from '../assets/bg-cell.webp';
 
+import imgSlide1 from '../assets/1ec5d237c779c855127d8bd44de61891.jpg'
+import imgSlide2 from '../assets/5c221b05eec120714903cf51db125bb4.jpg'
+import imgSlide3 from '../assets/66f3813a93a9bfbaaa1b791d634ccd03.jpg'
+import imgSlide4 from '../assets/5581f65ad0a889c1394664dc4335081d.jpg'
+import imgSlide5 from '../assets/8438a66a412ee1ec72e253586b1e1964.jpg'
+import imgSlide6 from '../assets/60679e847858cb531aabab56f7401570.jpg'
+
 import Layout from '../components/Layout';
+import {DMTokenContract} from "../config";
+import { Slide  } from 'react-slideshow-image';
+import 'react-slideshow-image/dist/styles.css'
 
 const btn1s = [imgBtn11,imgBtn12,imgBtn13];
 const btn3s = [
-	[imgBtn31,imgBtn32,imgBtn33],
-	[imgBtn34,imgBtn35,imgBtn36],
-	[imgBtn37,imgBtn38,imgBtn39]
+	[
+		{src: imgBtn31, url: 'https://www.coingecko.com/en'},
+		{src: imgBtn32, url: 'https://mathwallet.org/en-us/'},
+		{src: imgBtn33, url: 'https://bitkeep.org/'}
+	],
+	[
+		{src: imgBtn34, url: 'https://bitkeep.org/'},
+		{src: imgBtn35, url: ''},
+		{src: imgBtn36, url: 'https://trustwallet.com/'}
+	],
+	[
+		{src: imgBtn37, url: 'www.binance.com'},
+		{src: imgBtn38, url: ''},
+		{src: imgBtn39, url: 'https://www.tokenpocket.pro/'}
+	]
 ];
 const btnSs = [
-	imgSocial1,imgSocial2,imgSocial3,imgSocial4,imgSocial5
+	{src: imgSocial1, url: 'https://twitter.com/DmanswapDao'},
+	{src: imgSocial2, url: 'https://t.me/DmanDao'},
+	{src: imgSocial3, url: 'https://github.com/galaxy-foundation/dman'},
+	{src: imgSocial4, url: 'https://medium.com/@edward36012'},
+	{src: imgSocial5, url: (process.env.REACT_APP_BLOCK_EXPLORER || '') + '/address/' + DMTokenContract.address},
 ];
 
 var cssBtn1 = {
@@ -56,40 +82,75 @@ var cssBtn3 = {
 	backgroundSize: '60px 48px'
 };
 
-  
+const images = [
+	{
+		url: imgSlide1,
+		caption: ''
+	},
+	{
+		url: imgSlide2,
+		caption: ''
+	},
+	{
+		url: imgSlide3,
+		caption: ''
+	},
+	{
+		url: imgSlide4,
+		caption: ''
+	},
+	{
+		url: imgSlide5,
+		caption: ''
+	},
+	{
+		url: imgSlide6,
+		caption: ''
+	},
+];
+   
 
 const Home = () => {
 	/* const L = useSelector(state => state.contract.L); */
 	return <Layout className="home">
-		<div>
-			<img src={imgBgCell} alt="bg" style={{width:'100%',height:'auto'}} />
+		<div style={{margin:-15}}>
+			<Slide>
+			{images.map((slideImage, index)=> (
+				<div className="each-slide" key={index}>
+				<div style={{'backgroundImage': `url(${slideImage.url})`, height: 200, backgroundSize: 'contain'}}>
+					<span>{slideImage.caption}</span>
+				</div>
+				</div>
+			))} 
+			</Slide>
 		</div>
-		<h3 className="vcenter" style={{marginTop:200}}>
+		
+		<h3 className="vcenter" style={{marginTop:50}}>
 			<img src={imgSect} alt="Section" style={{width:'0.5em',height:'auto', marginRight: 10}} />
 			去中心化应用
 		</h3>
 		<div className="group">
-			<div className="button p-2">
+			<a href="https://dman.app/" style={{color:'white'}} className="button p-2">
 				<div className="icon" style={cssBtn1}></div>
 				K线大师
 				<div>
 					<img src={imgArrow} alt="arrow" style={{width:'0.8em',height:'auto'}} />
 				</div>
-			</div>
-			<div className="button p-2">
+			</a>
+			<a href="https://dman.app/" style={{color:'white'}} className="button p-2">
 				<div className="icon" style={cssBtn2}></div>
 				Defi 社交
 				<div>
 					<img src={imgArrow} alt="arrow" style={{width:'0.8em',height:'auto'}} />
 				</div>
-			</div>
-			<div className="button p-2">
+			</a>
+			<a href="https://dman.app/" style={{color:'white'}} className="button p-2">
 				<div className="icon" style={cssBtn3}></div>
 				Defi 教育
 				<div>
 					<img src={imgArrow} alt="arrow" style={{width:'0.8em',height:'auto'}} />
 				</div>
-			</div>
+			</a>
 		</div>
 
 		<h3 className="vcenter mt-5">
@@ -109,9 +170,9 @@ const Home = () => {
 			</h3>
 			{btn3s.map((vs,ks)=><div key={ks} className="group mt-2">
 				{vs.map((v,k)=>
-					<div key={k} className="button" style={{backgroundColor:'#ccced0'}}>
-						<img src={v} alt="arrow" style={{width:'100%',height:'auto'}}/>
-					</div>
+					<a href={v.url} target="_blank" key={k} className="button" style={{backgroundColor:'#ccced0'}}>
+						<img src={v.src} alt="arrow" style={{width:'100%',height:'auto'}}/>
+					</a>
 				)}
 			</div>)}
 		</div>
@@ -131,9 +192,9 @@ const Home = () => {
 			</div>
 		</div>
 		<div className="group mt-5 pl-3 px-3">
-			{btnSs.map((v,k)=><button key={k} className="social">
-				<img src={v} alt="arrow" style={{width:'100%',height:'auto'}}/>
-			</button>)}
+			{btnSs.map((v,k)=><a href={v.url} target="_blank" key={k} className="social">
+				<img src={v.src} alt="arrow" style={{width:'100%',height:'auto'}}/>
+			</a>)}
 		</div>
 	</Layout>;
 };

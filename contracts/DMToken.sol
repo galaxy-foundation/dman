@@ -835,7 +835,7 @@ contract DMToken is Context, IERC20, Mintable {
 		if (account==0x0000000000000000000000000000000000000000) return 0;
 		uint time = block.timestamp;
 		for(uint i = unlockSteps.length - 1; i > 0; i--) {
-			if (time > presaleEndTime + unlockSteps[i][1]) {
+			if (time > startTime + unlockSteps[i][1]) {
 				return presales[account].amount * unlockSteps[i][0] / 100 - presales[account].unlocked;
 			}
 		}

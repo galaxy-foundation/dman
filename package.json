@@ -25,6 +25,7 @@
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-slideshow-image": "^3.6.0",
     "react-toastify": "^7.0.4",
     "recharts": "^2.0.10",
     "typescript": "^4.1.2",
@@ -47,13 +48,10 @@
     "eject": "react-scripts eject",
     "deploy_test": "npx hardhat test",
     "deploy_fantomtest": "npx hardhat run --network fantomtestnet scripts/deploy.js",
-    
     "deploy_ganache": "npx hardhat run --network ganache scripts/deploy.js",
     "deploy_local": "npx hardhat run --network localhost scripts/deploy.js",
-    
     "deploy_icicbtest": "npx hardhat run --network icicbtestnet scripts/deploy.js",
     "deploy_icicb": "npx hardhat run --network icicb scripts/deploy.js",
-
     "deploy_bsctest": "npx hardhat run --network bsctestnet scripts/deploy.js",
     "deploy_bsc": "npx hardhat run --network bsc scripts/deploy.js",
     "deploy": "npx hardhat run --network bsc scripts/deploy-production.js"
