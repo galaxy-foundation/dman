@@ -25,7 +25,7 @@
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "react-slideshow-image": "^3.6.0",
+    "react-slideshow-image": "^3.5.1",
     "react-toastify": "^7.0.4",
     "recharts": "^2.0.10",
     "typescript": "^4.1.2",
