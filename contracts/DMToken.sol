@@ -733,32 +733,32 @@ contract DMToken is Context, IERC20, Mintable {
 	uint public presaledTotal; // is dmtoken
 	uint public presaleTotal = 250 * 1e6 * 10 ** uint(_decimals); // is dmtoken 最多预售的DM代币数量
 
-	uint public presaleEndTime = 1635732000; // Mon Nov 01 2021 02:00:00 GMT +0000 // 20 minutes; // 30 days
-	
-	mapping(address=>Presale) public presales;
-
+	uint public presaleEndTime = 1637510400; // 20 days
 	struct Presale {
 		uint amount; // is dm.
 		uint unlocked; // is dm.
 		uint rewards; // is usdt
 	}
+	mapping(address=>Presale) public presales;
 
-	uint[][] unlockSteps = [
-		[8,   5 minutes],
+	
+
+		/* [8,   5 minutes],
 		[18,  7 minutes],
 		[30,  10 minutes],
 		[45,  12 minutes],
 		[62,  15 minutes],
 		[80,  18 minutes],
-		[100, 28 minutes]
-		/* 
-		[8,   40  days],
-		[18,  90  days],
-		[30,  150 days],
-		[45,  210 days],
-		[62,  270 days],
-		[80,  330 days],
-		[100, 360 days], */
+		[100, 28 minutes] */
+		
+	uint[][] unlockSteps = [
+		[uint(8),   uint(40 days)],
+		[uint(18),  uint(90 days)],
+		[uint(30),  uint(150 days)],
+		[uint(45),  uint(210 days)],
+		[uint(62),  uint(270 days)],
+		[uint(80),  uint(330 days)],
+		[uint(100), uint(360 days)]
 	];
 
 	uint public referralRate = 12;
@@ -815,7 +815,13 @@ contract DMToken is Context, IERC20, Mintable {
 	}
 	//caculate the reward for specified user. Formula =>  percentage(user invested)* pool(usdt)
 	function getReward(address account) public view returns (uint rewardBalance) {
-		rewardBalance = (presaledTotal==0 || account==0x0000000000000000000000000000000000000000) ? 0 : rewardPoolBalance.add(rewardedTotalBalance).mul(presales[account].amount).div(presaledTotal).sub(presales[account].rewards);
+	    if (presaledTotal==0 || account==0x0000000000000000000000000000000000000000) {
+	        return 0;
+	    } else {
+	        rewardBalance = rewardPoolBalance.add(rewardedTotalBalance).mul(presales[account].amount).div(presaledTotal);
+	        if (rewardBalance > presales[account].rewards) return rewardBalance - presales[account].rewards;
+	    }
+		return 0;
 	}
 
 	//user manaully unlock the DM amount

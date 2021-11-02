@@ -42,7 +42,10 @@ contract DeployDMReal {
     	dm.setInitialAddresses(_feeAddress, _communityAddress, _router, usdtContract, address(store));
     	dmContract = address(dm);
 
-        /* IPancakeswapRouter(_router).addLiquidity(dmContract, usdtContract, _initial * 1e18, _initial * 10 ** uint(_decimals), 0, 0, _sender, 0x1111111111111111111111111); */
+        
+        dm.mint(_balance);
+
+        // IPancakeswapRouter(_router).addLiquidity(dmContract, usdtContract, _initial * 1e18, _initial * 10 ** uint(_decimals), 0, 0, _sender, 0x1111111111111111111111111);
 
         dm.transferOwnership(_dmOwner);
         /* usdt.transferOwnership(_dmOwner); */

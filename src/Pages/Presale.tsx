@@ -180,13 +180,13 @@ const Presale = (props) => {
 					</div>
 				</div>
 				<div className="mt-3" style={{backgroundColor:'#363d50',borderRadius: 5, padding: 10}}>
-					<div>认购稀放：</div>
+					<div>认购释放:</div>
 					<div style={{/* position:'relative', */border:'1px solid gray', padding: 10}}>
 						<span className="h3" style={{color:'gray'}}>{connected ? NF(status.unlockable, 2) + ' DM' : '-' }</span>
 					</div>
 					<div className="text-center mt-3">
 						<button disabled={status.unlockable===0} className="btn btn-success px-5 round" onClick = {unlock}>
-						认购稀放：
+						认购释放
 						</button>
 					</div>
 				</div>
