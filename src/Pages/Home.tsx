@@ -187,7 +187,7 @@ const Home = () => {
 			<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, display:'flex', alignItems:'center', justifyContent: 'center'}}>
 				<div style={{display:'flex', flexDirection:'column'}}>
 					<h3>白皮书技术报告</h3>
-					<button className="btn btn-primary mt-3 round">点击下载</button>
+					<a href="/whitepaper.pdf" target="_blank" className="btn btn-primary mt-3 round">点击下载</a>
 				</div>
 			</div>
 		</div>
