@@ -39,34 +39,34 @@ import imgSlide5 from '../assets/8438a66a412ee1ec72e253586b1e1964.jpg'
 import imgSlide6 from '../assets/60679e847858cb531aabab56f7401570.jpg'
 
 import Layout from '../components/Layout';
-import {DMTokenContract} from "../config";
-import { Slide  } from 'react-slideshow-image';
+import { DMTokenContract } from "../config";
+import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css'
 
-const btn1s = [imgBtn11,imgBtn12,imgBtn13];
+const btn1s = [imgBtn11, imgBtn12, imgBtn13];
 const btn3s = [
 	[
-		{src: imgBtn31, url: 'https://www.coingecko.com/en'},
-		{src: imgBtn32, url: 'https://mathwallet.org/en-us/'},
-		{src: imgBtn33, url: 'https://bitkeep.org/'}
+		{ src: imgBtn31, url: 'https://www.coingecko.com/en' },
+		{ src: imgBtn32, url: 'https://mathwallet.org/en-us/' },
+		{ src: imgBtn33, url: 'https://bitkeep.org/' }
 	],
 	[
-		{src: imgBtn34, url: 'https://bitkeep.org/'},
-		{src: imgBtn35, url: ''},
-		{src: imgBtn36, url: 'https://trustwallet.com/'}
+		{ src: imgBtn34, url: 'https://bitkeep.org/' },
+		{ src: imgBtn35, url: '' },
+		{ src: imgBtn36, url: 'https://trustwallet.com/' }
 	],
 	[
-		{src: imgBtn37, url: 'www.binance.com'},
-		{src: imgBtn38, url: ''},
-		{src: imgBtn39, url: 'https://www.tokenpocket.pro/'}
+		{ src: imgBtn37, url: 'www.binance.com' },
+		{ src: imgBtn38, url: '' },
+		{ src: imgBtn39, url: 'https://www.tokenpocket.pro/' }
 	]
 ];
 const btnSs = [
-	{src: imgSocial1, url: 'https://twitter.com/DmanswapDao'},
-	{src: imgSocial2, url: 'https://t.me/DmanDao'},
-	{src: imgSocial3, url: 'https://github.com/galaxy-foundation/dman'},
-	{src: imgSocial4, url: 'https://medium.com/@edward36012'},
-	{src: imgSocial5, url: (process.env.REACT_APP_BLOCK_EXPLORER || '') + '/address/' + DMTokenContract.address},
+	{ src: imgSocial1, url: 'https://twitter.com/DmanswapDao' },
+	{ src: imgSocial2, url: 'https://t.me/DmanDao' },
+	{ src: imgSocial3, url: 'https://github.com/galaxy-foundation/dman' },
+	{ src: imgSocial4, url: 'https://medium.com/@edward36012' },
+	{ src: imgSocial5, url: (process.env.REACT_APP_BLOCK_EXPLORER || '') + '/address/' + DMTokenContract.address },
 ];
 
 var cssBtn1 = {
@@ -108,92 +108,92 @@ const images = [
 		caption: ''
 	},
 ];
-   
+
 
 const Home = () => {
 	/* const L = useSelector(state => state.contract.L); */
 	return <Layout className="home">
-		<div style={{margin:-15}}>
+		<div style={{ margin: -15 }}>
 			<Slide>
-			{images.map((slideImage, index)=> (
-				<div className="each-slide" key={index}>
-				<div style={{'backgroundImage': `url(${slideImage.url})`, height: 200, backgroundSize: 'contain'}}>
-					<span>{slideImage.caption}</span>
-				</div>
-				</div>
-			))} 
+				{images.map((slideImage, index) => (
+					<div className="each-slide" key={index}>
+						<div style={{ 'backgroundImage': `url(${slideImage.url})`, height: 200, backgroundSize: 'contain', backgroundRepeat: "no-repeat" }}>
+							<span>{slideImage.caption}</span>
+						</div>
+					</div>
+				))}
 			</Slide>
 		</div>
-		
-		<h3 className="vcenter" style={{marginTop:50}}>
-			<img src={imgSect} alt="Section" style={{width:'0.5em',height:'auto', marginRight: 10}} />
+
+		<h3 className="vcenter" style={{ marginTop: 50 }}>
+			<img src={imgSect} alt="Section" style={{ width: '0.5em', height: 'auto', marginRight: 10 }} />
 			去中心化应用
 		</h3>
 		<div className="group">
-			<a href="https://dman.app/" style={{color:'white'}} className="button p-2">
+			<a href="https://dman.app/" style={{ color: 'white' }} className="button p-2">
 				<div className="icon" style={cssBtn1}></div>
 				K线大师
 				<div>
-					<img src={imgArrow} alt="arrow" style={{width:'0.8em',height:'auto'}} />
+					<img src={imgArrow} alt="arrow" style={{ width: '0.8em', height: 'auto' }} />
 				</div>
 			</a>
-			<a href="https://dman.app/" style={{color:'white'}} className="button p-2">
+			<a href="https://dman.app/" style={{ color: 'white' }} className="button p-2">
 				<div className="icon" style={cssBtn2}></div>
 				Defi 社交
 				<div>
-					<img src={imgArrow} alt="arrow" style={{width:'0.8em',height:'auto'}} />
+					<img src={imgArrow} alt="arrow" style={{ width: '0.8em', height: 'auto' }} />
 				</div>
 			</a>
-			<a href="https://dman.app/" style={{color:'white'}} className="button p-2">
+			<a href="https://dman.app/" style={{ color: 'white' }} className="button p-2">
 				<div className="icon" style={cssBtn3}></div>
 				Defi 教育
 				<div>
-					<img src={imgArrow} alt="arrow" style={{width:'0.8em',height:'auto'}} />
+					<img src={imgArrow} alt="arrow" style={{ width: '0.8em', height: 'auto' }} />
 				</div>
 			</a>
 		</div>
 
 		<h3 className="vcenter mt-5">
-			<img src={imgSect} alt="Section" style={{width:'0.5em',height:'auto', marginRight: 10}} />
+			<img src={imgSect} alt="Section" style={{ width: '0.5em', height: 'auto', marginRight: 10 }} />
 			审计机构
 		</h3>
 		<div className="group">
-			{btn1s.map((v,k)=><div key={k} className="button" style={{backgroundColor:'#757c8f'}}>
-				<img src={v} alt="arrow" style={{width:'100%',height:'auto'}}/>
+			{btn1s.map((v, k) => <div key={k} className="button" style={{ backgroundColor: '#757c8f' }}>
+				<img src={v} alt="arrow" style={{ width: '100%', height: 'auto' }} />
 			</div>)}
 		</div>
-		<div style={{position:'relative'}}>
-			
+		<div style={{ position: 'relative' }}>
+
 			<h3 className="vcenter mt-5">
-				<img src={imgSect} alt="Section" style={{width:'0.5em',height:'auto', marginRight: 10}} />
+				<img src={imgSect} alt="Section" style={{ width: '0.5em', height: 'auto', marginRight: 10 }} />
 				合作伙伴
 			</h3>
-			{btn3s.map((vs,ks)=><div key={ks} className="group mt-2">
-				{vs.map((v,k)=>
-					<a href={v.url} target="_blank" key={k} className="button" style={{backgroundColor:'#ccced0'}}>
-						<img src={v.src} alt="arrow" style={{width:'100%',height:'auto'}}/>
+			{btn3s.map((vs, ks) => <div key={ks} className="group mt-2">
+				{vs.map((v, k) =>
+					<a href={v.url} target="_blank" key={k} className="button" style={{ backgroundColor: '#ccced0' }}>
+						<img src={v.src} alt="arrow" style={{ width: '100%', height: 'auto' }} />
 					</a>
 				)}
 			</div>)}
 		</div>
-		
-		<div className="mt-5" style={{position:'relative'}}>
+
+		<div className="mt-5" style={{ position: 'relative' }}>
 			<div>
-				<img src={imgBgCell} alt="bg" style={{width:'100%',height:'auto'}} />
+				<img src={imgBgCell} alt="bg" style={{ width: '100%', height: 'auto' }} />
 			</div>
-			<div style={{position:'absolute',right:0, bottom:0, opacity:0.5}}>
-				<img src={imgBook} alt="book" style={{width:'100%',height:'auto'}} />
+			<div style={{ position: 'absolute', right: 0, bottom: 0, opacity: 0.5 }}>
+				<img src={imgBook} alt="book" style={{ width: '100%', height: 'auto' }} />
 			</div>
-			<div style={{position:'absolute',left:0, right:0, top:0, bottom:0, display:'flex', alignItems:'center', justifyContent: 'center'}}>
-				<div style={{display:'flex', flexDirection:'column'}}>
+			<div style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+				<div style={{ display: 'flex', flexDirection: 'column' }}>
 					<h3>白皮书技术报告</h3>
 					<a href="/whitepaper.pdf" target="_blank" className="btn btn-primary mt-3 round">点击下载</a>
 				</div>
 			</div>
 		</div>
 		<div className="group mt-5 pl-3 px-3">
-			{btnSs.map((v,k)=><a href={v.url} target="_blank" key={k} className="social">
-				<img src={v.src} alt="arrow" style={{width:'100%',height:'auto'}}/>
+			{btnSs.map((v, k) => <a href={v.url} target="_blank" key={k} className="social">
+				<img src={v.src} alt="arrow" style={{ width: '100%', height: 'auto' }} />
 			</a>)}
 		</div>
 	</Layout>;
