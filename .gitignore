@@ -114,7 +114,7 @@ dist
 /coverage
 
 # production
-/build
+
 
 # misc
 .DS_Store
@@ -131,8 +131,6 @@ yarn-error.log*
 # dependencies
 /node_modules
 
-# production
-/build
 
 # misc
 .DS_Store
