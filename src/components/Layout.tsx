@@ -148,12 +148,12 @@ const Layout = (props:any) => {
                     <div style={{fontSize:'12px',textAlign:'center'}}>预售</div>
                 </Link>
             </div>
-            <div>
+            {/* <div>
                 <Link to="/swap">
                     <img src={imgSwap} alt="swap" style={{width:"2em",height:"auto"}} /> 
                     <div style={{fontSize:'12px',textAlign:'center'}}>兑换</div>
                 </Link>
-            </div>
+            </div> */}
             {/* <div>
                 <Link to="/mine">
                     <img src={imgMine} alt="mine" style={{width:"2em",height:"auto"}} /> 
