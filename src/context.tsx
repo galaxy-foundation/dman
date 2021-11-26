@@ -165,8 +165,8 @@ export default function Provider ({children}) {
 			let rewardedTotal=fromValue(params[i++], 'USDT');
 			let insurancePool=fromValue(params[i++], 'USDT');
 			let insuranceBurnt=fromValue(params[i++], 'DM');
-			let reserve0 = fromValue(params[i++], 'USDT'); // Number(ethers.utils.formatUnits(pairUsdtBalance,6)),
-			let reserve1 = fromValue(params[i++], 'DM'); // Number(ethers.utils.formatUnits(pairDMBalance,18))
+			let reserve1 = fromValue(params[i++], 'DM'); // Number(ethers.utils.formatUnits(pairUsdtBalance,6)),
+			let reserve0 = fromValue(params[i++], 'USDT'); // Number(ethers.utils.formatUnits(pairDMBalance,18))
 			let feeCacheAmount = fromValue(params[i++], 'DM');
 
 			if (isFirst) {

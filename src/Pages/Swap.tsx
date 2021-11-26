@@ -82,12 +82,6 @@ const Swap = () => {
 			let amountOut =   numerator / denominator;
 			setToken2({...token2, amount:styledNum(amountOut)}); // 	
 		}
-		/* let amountWithFee = token1.amount * 997;
-		let numerator = amountWithFee * status.reserve0;
-		let denominator = status.reserve1 * 1000 + amountWithFee;
-		let amountOut =   numerator / denominator;
-		
-		setToken2({...token2, amount:styledNum(amountOut * 0.85)}); //  */
     }
 
 	React.useEffect(()=>{
