@@ -64,22 +64,28 @@ const Swap = () => {
 		let numerator = amountWithFee * status.reserve1;
 		let denominator = status.reserve0 * 1000 + amountWithFee;
 		let amountOut =   numerator / denominator;
+		
 		return amountOut;
 	}
 
 	const getAmountOut = async ()=>{
 		if (token1.amount === 0 && status.reserve0 === 0&& status.reserve1 === 0) return;
-		if(token1.token === "USDT"){
+		if(token1.token === "DM"){
 			let amountWithFee = token1.amount * 997;
 			let numerator = amountWithFee * status.reserve0;
 			let denominator = status.reserve1 * 1000 + amountWithFee;
 			let amountOut =   numerator / denominator;
+
+			// console.log(`amountOut:${amountOut}`)
+			setToken1({...token1, amount:styledNum(token1.amount + 0)})
 			setToken2({...token2, amount:styledNum(amountOut/*  * 0.85 */)}); // 
 		} else {
 			let amountWithFee = token1.amount * 997 * 0.85;
 			let numerator = amountWithFee * status.reserve1;
 			let denominator = status.reserve0 * 1000 + amountWithFee;
 			let amountOut =   numerator / denominator;
+			setToken1({...token1, amount:styledNum(token1.amount + 0)})
+			console.log(styledNum(token1.amount + 0))
 			setToken2({...token2, amount:styledNum(amountOut)}); // 	
 		}
     }
