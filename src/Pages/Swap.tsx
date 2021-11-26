@@ -70,7 +70,7 @@ const Swap = () => {
 
 	const getAmountOut = async ()=>{
 		if (token1.amount === 0 && status.reserve0 === 0&& status.reserve1 === 0) return;
-		if(token1.token === "DM"){
+		if(token1.token === "USDT"){
 			let amountWithFee = token1.amount * 997;
 			let numerator = amountWithFee * status.reserve0;
 			let denominator = status.reserve1 * 1000 + amountWithFee;
@@ -210,7 +210,7 @@ const Swap = () => {
 					</div>
 					<div style={{position:'relative',border:'1px solid gray', padding: 10}}>
 						<input disabled={true} /* onChange={handleAmount2} */ type="number" value={parseFloat(Number(token2.amount).toFixed(8))} className="h3" style={{marginBottom:0}} maxLength={12} />
-						<button onClick={()=>setToken1({...token2, amount:token2.token==='USDT' ? status.usdtBalance : status.dmBalance })} className="btn btn-sm btn-outline-success" style={{position:'absolute',right:10}}>MAX</button>
+						{/* <button onClick={()=>setToken1({...token2, amount:token2.token==='USDT' ? status.usdtBalance : status.dmBalance })} className="btn btn-sm btn-outline-success" style={{position:'absolute',right:10}}>MAX</button> */}
 					</div>
 					<div className="text-center mt-3">
 						{connected ? <button className="btn btn-success px-5 round" onClick = {handleSwap}>提交</button> : <span>请连接钱包</span>}
