@@ -139,27 +139,27 @@ const Layout = (props:any) => {
             <div>
                 <Link to="/">
                     <img src={imgHome} alt="home" style={{width:"2em",height:"auto"}} /> 
-                    <div style={{fontSize:'12px',textAlign:'center'}}>首页</div>
+                    <div style={{fontSize:'12px',textAlign:'center',color:'#666'}}>应用</div>
                 </Link>
             </div>
-            <div>
+            {/* <div>
                 <Link to="/presale">
                     <img src={imgApp} alt="app" style={{width:"2em",height:"auto"}} /> 
                     <div style={{fontSize:'12px',textAlign:'center'}}>预售</div>
                 </Link>
-            </div>
-            {/* <div>
+            </div> */}
+            <div>
                 <Link to="/swap">
                     <img src={imgSwap} alt="swap" style={{width:"2em",height:"auto"}} /> 
-                    <div style={{fontSize:'12px',textAlign:'center'}}>兑换</div>
+                    <div style={{fontSize:'12px',textAlign:'center',color:'#666'}}>兑换</div>
                 </Link>
-            </div> */}
-            {/* <div>
+            </div>
+            <div>
                 <Link to="/mine">
                     <img src={imgMine} alt="mine" style={{width:"2em",height:"auto"}} /> 
-                    <div style={{fontSize:'12px',textAlign:'center'}}>矿池</div>
+                    <div style={{fontSize:'12px',textAlign:'center',color:'#666'}}>矿池</div>
                 </Link>
-            </div> */}
+            </div>
         </footer>
     </>);
 }
